@@ -38,9 +38,9 @@ public class DeployProcess extends ProcessBase {
         Boolean isUpload = deployModeSelectorMap.get("upload");
         Boolean isApache_config = deployModeSelectorMap.get("apache_config");
 
-        Command syncWarCommand = new Command();
         //war包同步
         if (isCm) {
+            Command syncWarCommand = new Command();
             syncWarCommand.setCommandMethod(CommandMethodEnum.SYNC_CM_WAR.toString());
             syncWarCommand.setCommandCode(CommandMethodEnum.SYNC_CM_WAR.getCode());
             log.info(syncWarCommand.toString());
@@ -48,6 +48,7 @@ public class DeployProcess extends ProcessBase {
         }
 
         if (isZyfl) {
+            Command syncWarCommand = new Command();
             syncWarCommand.setCommandMethod(CommandMethodEnum.SYNC_ZYFL_WAR.toString());
             syncWarCommand.setCommandCode(CommandMethodEnum.SYNC_ZYFL_WAR.getCode());
             log.info(syncWarCommand.toString());
@@ -55,6 +56,7 @@ public class DeployProcess extends ProcessBase {
         }
 
         if (isUpload) {
+            Command syncWarCommand = new Command();
             syncWarCommand.setCommandMethod(CommandMethodEnum.SYNC_UPLOAD_WAR.toString());
             syncWarCommand.setCommandCode(CommandMethodEnum.SYNC_UPLOAD_WAR.getCode());
             ctx.channel().writeAndFlush(syncWarCommand);
