@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="mHBoxConfigAdd" alignment="CENTER" cache="true" prefWidth="395" style="-fx-background-color: #0bfffd;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.ConfigItemController">
+
+    <children>
+
+        <Label fx:id="mLaNum" prefWidth="15" text="20" textAlignment="CENTER">
+         <HBox.margin>
+            <Insets left="2.0" />
+         </HBox.margin></Label>
+
+        <JFXTextField fx:id="mTFConfigName" promptText="配置项名" style="-fx-font-weight: bold">
+         <HBox.margin>
+            <Insets left="3.0" />
+         </HBox.margin></JFXTextField>
+
+        <Label style="-fx-text-fill: white;-fx-background-color: #028aff" text="|" HBox.hgrow="ALWAYS">
+         <HBox.margin>
+            <Insets left="3.0" />
+         </HBox.margin></Label>
+
+        <JFXTextField fx:id="mTFConfigValue" promptText="配置项值" style="-fx-font-weight: bold;-fx-text-fill: #0c18ff;-fx-prompt-text-fill: #1d9cff">
+         <HBox.margin>
+            <Insets left="3.0" />
+         </HBox.margin></JFXTextField>
+
+        <JFXButton fx:id="mBTAdd" buttonType="RAISED" ellipsisString="" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onAddAction" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #1f55ff ; -fx-text-fill: white " text="＋" textAlignment="CENTER">
+         <HBox.margin>
+            <Insets left="3.0" />
+         </HBox.margin>
+         <font>
+            <Font size="10.0" />
+         </font></JFXButton>
+        <JFXButton fx:id="mBTRemove" buttonType="RAISED" managed="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onRemoveAction" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #1f55ff ; -fx-text-fill: white " text="－" visible="false">
+         <HBox.margin>
+            <Insets left="3.0" />
+         </HBox.margin>
+         <font>
+            <Font size="10.0" />
+         </font>
+        </JFXButton>
+
+ <!--       <JFXButton alignment="CENTER" buttonType="RAISED" ellipsisString="" style="-fx-background-color: transparent; -fx-text-fill: white;">
+            <graphic>
+                <ImageView fitHeight="25.0" fitWidth="25.0">
+                    <image>
+                            <Image url="/css/iconfinder_plus-24_103172.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </JFXButton>-->
+    </children>
+
+</HBox>

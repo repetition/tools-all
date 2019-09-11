@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.DialogDeployTypeController">
+
+    <rowConstraints>
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+    </rowConstraints>
+
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+    </columnConstraints>
+    <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <children>
+
+            <VBox alignment="BOTTOM_LEFT" spacing="3">
+                <children>
+                    <RadioButton fx:id="mRBOld" text="单机-旧版" />
+                    <RadioButton fx:id="mRBZYFL" text="单机-资源分离" />
+                    <RadioButton fx:id="mRBUpload2CM" text="单机-上传组件+CM" />
+                    <RadioButton fx:id="mRBUpload2IPM" text="单机-上传组件+IPM" />
+                    <RadioButton fx:id="mRB2UploadCM" text="双机-上传组件(只部CM)" />
+                    <RadioButton fx:id="mRB2Upload" text="双机-上传组件(只部Upload)" />
+                </children>
+            </VBox>
+        </children>
+    </HBox>
+
+
+    <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <children>
+            <Button fx:id="mBTSave" text="确定" onAction="#onAction"/>
+            <Button fx:id="mBTCancel" text="取消" onAction="#onAction"/>
+        </children>
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+    </HBox>
+</GridPane>

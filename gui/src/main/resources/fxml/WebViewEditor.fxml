@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+
+<VBox prefHeight="600.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.WebXmlEditorController">
+    <children>
+        <GridPane fx:id="mGridPane" gridLinesVisible="true" prefWidth="1270.0" VBox.vgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints fx:id="column1" prefWidth="875" />
+                <ColumnConstraints fx:id="column2" halignment="CENTER" />
+            </columnConstraints>
+            <children>
+                <BorderPane fx:id="borderPane" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+                    <top>
+                        <WebView fx:id="mWebView">
+                        </WebView>
+                    </top>
+                    <bottom>
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <TextField fx:id="mTFFind" promptText="请输入搜索的内容">
+                                    <HBox.margin>
+                                        <Insets left="20" />
+                                    </HBox.margin>
+                                </TextField>
+                                <RadioButton fx:id="mRBPrevious" text="向上">
+                                    <HBox.margin>
+                                        <Insets left="5" />
+                                    </HBox.margin>
+
+                                </RadioButton>
+                                <RadioButton fx:id="mRBNext" text="向下" />
+                                <Button fx:id="mBTFind" onAction="#onFindAction" text="搜索">
+                                    <HBox.margin>
+                                        <Insets left="5" />
+                                    </HBox.margin>
+                                </Button>
+
+                                <Button fx:id="mBTSave" onAction="#onSaveAction" text="保存">
+                                    <HBox.margin>
+                                        <Insets left="20" />
+                                    </HBox.margin>
+                                </Button>
+                                <Button fx:id="mBTClose" onAction="#onCancelAction" text="取消">
+                                    <HBox.margin>
+                                        <Insets left="10" />
+                                    </HBox.margin>
+                                </Button>
+
+                                <Button fx:id="mBTest" onAction="#onTestAction" text="Test">
+                                    <HBox.margin>
+                                        <Insets left="10" />
+                                    </HBox.margin>
+                                </Button>
+
+                                <Button fx:id="mBTOpenInput" alignment="CENTER_RIGHT" onAction="#onOpenInputAction" text="添加部署时修改">
+                                    <HBox.margin>
+                                        <Insets left="10" />
+                                    </HBox.margin>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </bottom>
+                </BorderPane>
+                <VBox fx:id="mVBoxInput" alignment="CENTER" spacing="8" style="-fx-background-color: white" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+                    <children>
+                 <!--       <HBox >
+                            <children>
+                                <TextField promptText="属性值" />
+                                <TextField promptText="Value" />
+                                <Button text="添加" />
+                            </children>
+                        </HBox>-->
+                            <fx:include fx:id="mHBoxInputChildren" source="config_item.fxml" />
+                    </children>
+                </VBox>
+            </children>
+            <rowConstraints>
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+    </children>
+</VBox>

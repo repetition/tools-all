@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0"
+      prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.tools.gui.controller.AboutController">
+    <children>
+        <AnchorPane prefHeight="318.0" prefWidth="312.0">
+            <children>
+                <Label layoutX="67.0" layoutY="57.0" text="maxMemory:"/>
+                <Label layoutX="67.0" layoutY="85.0" text="freeMemory:"/>
+                <Label layoutX="67.0" layoutY="112.0" text="totalMemory:"/>
+                <Label layoutX="30.0" layoutY="136.0" text="availableProcessors:"/>
+
+                <Label fx:id="mLBMaxMemory" layoutX="153.0" layoutY="56.0" text="maxMemory:"/>
+                <Label fx:id="mLBFreeMemory" layoutX="154.0" layoutY="85.0" text="freeMemory:"/>
+                <Label fx:id="mLBTotalMemory" layoutX="152.0" layoutY="112.0" text="totalMemory:"/>
+                <Label fx:id="mLBAvailableProcessors" layoutX="154.0" layoutY="136.0" text="availableProcessors:"/>
+                <Label layoutX="54.0" layoutY="218.0" text="描述:"/>
+                <Label fx:id="mLBDes" layoutX="52.0" layoutY="235.0" prefHeight="55.0" prefWidth="235.0"/>
+                <Label layoutX="52.0" layoutY="194.0" text="version:"/>
+
+                <Label fx:id="mLBVersion" layoutX="106.0" layoutY="194.0" text="1.0"/>
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

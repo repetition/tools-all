@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane prefHeight="200" prefWidth="300" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.ConfigUpdateController">
+
+
+    <center>
+
+        <HBox alignment="CENTER" spacing="3" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="服务地址:" />
+                <TextField fx:id="mTFAddress" prefWidth="120.0" promptText="服务地址" text="10.10.10.214" />
+                <Hyperlink fx:id="mHLUpdate" alignment="CENTER_LEFT" disable="false" onAction="#onAction" text="下载更新" HBox.hgrow="ALWAYS" />
+            </children>
+
+        </HBox>
+    </center>
+</BorderPane>

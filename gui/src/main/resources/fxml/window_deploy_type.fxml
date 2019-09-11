@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          prefHeight="400.0" prefWidth="600.0" gridLinesVisible="true" fx:controller="com.tools.gui.controller.DeployTypeController">
+
+    <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints/>
+        <RowConstraints/>
+    </rowConstraints>
+
+    <children>
+
+        <VBox GridPane.vgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0">
+
+            <children>
+
+                <HBox spacing="3">
+
+                    <children>
+                        <RadioButton fx:id="mRBUpload" text="单机-上传组件"/>
+                        <RadioButton fx:id="mRBZYFL" text="单机-资源分离"/>
+                        <RadioButton fx:id="mRBOld" text="单机-旧版"/>
+                    </children>
+                </HBox>
+
+            </children>
+
+        </VBox>
+
+    </children>
+
+</GridPane>

@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>XML</title>
+    <meta name="Generator" content="NPP-Plugin">
+    <meta name="Author" content="">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link rel="stylesheet" href="codemirror-5.42.0/lib/codemirror.css" >
+    <script type="text/javascript" src="codemirror-5.42.0/lib/codemirror.js"></script>
+
+    <!--主题-->
+    <link rel="stylesheet" href="codemirror-5.42.0/theme/idea.css">
+    <link rel="stylesheet" href="codemirror-5.42.0/theme/eclipse.css">
+    <link rel="stylesheet" href="codemirror-5.42.0/theme/blackboard.css">
+    <!--滚动条样式-->
+    <link rel="stylesheet" href="codemirror-5.42.0/addon/scroll/simplescrollbars.css">
+
+    <link rel="stylesheet" href="codemirror-5.42.0/addon/search/matchesonscrollbar.css">
+
+    <script type="text/javascript" src="codemirror-5.42.0/mode/clike/clike.js"></script>
+    <!--选中行高亮-->
+    <script type="text/javascript" src="codemirror-5.42.0/addon/selection/active-line.js"></script>
+
+    <!--xml代码高亮-->
+    <script src="codemirror-5.42.0/mode/xml/xml.js"></script>
+    <!--滚动条js样式-->
+    <script type="text/javascript" src="codemirror-5.42.0/addon/scroll/simplescrollbars.js"></script>
+
+    <!--xml括号匹配-->
+    <script type="text/javascript" src="codemirror-5.42.0/addon/edit/matchtags.js"></script>
+    <script type="text/javascript" src="codemirror-5.42.0/addon/fold/xml-fold.js"></script>
+
+    <script type="text/javascript" src="codemirror-5.42.0/addon/search/searchcursor.js"></script>
+
+    <script type="text/javascript" src="codemirror-5.42.0/addon/search/search.js"></script>
+    <script type="text/javascript" src="codemirror-5.42.0/addon/search/matchesonscrollbar.js"></script>
+
+    <script type="text/javascript" src="codemirror-5.42.0/addon/scroll/annotatescrollbar.js"></script>
+
+    <style>
+
+        .CodeMirror {
+            /* Set height, width, borders, and global font properties here */
+            /*font-family: monospace;*/
+            /*字体*/
+            font-family: Consolas;
+            font-size: 14px;
+            height: 300px;
+            color: black;
+            direction: ltr;
+        }
+
+        /*xml高亮颜色*/
+        .cm-s-default .cm-tag {
+            color: #ffffff;
+        }
+
+        /*idea主题的 高亮颜色*/
+        .cm-s-idea span.cm-tag {
+            color: #0000ff;
+        }
+
+        /*idea主题的 注释颜色*/
+        .cm-s-idea span.cm-comment {
+            color: #008000;
+        }
+
+        .cm-s-idea span.cm-variable {
+            color: black;
+        }
+
+        /*字体选中行的颜色*/
+        .cm-s-idea .CodeMirror-activeline-background {
+            background: #E8E8FF;
+        }
+
+        /*字体选中颜色*/
+        .CodeMirror-focused .CodeMirror-selected {
+            background: #31a5f0;
+        }
+
+        /*搜索的选中颜色*/
+        .CodeMirror-selected {
+            background: #31a5f0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    var editor;
+
+    window.onload = function () {
+        //根据DOM元素的id构造出一个编辑器
+        editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            lineNumbers: true,	//显示行号
+            theme: "idea",	//设置主题
+            //lineWrapping: true,	//代码折叠
+            //foldGutter: true,
+            //gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            matchBrackets: true,	//括号匹配
+            //readOnly: true,    //只读
+            mode: "application/xml",
+            htmlMode: true,
+            matchClosing: false,
+            styleActiveLine: true,
+            /*滚动条样式*/
+            scrollbarStyle: "simple",
+            /*滚动条覆盖 行数*/
+            coverGutterNextToScrollbar: true,
+            /*xml括号匹配*/
+            matchTags: {bothTags: true},
+        });
+
+        editor.setOption("extraKeys", {
+            // Tab键换成4个空格
+            Tab: function (cm) {
+                var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                cm.replaceSelection(spaces);
+            },
+            // F11键切换全屏
+            "F11": function (cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            // Esc键退出全屏
+            "Esc": function (cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
+
+        });
+
+
+        //  editor.setSize("100%", "100%");
+        //editor.setValue("   <pptconverttimeoutval>24</pptconverttimeoutval> "); //给代码框赋值
+
+    }
+    /*多个搜索结果标记*/
+    CodeMirror.defineExtension('search', function (query) {
+        function SearchState() {
+            this.posFrom = this.posTo = this.lastQuery = this.query = null;
+            this.overlay = null;
+        }
+
+        function getSearchState(cm) {
+            return cm.state.search || (cm.state.search = new SearchState());
+        }
+
+        function searchOverlay(query, caseInsensitive) {
+            if (typeof query == "string")
+                query = new RegExp(query.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), caseInsensitive ? "gi" : "g");
+            else if (!query.global)
+                query = new RegExp(query.source, query.ignoreCase ? "gi" : "g");
+
+            return {
+                token: function (stream) {
+                    query.lastIndex = stream.pos;
+                    var match = query.exec(stream.string);
+                    if (match && match.index == stream.pos) {
+                        stream.pos += match[0].length || 1;
+                        return "searching";
+                    } else if (match) {
+                        stream.pos = match.index;
+                    } else {
+                        stream.skipToEnd();
+                    }
+                }
+            };
+        }
+
+        function queryCaseInsensitive(query) {
+            return typeof query == "string" && query == query.toLowerCase();
+        }
+
+        function parseString(string) {
+            return string.replace(/\\(.)/g, function (_, ch) {
+                if (ch == "n") return "\n"
+                if (ch == "r") return "\r"
+                return ch
+            })
+        }
+
+        function parseQuery(query) {
+            var isRE = query.match(/^\/(.*)\/([a-z]*)$/);
+            if (isRE) {
+                try {
+                    query = new RegExp(isRE[1], isRE[2].indexOf("i") == -1 ? "" : "i");
+                } catch (e) {
+                } // Not a regular expression after all, do a string search
+            } else {
+                query = parseString(query)
+            }
+            if (typeof query == "string" ? query == "" : query.test(""))
+                query = /x^/;
+            return query;
+        }
+
+        var state = getSearchState(this);
+        state.lastQuery = state.query;
+        state.query = state.queryText = null;
+        this.removeOverlay(state.overlay);
+        if (state.annotate) {
+            state.annotate.clear();
+            state.annotate = null;
+        }
+
+        state.queryText = query;
+        state.query = parseQuery(query);
+        this.removeOverlay(state.overlay, queryCaseInsensitive(state.query));
+        state.overlay = searchOverlay(state.query, queryCaseInsensitive(state.query));
+
+        this.addOverlay(state.overlay);
+        if (this.showMatchesOnScrollbar) {
+            if (state.annotate) {
+                state.annotate.clear();
+                state.annotate = null;
+            }
+            state.annotate = this.showMatchesOnScrollbar(state.query, queryCaseInsensitive(state.query));
+        }
+    });
+
+    /*搜索*/
+    function find(text) {
+        // var searchCursor = editor.getSearchCursor("500", {line:0, ch:0},true);
+        //console.log(searchCursor);  caseFold:true 禁用大小写
+        var searchCursor = editor.getSearchCursor(text,null,{caseFold:true});
+        //while(searchCursor.findNext()){
+        //searchCursor.to();
+        //console.log(searchCursor);
+        //console.log(searchCursor.to());
+        //editor.setSelection(searchCursor.to());
+        //}
+
+        //var getCursor = editor.getCursor("500");
+        //console.log(getCursor);
+        return searchCursor;
+    }
+
+    var searchCursor;
+    /*最后一次的搜索内容*/
+    var lastFindText;
+    var isSearch;
+    /*向下搜索*/
+    function findNext(text) {
+        //第一此搜索
+        if (!searchCursor) {
+            searchCursor = find(text);
+        } else {
+            /*判断是否变更了搜索字段，以便实时搜索*/
+            if(lastFindText!=text){
+                searchCursor = find(text);
+                lastFindText = text;
+            }
+
+        }
+/*        var codeMirrorInstances = document.getElementsByClassName('CodeMirror');
+        for (var i = 0; i < codeMirrorInstances.length; i++) {
+            var curInst = codeMirrorInstances[i].CodeMirror;
+            curInst.search(text);
+        }*/
+
+        //继续搜索向下搜索
+        if (searchCursor.findNext()) {
+            isSearch = true;
+            console.log(searchCursor.pos);
+            console.log(searchCursor.to().ch);
+            editor.setSelection(searchCursor.from(), searchCursor.to());
+            return true;
+        } else {
+         /*   if (isSearch) {
+                findNext(text);
+                return true;
+            }
+            searchCursor = null;*/
+            return false;
+        }
+    }
+
+    /*向上搜索*/
+    function findPrevious(text) {
+        //第一此搜索
+        if (!searchCursor) {
+            searchCursor = find(text);
+        } else {
+            if(lastFindText!=text){
+                searchCursor = find(text);
+                lastFindText = text;
+            }
+
+        }
+ /*       /!*搜索标记*!/
+        var codeMirrorInstances = document.getElementsByClassName('CodeMirror');
+        for (var i = 0; i < codeMirrorInstances.length; i++) {
+            var curInst = codeMirrorInstances[i].CodeMirror;
+            curInst.search(text);
+        }*/
+
+        //继续搜索向下搜索
+        if (searchCursor.findPrevious()) {
+            console.log(searchCursor.pos);
+            console.log(searchCursor.to().ch);
+            //标记搜索内容
+            editor.setSelection(searchCursor.from(), searchCursor.to());
+            return true;
+        } else {
+           // searchCursor = null;
+            /*注释掉此代码，codemirror 向上搜索只是单向搜索，不能循环搜索 ，如果再次调用，则会死循环*/
+          //  findPrevious(text);
+            return false;
+        }
+    }
+    /*标记多行*/
+    function selectMultiple(text) {
+
+        /*搜索标记*/
+        var codeMirrorInstances = document.getElementsByClassName('CodeMirror');
+        for (var i = 0; i < codeMirrorInstances.length; i++) {
+            var curInst = codeMirrorInstances[i].CodeMirror;
+            curInst.search(text);
+        }
+    }
+
+    function log(message) {
+        java.log(message);
+    }
+
+
+    /**
+     * java执行js方法 给编辑器赋值
+     */
+    /*    function setValue() {
+            editor.setValue("yijingdiaoyong");
+        }*/
+
+    /*java call js ， java回调此方法，给编辑器赋值*/
+    function setValue(date) {
+        editor.setValue(date);
+    }
+
+    /*java call js ， java回调此方法，给编辑器赋值*/
+    function getValue() {
+        var value = editor.getValue();
+        alert(value);
+        return value;
+    }
+
+    /*java call js ， java回调此方法，给编辑器重新赋值高度*/
+    function reSize(height) {
+        editor.setSize("100%", height);
+    }
+
+    /*java call js ， java回调此方法，获取编辑器底部x轴滚动栏高度高度*/
+
+
+
+</script>
+<div style="width:100%;height:100%">
+    <!-- begin code -->
+    <textarea class="form-control" id="code" name="code">
+</textarea>
+    <!-- end code-->
+</div>
+
+</body>
+</html>

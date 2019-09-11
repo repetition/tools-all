@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane style="-fx-background-color: linen  ;-fx-background-radius: 8;-fx-border-radius: 8" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+            <center>
+                    <VBox alignment="CENTER" spacing="10">
+                        <children>
+                            <JFXSpinner />
+                            <Label text="正在加载" />
+                        </children>
+                    </VBox>
+            </center>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</BorderPane>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Label?>
+<BorderPane fx:id="borderPaneRoot" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.JFXConfigAddController">
+    <top>
+        <HBox alignment="CENTER" prefHeight="40" prefWidth="600" style="-fx-background-color: white " BorderPane.alignment="CENTER">
+            <children>
+            <Label  alignment="CENTER" contentDisplay="CENTER" prefWidth="120.0" style="-fx-font-size:20px" text="配置文件列表" />
+            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <children>
+                    <JFXButton fx:id="mBTConfigAdd" alignment="CENTER_RIGHT" buttonType="FLAT" minHeight="33.0" minWidth="33.0" prefHeight="33.0" prefWidth="33.0" style="-fx-text-fill: white;-fx-font-size: 15px;-fx-background-color: rgb(5,153,174)" text="+" textAlignment="CENTER" onAction="#onConfigAddAction">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                c    </JFXButton>
+                    <JFXButton fx:id="mBTConfigRemove" alignment="CENTER_RIGHT" buttonType="FLAT" minHeight="33.0" minWidth="33.0" prefHeight="33.0" prefWidth="33.0" style="-fx-text-fill: white;-fx-font-size: 15px;-fx-background-color: rgb(174,174,174)" text="-" textAlignment="CENTER" onAction="#onConfigRemoveAction">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                    </JFXButton>
+                </children>
+                <padding>
+                    <Insets bottom="3" top="3" />
+
+                </padding>
+            </HBox>
+            </children>
+            <padding>
+                <Insets left="10" right="10.0" />
+            </padding>
+        </HBox>
+    </top>
+
+    <center>
+    <VBox fx:id="mVBoxItemRoot" prefWidth="500" style="-fx-background-color: white">
+        <children>
+            <JFXTreeTableView fx:id="treeTableView" VBox.vgrow="ALWAYS">
+                <columns>
+                    <JFXTreeTableColumn fx:id="fileNameColumn" prefWidth="170" resizable="false" styleClass="tree-table-cell-filename" text="文件名" />
+                    <JFXTreeTableColumn fx:id="filePathColumn" prefWidth="400" resizable="false" styleClass="tree-table-cell-filepath" text="路径" />
+                </columns>
+            </JFXTreeTableView>
+        </children>
+        <padding>
+            <Insets bottom="10.0" left="10" right="10.0" />
+        </padding>
+    </VBox>
+</center>
+<padding>
+    <Insets bottom="10.0" left="10" right="10.0" top="10.0" />
+</padding>
+</BorderPane>

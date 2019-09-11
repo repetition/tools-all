@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="mVBox" prefHeight="610.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.MainController">
+    <children>
+        <!--菜单-->
+        <MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" text="文件">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New" />
+                        <MenuItem mnemonicParsing="false" text="Open…" />
+                        <Menu mnemonicParsing="false" text="Open Recent" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem mnemonicParsing="false" text="Save As…" />
+                        <MenuItem mnemonicParsing="false" text="Revert" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Preferences…" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Quit" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="模式">
+                    <items>
+                        <MenuItem fx:id="mMenuItemWindows" mnemonicParsing="false" onAction="#onMenuAction" text="切换到Windows" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="mMenuItemLinux" mnemonicParsing="false" onAction="#onMenuAction" text="切换到Linux" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="配置">
+                    <items>
+                        <MenuItem fx:id="mMenuItemCRProperties" mnemonicParsing="false" onAction="#onMenuAction" text="CR默认配置" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="mMenuItemJenkinsProperties" mnemonicParsing="false" onAction="#onMenuAction" text="Jenkins打包配置" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="mMenuItemConfigList" mnemonicParsing="false" onAction="#onMenuAction" text="添加配置文件" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="mMenuItemZYFLConfig" mnemonicParsing="false" onAction="#onMenuAction" text="Apache资源分离配置" />
+                    </items>
+                    <items>
+                        <MenuItem fx:id="mMenuItemWorkersProperties" onAction="#onMenuAction" text="Apache workers.properties配置" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="关于">
+                    <items>
+                        <MenuItem fx:id="mMenuItemConfigPull" mnemonicParsing="false" onAction="#onMenuAction" text="从服务下载配置" />
+                        <MenuItem fx:id="mMenuItemAbout" mnemonicParsing="false" onAction="#onMenuAction" text="关于" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+
+        <!--内容区域-->
+
+        <GridPane fx:id="gridPaneRoot" prefWidth="800.0" VBox.vgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" prefWidth="380.0" />
+                <ColumnConstraints hgrow="SOMETIMES" prefWidth="420.0" />
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints vgrow="ALWAYS" />
+            </rowConstraints>
+
+            <children>
+                <VBox fx:id="anchorPaneRoot" prefWidth="380.0" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2" VBox.vgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <RadioButton fx:id="mRBSelectDownload"  mnemonicParsing="false" text="下载" />
+                                <RadioButton fx:id="mRBSelect"  mnemonicParsing="false" text="自选">
+                                    <HBox.margin>
+                                        <Insets left="20.0" />
+                                    </HBox.margin>
+                                </RadioButton>
+                            </children>
+                        </HBox>
+
+                        <VBox alignment="CENTER" prefWidth="380">
+                            <children>
+                                <!--WAR包和解压路径布局-->
+                                <GridPane alignment="CENTER" gridLinesVisible="false" hgap="3.0" prefWidth="380" vgap="5.0" GridPane.hgrow="ALWAYS">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" prefWidth="100" />
+                                        <ColumnConstraints prefWidth="200" />
+                                        <ColumnConstraints prefWidth="100" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
+                                    <children>
+                                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="ROOT路径：" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField id="mTFWarPath" fx:id="mTFWarPath" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <Button id="mBTSelectWar" fx:id="mBTSelectWar" mnemonicParsing="false" onAction="#onAction" text="选择" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+                                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="War解压路径：" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField id="mTFWarUnPath" fx:id="mTFWarUnPath" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Button id="mBTSelectUnZIP" fx:id="mBTSelectUnZIP" mnemonicParsing="false" onAction="#onAction" text="选择" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+                                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="21.0" prefWidth="77.0" text="ZYFL路径：" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField id="mTFStaticWarPath" fx:id="mTFStaticWarPath" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <Button id="mBTSelectStaticWar" fx:id="mBTSelectStaticWar" mnemonicParsing="false" onAction="#onAction" text="选择" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+                                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="ZYFL解压路径：" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <TextField id="mTFStaticWarUnPath" fx:id="mTFStaticWarUnPath" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Button id="mBTSelectStaticUnZIP" fx:id="mBTSelectStaticUnZIP" mnemonicParsing="false" onAction="#onAction" text="选择" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+
+
+                                        <!--暂时将十分删除 隐藏 掉-->
+                                        <Label text="是否删除：" visible="true" GridPane.columnIndex="0" GridPane.rowIndex="4" managed="false"   />
+                                        <!--暂时将十分删除 隐藏 掉-->
+                                        <HBox alignment="CENTER" visible="true" GridPane.columnIndex="1"     GridPane.rowIndex="4">
+                                            <children>
+                                                <RadioButton id="mRBUnDelete" fx:id="mRBUnDelete" mnemonicParsing="false" text="不删除" managed="false" visible="false" />
+                                                <RadioButton id="mRBDelete" fx:id="mRBDelete" mnemonicParsing="false" text="删除" managed="false" visible="false"/>
+                                            </children>
+                                        </HBox>
+
+                                    </children>
+                                </GridPane>
+                                <!--数据库地址配置布局-->
+                                <GridPane alignment="CENTER" gridLinesVisible="false" hgap="3.0" prefWidth="380" vgap="5.0" GridPane.hgrow="ALWAYS">
+
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" prefWidth="100" />
+                                        <ColumnConstraints prefWidth="200" />
+                                        <ColumnConstraints prefWidth="100" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
+                                    <VBox.margin>
+                                        <Insets top="5.0" />
+                                    </VBox.margin>
+                                    <children>
+                                        <Label alignment="CENTER" contentDisplay="CENTER" text="数据库配置：" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                        </Label>
+                                        <!--地址-->
+                                        <Label text="地址：" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="mTFDBAddress" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <!--数据库名-->
+                                        <Label text="数据库名：" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="mTFDBName" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <ChoiceBox fx:id="mDBChoiceBox" onAction="#onDBSelectAction" prefHeight="25.0" prefWidth="1.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <!--账号密码-->
+                                        <Label text="用户名：" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <TextField fx:id="mTFDBUserName" layoutX="82.0" layoutY="160.0" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                        <Label text="密码：" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                        <TextField fx:id="mTFDBPassword" prefHeight="25.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    </children>
+                                </GridPane>
+
+                                <GridPane alignment="CENTER" gridLinesVisible="false" hgap="3.0" prefWidth="380" vgap="5.0" GridPane.hgrow="ALWAYS">
+                                    <!--列宽度和对齐配置-->
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" prefWidth="100" />
+                                        <ColumnConstraints prefWidth="200" />
+                                        <ColumnConstraints prefWidth="100" />
+                                    </columnConstraints>
+                                    <!--行宽度和对齐配置-->
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
+                                    <VBox.margin>
+                                        <Insets top="5" />
+                                    </VBox.margin>
+
+                                    <children>
+                                        <Label text="资源文件路径：" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+
+                                        <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                                            <children>
+                                                <TextField id="mTFResourcePath" fx:id="mTFResourcePath" prefHeight="25.0" prefWidth="300.0" />
+                                                <Button fx:id="mBTSelectResource" mnemonicParsing="false" onAction="#onAction" text="选择">
+                                                    <HBox.margin>
+                                                        <Insets left="3" />
+                                                    </HBox.margin>
+                                                </Button>
+                                            </children>
+                                        </HBox>
+
+
+                                        <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="2">
+                                            <children>
+                                                <CheckBox fx:id="mCBPublishConfig" mnemonicParsing="false" text="publish.cfg.xml" />
+                                                <CheckBox fx:id="mCBStreamConfig" mnemonicParsing="false" text="stream-config.properties">
+                                                    <HBox.margin>
+                                                        <Insets left="5" />
+                                                    </HBox.margin>
+                                                </CheckBox>
+                                            </children>
+                                        </HBox>
+
+                                        <Label text="Tomcat端口：" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                            <children>
+                                                <TextField fx:id="mTFTomcatPort" prefHeight="25.0" prefWidth="63.0" text="8080" />
+                                                <Button fx:id="mBTStartTomcat" mnemonicParsing="false" onAction="#onAction" text="启动进程">
+                                                    <HBox.margin>
+                                                        <Insets left="3.0" />
+                                                    </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="mBTKillPort" mnemonicParsing="false" onAction="#onAction" text="结束进程">
+                                                    <HBox.margin>
+                                                        <Insets left="3.0" />
+                                                    </HBox.margin>
+                                                </Button>
+                                                <!--测试按钮-->
+                                                <Button fx:id="mBTTest" mnemonicParsing="false" onAction="#onTestAction" text="test">
+                                                    <HBox.margin>
+                                                        <Insets left="3.0" />
+                                                    </HBox.margin>
+                                                </Button>
+
+                                            </children>
+                                        </HBox>
+
+                                    </children>
+                                </GridPane>
+
+                                <GridPane gridLinesVisible="false" hgap="3.0" prefWidth="380" vgap="5.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" prefWidth="100" />
+                                        <ColumnConstraints prefWidth="200" />
+                                        <ColumnConstraints prefWidth="100" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints prefHeight="3" />
+                                    </rowConstraints>
+                                    <children>
+                                        <Label text="启动方式:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                            <children>
+                                                <RadioButton fx:id="mRBService" mnemonicParsing="false" text="服务" />
+                                                <RadioButton fx:id="mRBConsole" mnemonicParsing="false" text="控制台">
+                                                    <HBox.margin>
+                                                        <Insets left="5.0" />
+                                                    </HBox.margin>
+                                                </RadioButton>
+                                            </children>
+                                        </HBox>
+
+                                        <FlowPane prefHeight="3" prefWidth="380" style="-fx-background-color: #04ebff" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                                        </FlowPane>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets top="5.0" />
+                                    </VBox.margin>
+                                </GridPane>
+
+                                <GridPane hgap="3.0" prefWidth="380" vgap="5.0">
+                                    <VBox.margin>
+                                        <Insets top="10" />
+                                    </VBox.margin>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
+                                    <children>
+                                        <!--配置文件修改-->
+                                        <!--hgap 内部控件的间隔-->
+                                        <FlowPane fx:id="mFlowPaneCfgRoot" alignment="CENTER" hgap="5.0" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                                            <children>
+                                                <Button fx:id="mBTCmCfg" mnemonicParsing="false" onAction="#onEditAction" text="cm.cfg">
+                                                </Button>
+                                                <Button fx:id="mBTIntegrationCfg" mnemonicParsing="false" onAction="#onEditAction" text="integration.cfg" />
+                                                <Button fx:id="mBTPublishCfg" mnemonicParsing="false" onAction="#onEditAction" text="publish.cfg" />
+                                                <Button fx:id="mBTSpring" mnemonicParsing="false" onAction="#onEditAction" text="spring" />
+                                            </children>
+                                        </FlowPane>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </VBox>
+
+                        <GridPane alignment="BOTTOM_CENTER" gridLinesVisible="false" prefWidth="380.0" vgap="2.0" VBox.vgrow="SOMETIMES">
+                            <columnConstraints>
+                                <ColumnConstraints halignment="CENTER" prefWidth="200" />
+                                <ColumnConstraints prefWidth="200" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints valignment="CENTER" />
+                                <RowConstraints valignment="CENTER" />
+                                <RowConstraints valignment="CENTER" />
+                            </rowConstraints>
+                            <children>
+                                <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                                    <children>
+                                        <Button fx:id="mBTDownload" mnemonicParsing="false" onAction="#onDownloadAction" text="下载" />
+                                        <Button fx:id="mBTJenkinsBuild" mnemonicParsing="false" onAction="#onJenkinsAction" text="Jenkins打包" />
+                                        <Button fx:id="mBTDebug" mnemonicParsing="false" onAction="#onDebugAction" text="debug" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_RIGHT" spacing="2" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.rowSpan="1" GridPane.valignment="CENTER">
+                                    <children>
+                                        <Button fx:id="mBTStart" mnemonicParsing="false" onAction="#onAction" text="启动" />
+                                        <Button id="mBTUnZIP" fx:id="mBTDeployStart" mnemonicParsing="false" onAction="#onAction" text="一键部署" />
+                                    </children>
+
+                                </HBox>
+
+                                <HBox alignment="CENTER_LEFT" spacing="3" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                    <children>
+                                        <Label text="项目类型: " />
+                                        <Button fx:id="mBTDeployType" onAction="#onDeployTypeAction" text="部署类型选择" />
+                                        <Label text="设置: " />
+                                        <Button fx:id="mBTUploadConfig" onAction="#onUploadAction" text="上传组件配置" />
+
+                                    </children>
+                                </HBox>
+                            </children>
+                        </GridPane>
+
+                    </children>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                    </padding>
+                </VBox>
+
+                <TextArea fx:id="mTAConsole" prefWidth="380.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+                    <padding>
+                        <Insets bottom="4.0" />
+                    </padding>
+                    <GridPane.margin>
+                        <Insets right="3.0" />
+                    </GridPane.margin>
+                </TextArea>
+
+            </children>
+
+        </GridPane>
+
+    </children>
+</VBox>

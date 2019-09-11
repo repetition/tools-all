@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.JenkinsLoginController" >
+
+    <center>
+        <GridPane alignment="CENTER" vgap="3">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" />
+                <ColumnConstraints />
+                <ColumnConstraints halignment="CENTER" />
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+
+            <Label text="用户名：" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+            <TextField fx:id="mTFUser" promptText="请输入用户名" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="密码：" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="mTFPwd"  promptText="请输入密码" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <HBox alignment="CENTER" spacing="30.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                <children>
+                    <Button fx:id="mBTLogin" text="登录"  onAction="#onLoginAction"/>
+                    <Button fx:id="mBTCancel" text="取消" onAction="#onCancelAction"/>
+                </children>
+            <GridPane.margin>
+               <Insets top="20.0" />
+            </GridPane.margin>
+            </HBox>
+        </GridPane>
+
+    </center>
+</BorderPane>

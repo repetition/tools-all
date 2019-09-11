@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="511.0" prefWidth="275.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.ModuleListController">
+    <children>
+        <Button fx:id="mBTSelect" layoutX="66.0" layoutY="472.0" mnemonicParsing="false" onAction="#onAction" text="确定" />
+        <Button fx:id="mBTCancel" layoutX="146.0" layoutY="472.0" mnemonicParsing="false" onAction="#onAction" text="取消" />
+        <ListView fx:id="mModuleListView" layoutX="4.0" layoutY="31.0" orientation="VERTICAL" prefHeight="434.0" prefWidth="262.0" />
+        <TextField fx:id="mTFSearch" layoutX="4.0" layoutY="3.0" prefHeight="25.0" prefWidth="262.0" promptText="请输入搜索内容/支持拼音" />
+    </children>
+</AnchorPane>

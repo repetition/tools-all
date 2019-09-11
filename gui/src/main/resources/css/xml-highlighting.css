@@ -1,0 +1,35 @@
+.tagmark {
+    -fx-fill: #131480;
+}
+.anytag {
+    -fx-fill: #0000ff;
+    -fx-font-family: Consolas;
+}
+.paren {
+    -fx-fill: firebrick;
+    -fx-font-weight: bold;
+}
+.attribute {
+    -fx-fill: darkviolet;
+}
+.avalue {
+    -fx-fill: black;
+    -fx-font-family: Consolas;
+    -fx-font-weight: 300 ;
+}
+
+.comment {
+	-fx-fill: #008000;
+    -fx-font-family: Microsoft YaHei;
+}
+.CodeArea {
+    -fx-highlight-text-fill : #008000;
+    -fx-font-size: 13;
+    -fx-highlight-fill: #200b80;
+    -fx-display-caret:false;
+}
+
+.CodeArea  .context-menu {
+    visibility: Shown;
+}
+
