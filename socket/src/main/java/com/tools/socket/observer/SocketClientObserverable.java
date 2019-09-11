@@ -7,7 +7,6 @@ import java.util.List;
 
 public class SocketClientObserverable implements Observerable {
     private List<Process> processList = new ArrayList<>();
-    Object message;
     ChannelHandlerContext ctx;
     @Override
     public void registerProcess(Process process) {
@@ -27,7 +26,7 @@ public class SocketClientObserverable implements Observerable {
     }
 
     @Override
-    public void notifyProcess() {
+    public void notifyProcess(Object message) {
         for (Process process : processList) {
             process.process(message,ctx);
         }
@@ -45,8 +44,7 @@ public class SocketClientObserverable implements Observerable {
         notifyProcessState();
     }
     public void receive(Object message, ChannelHandlerContext ctx){
-        this.message = message;
         this.ctx = ctx;
-        notifyProcess();
+        notifyProcess(message);
     }
 }
