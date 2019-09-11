@@ -16,15 +16,16 @@ import java.io.*;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DeployProcess extends ProcessBase {
     private static final Logger log = LoggerFactory.getLogger(DeployProcess.class);
-    private List<CommandMethodEnum> commandMethodEnumList = new ArrayList<>();
+    private LinkedList<CommandMethodEnum> commandMethodEnumList = new LinkedList<>();
 
     @Override
     protected void processCommand(Command command, ChannelHandlerContext ctx) {
-        log.info(command.toString());
+        log.info(command.toString() + " , "+Thread.currentThread().getName());
         CommandMethodEnum commandMethodEnum = CommandMethodEnum.getEnum(command.getCommandCode());
         switch (commandMethodEnum) {
             case DEPLOY_INIT:
