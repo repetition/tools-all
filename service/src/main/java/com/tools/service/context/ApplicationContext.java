@@ -14,6 +14,10 @@ public class ApplicationContext {
        return deployConfigModel;
     }
 
+    public static void setDeployConfigModel(DeployConfigModel deployConfigModel) {
+        ApplicationContext.deployConfigModel = deployConfigModel;
+    }
+
     public static String getApplicationBasePath(){
 
         return System.getProperty("dir.base");

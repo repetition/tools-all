@@ -558,7 +558,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        propertyUtils = new PropertyUtils(System.getProperty("conf.path")+"/"+Config.CRConfigFileName);
+        propertyUtils = new PropertyUtils(ApplicationContext.getApplicationConfPath()+"/"+Config.CRConfigFileName);
         propertyUtils.getConfiguration2ReloadProperties();
         //  OutputStreamConsole console = new OutputStreamConsole(mTAConsole);
         // System.setOut(new PrintStream(console, true));

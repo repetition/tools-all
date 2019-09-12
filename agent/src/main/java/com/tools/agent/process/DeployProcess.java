@@ -27,8 +27,9 @@ public class DeployProcess extends ProcessBase {
         }
     }
     private void deploy(Command command, ChannelHandlerContext ctx) {
+        //保存设置
+        ApplicationContext.setDeployConfigModel((DeployConfigModel) command.getContent());
         DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
-        deployConfigModel = (DeployConfigModel) command.getContent();
 
         //获取当前部署的任务
         Map<String, Boolean> deployModeSelectorMap = deployConfigModel.getDeployModeSelectorMap();

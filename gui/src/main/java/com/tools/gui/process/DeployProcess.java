@@ -61,7 +61,7 @@ public class DeployProcess extends ProcessBase {
         }
         if (fileUpload.getState() == FileUpload.FAIL) {
             DeployState deployState = new DeployState();
-            deployState.setE(CommandMethodEnum.valueOf(fileUpload.getFileType()).getDesc() + "失败!");
+            deployState.setE(CommandMethodEnum.valueOf(fileUpload.getFileType()).getDesc() + "失败!" + "\r\n" + fileUpload.getDesc());
             onDeployProcessorListener.onDeployProcessFail(deployState);
         }
     }
@@ -99,8 +99,12 @@ public class DeployProcess extends ProcessBase {
         }
         commandMethodEnumList.add(CommandMethodEnum.getEnum(command.getCommandCode()));
         FileUpload fileUpload = createFileUpload(warPath, warFlag, command);
-        File file = fileUpload.getFile();
 
+        if (fileUpload == null) {
+            return;
+        }
+
+        File file = fileUpload.getFile();
         try {
             RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
             randomAccessFile.seek(fileUpload.getStarPos());
@@ -151,7 +155,10 @@ public class DeployProcess extends ProcessBase {
             e.printStackTrace();
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
-            fileUpload.setState(FileUpload.FAIL).setFileType(command.getCommandMethod()).setDesc(stringWriter.toString());
+            DeployState deployState = new DeployState();
+            deployState.setE(CommandMethodEnum.valueOf(command.getCommandMethod()).getDesc() + "\r\n" +stringWriter.toString());
+            onDeployProcessorListener.onDeployProcessFail(deployState);
+            fileUpload = null;
         } finally {
             IOUtils.close(fis);
         }

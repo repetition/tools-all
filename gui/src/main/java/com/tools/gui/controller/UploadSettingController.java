@@ -2,6 +2,7 @@ package com.tools.gui.controller;
 
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.gui.config.Config;
+import com.tools.service.context.ApplicationContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -37,7 +38,7 @@ public class UploadSettingController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        propertyUtils = new PropertyUtils(Config.CRConfigFileName);
+        propertyUtils = new PropertyUtils(ApplicationContext.getApplicationConfPath()+"/"+Config.CRConfigFileName);
         propertyUtils.getConfiguration2Properties();
 
         mTFUploadWarPath.setText(propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
