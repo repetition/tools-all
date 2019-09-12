@@ -25,7 +25,7 @@ public class DeployProcess extends ProcessBase {
 
     @Override
     protected void processCommand(Command command, ChannelHandlerContext ctx) {
-        log.info(command.toString() + " , "+Thread.currentThread().getName());
+        log.info(command.toString() + " , " + Thread.currentThread().getName());
         CommandMethodEnum commandMethodEnum = CommandMethodEnum.getEnum(command.getCommandCode());
         switch (commandMethodEnum) {
             case DEPLOY_INIT:
@@ -38,6 +38,24 @@ public class DeployProcess extends ProcessBase {
                 break;
             case SYNC_UPLOAD_WAR:
                 syncUploadWar(command, ctx);
+                break;
+            case SYNC_CR_CONFIG:
+                // TODO: 2019/9/12 暂未实现
+                log.warn("SYNC_CR_CONFIG 功能暂未实现");
+                break;
+
+            case DEPLOY_START_PROGRESS:
+                if (command.getContent() instanceof DeployState) {
+                    onDeployProcessorListener.onDeployProcessSuccess((DeployState) command.getContent());
+                }
+                break;
+            case DEPLOY_START_FAIL:
+                if (command.getContent() instanceof DeployState) {
+                    onDeployProcessorListener.onDeployProcessFail((DeployState) command.getContent());
+                }
+                break;
+            case DEPLOY_END:
+                onDeployProcessorListener.onDeployProcessorEnd();
                 break;
         }
     }
@@ -149,14 +167,14 @@ public class DeployProcess extends ProcessBase {
             LocalTime now = LocalTime.now();
             String md5Hex = DigestUtils.md5Hex(fis);
             long millis = Duration.between(now, LocalTime.now()).toMillis();
-            log.info(millis+"ms");
+            log.info(millis + "ms");
             fileUpload.setFile_md5(md5Hex);
         } catch (Exception e) {
             e.printStackTrace();
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
             DeployState deployState = new DeployState();
-            deployState.setE(CommandMethodEnum.valueOf(command.getCommandMethod()).getDesc() + "\r\n" +stringWriter.toString());
+            deployState.setE(CommandMethodEnum.valueOf(command.getCommandMethod()).getDesc() + "\r\n" + stringWriter.toString());
             onDeployProcessorListener.onDeployProcessFail(deployState);
             fileUpload = null;
         } finally {

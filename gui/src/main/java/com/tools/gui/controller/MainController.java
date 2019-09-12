@@ -1,8 +1,6 @@
 package com.tools.gui.controller;
 
-import com.google.gson.Gson;
 import com.tools.commons.thread.ThreadPoolManager;
-import com.tools.commons.utils.GsonUtils;
 import com.tools.commons.utils.MySqlHelper;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.Utils;
@@ -22,10 +20,6 @@ import com.tools.service.constant.TaskEnum;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.service.model.DeployState;
-import com.tools.service.service.deploy.runnable.DeployModeSelectorProcessorRunnable;
-import com.tools.service.service.deploy.runnable.DeployModeSelectorServerControlRunnable;
-import com.tools.service.service.deploy.runnable.DeployProcessorRunnable;
-import com.tools.service.service.deploy.runnable.DeployServerControlRunnable;
 import com.tools.socket.bean.Command;
 import com.tools.socket.client.SocketClient;
 import com.tools.socket.manager.SocketManager;
@@ -41,7 +35,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -205,10 +198,6 @@ public class MainController {
     private PropertyUtils propertyUtils;
     private JenkinsLoginController jenkinsLoginController;
     private String type;
-    private DeployProcessorRunnable deployProcessorRunnable;
-    private DeployServerControlRunnable deployServerControlRunnable;
-    private DeployModeSelectorProcessorRunnable deployModeSelectorProcessorRunnable;
-    private DeployModeSelectorServerControlRunnable deployModeSelectorServerControlRunnable;
     private DeployProcess deployProcess;
 
     /**
@@ -417,7 +406,6 @@ public class MainController {
                     e.printStackTrace();
                 }
             }else {
-                ThreadPoolManager.getInstance().execute(deployProcessorRunnable);
             }
 
             //执行部署
@@ -464,7 +452,7 @@ public class MainController {
                             // TODO: 2019/9/5 添加启动代码
                             ApplicationContext.getDeployConfigModel().setDeployModeSelectorMap(map);
 
-                            ThreadPoolManager.getInstance().execute(deployModeSelectorServerControlRunnable);
+                           // ThreadPoolManager.getInstance().execute(deployModeSelectorServerControlRunnable);
                         }
                         if (param == ButtonType.CANCEL) {
                             //不执行任何操作
@@ -477,7 +465,7 @@ public class MainController {
                     e.printStackTrace();
                 }
             }else {
-                ThreadPoolManager.getInstance().execute(deployServerControlRunnable);
+              //  ThreadPoolManager.getInstance().execute(deployServerControlRunnable);
             }
 
 
@@ -1760,7 +1748,7 @@ public class MainController {
 
     }
 
-    class ServerControlListener implements DeployServerControlRunnable.OnServerControlListener{
+    class ServerControlListener implements ProcessBase.OnServerControlListener {
 
         @Override
         public void onServerStart() {

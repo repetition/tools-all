@@ -1,8 +1,12 @@
 package com.tools.agent.process;
 
+import com.tools.agent.process.listener.OnDeployProcessorListener;
+import com.tools.commons.thread.ThreadPoolManager;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
+import com.tools.service.service.deploy.runnable.DeployModeSelectorProcessorRunnable;
 import com.tools.socket.bean.Command;
+import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +27,36 @@ public class DeployProcess extends ProcessBase {
             case DEPLOY_START:
                 log.info(command.toString());
                 log.info("部署开始....");
+                DeployModeSelectorProcessorRunnable runnable = new DeployModeSelectorProcessorRunnable();
+                runnable.setOnDeployProcessorListener(new OnDeployProcessorListener(ctx));
+                ThreadPoolManager.getInstance().execute(runnable);
                 break;
         }
     }
+
+    @Override
+    protected void processFileUpload(FileUpload fileUpload, ChannelHandlerContext ctx) {
+
+        DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
+        CommandMethodEnum commandMethodEnum = CommandMethodEnum.valueOf(fileUpload.getFileType());
+
+        if (fileUpload.getAgentFile() == null) {
+            return;
+        }
+        //重新设置war包的路径
+        switch (commandMethodEnum){
+            case SYNC_CM_WAR:
+                deployConfigModel.getCmDeployConfigMap().put("cmWarPath",fileUpload.getAgentFile().getAbsolutePath());
+                break;
+            case SYNC_ZYFL_WAR:
+                deployConfigModel.getZyflDeployConfigMap().put("zyflWarPath",fileUpload.getAgentFile().getAbsolutePath());
+                break;
+            case SYNC_UPLOAD_WAR:
+                deployConfigModel.getUploadDeployConfigMap().put("uploadWarPath",fileUpload.getAgentFile().getAbsolutePath());
+                break;
+        }
+    }
+
     private void deploy(Command command, ChannelHandlerContext ctx) {
         //保存设置
         ApplicationContext.setDeployConfigModel((DeployConfigModel) command.getContent());
@@ -62,9 +93,12 @@ public class DeployProcess extends ProcessBase {
             syncWarCommand.setCommandCode(CommandMethodEnum.SYNC_UPLOAD_WAR.getCode());
             ctx.channel().writeAndFlush(syncWarCommand);
         }
-/*
-        DeployModeSelectorProcessorRunnable runnable = new DeployModeSelectorProcessorRunnable();
-        //执行部署
-        ThreadPoolManager.getInstance().execute(runnable);*/
+
+        if (isApache_config) {
+            Command syncWarCommand = new Command();
+            syncWarCommand.setCommandMethod(CommandMethodEnum.SYNC_APACHE_CONFIG.toString());
+            syncWarCommand.setCommandCode(CommandMethodEnum.SYNC_APACHE_CONFIG.getCode());
+            ctx.channel().writeAndFlush(syncWarCommand);
+        }
     }
 }

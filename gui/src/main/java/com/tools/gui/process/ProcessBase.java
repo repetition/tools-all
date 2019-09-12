@@ -117,4 +117,22 @@ public abstract class ProcessBase implements Process {
         void onDeployProcessFail(DeployState deployState);
 
     }
+
+    private OnServerControlListener onServerControlListener;
+
+    public void setOnServerControlListener(OnServerControlListener onServerControlListener) {
+        this.onServerControlListener = onServerControlListener;
+    }
+
+    public interface OnServerControlListener {
+        void onServerStart();
+
+        void onServerStarted(DeployState deployState);
+
+        void onServerStoping();
+
+        void onServerStoped(DeployState deployState);
+
+        void onServerFail(DeployState deployState);
+    }
 }

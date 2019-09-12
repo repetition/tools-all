@@ -11,7 +11,11 @@ public enum CommandMethodEnum {
     SYNC_DEPLOY_CONFIG("同步部署时配置",2004),
     //部署指令
     DEPLOY_INIT("部署准备",1000),
-    DEPLOY_START("开始部署",1001);
+    DEPLOY_START("开始部署",1001),
+    //进度指令
+    DEPLOY_START_PROGRESS("部署中进度",1002),
+    DEPLOY_START_FAIL("部署失败",1003),
+    DEPLOY_END("部署结束",1004);
 
     private String desc;
     private int code;

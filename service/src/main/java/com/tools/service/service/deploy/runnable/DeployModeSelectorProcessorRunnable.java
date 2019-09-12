@@ -59,7 +59,7 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
         Boolean isApache_config = deployModeSelectorMap.get("apache_config");
 
 
-        if (isZyfl) {
+   /*     if (isZyfl) {
 
             deployStatusModel = apacheDeployServiceImpl.deleteFiles();
             if (!deployStatusModel.status()) {
@@ -164,15 +164,50 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
             }
             uploadTomcatDeployServiceImpl.configModifying();
         }
-
+*/
+        deployState.setState(true).setInfo("UPLOAD_TOMCAT 文件解压成功!").setTaskEnum(TaskEnum.UPLOAD_TOMCAT);
+        onDeployProcessorListener.onDeployProcessSuccess(deployState);
+        onDeployProcessorListener.onDeployProcessFail(deployState.setE("部署失败!"));
         onDeployProcessorListener.onDeployProcessorEnd();
     }
 
-    private DeployProcessorRunnable.OnDeployProcessorListener onDeployProcessorListener;
+    private OnDeployProcessorListener onDeployProcessorListener;
 
-
-    public void setOnDeployProcessorListener(DeployProcessorRunnable.OnDeployProcessorListener onDeployProcessorListener) {
+    public void setOnDeployProcessorListener(OnDeployProcessorListener onDeployProcessorListener) {
         this.onDeployProcessorListener = onDeployProcessorListener;
     }
 
+
+    public interface OnDeployProcessorListener {
+        /**
+         * 部署开始之前,进行初始化操作
+         */
+        void onDeployInit();
+
+        /**
+         * 部署开始
+         */
+        void onDeployProcessorStart();
+
+        /**
+         * 部署结束
+         */
+        void onDeployProcessorEnd();
+
+        /**
+         * 分阶段部署成功
+         *
+         * @param deployState 部署的详细信息
+         */
+        void onDeployProcessSuccess(DeployState deployState);
+
+
+        /**
+         * 部署失败
+         *
+         * @param deployState 失败的详细信息
+         */
+        void onDeployProcessFail(DeployState deployState);
+
+    }
 }

@@ -2,7 +2,10 @@ package com.tools.service.model;
 
 import com.tools.service.constant.TaskEnum;
 
-public class DeployState{
+import java.io.Serializable;
+
+public class DeployState implements Serializable {
+    private static final long serialVersionUID = 6L;
 
         private TaskEnum taskEnum;
         private String e;

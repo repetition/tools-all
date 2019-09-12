@@ -12,6 +12,8 @@ public class FileUpload implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private File file;// 文件
+    private File agentFile;// 文件
+
     private String file_md5;// 文件md5
     private String fileName;// 文件名
     private String fileType; //文件类型
@@ -25,6 +27,15 @@ public class FileUpload implements Serializable {
     private byte[] bytes;// 文件字节数组
     private long endPos;// 结尾位置
     private long fileLength;
+
+    public File getAgentFile() {
+        return agentFile;
+    }
+
+    public FileUpload setAgentFile(File agentFile) {
+        this.agentFile = agentFile;
+        return this;
+    }
 
     public int getState() {
         return state;

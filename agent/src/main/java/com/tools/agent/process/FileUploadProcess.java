@@ -1,5 +1,7 @@
 package com.tools.agent.process;
 
+import com.tools.service.context.ApplicationContext;
+import com.tools.service.model.DeployConfigModel;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,6 +46,7 @@ public class FileUploadProcess extends ProcessBase {
         try {
             if (!file.exists()) {
                 file.createNewFile();
+                fileUpload.setAgentFile(file);
             }
             randomAccessFile = new RandomAccessFile(file, "rw");
             //移动到指定位置
