@@ -3,13 +3,14 @@ package com.tools.agent.process;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 
 public class FileUploadProcess extends ProcessBase {
+    private static final Logger log = LoggerFactory.getLogger(FileUploadProcess.class);
 
     @Override
     public void processFileUpload(FileUpload fileUpload, ChannelHandlerContext ctx) {
@@ -54,7 +55,17 @@ public class FileUploadProcess extends ProcessBase {
             fileUpload.setBytes(null);
             //判断文件是否传输完毕
             if (randomAccessFile.length() == fileUpload.getFileLength()) {
-                fileUpload.setState(FileUpload.SUCCESS);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                String md5Hex = DigestUtils.md5Hex(fileInputStream);
+                fileInputStream.close();
+                log.info(fileUpload.getFileName() + " md5 : " + fileUpload.getFile_md5() + "  , downloadFile md5 :" + md5Hex);
+                if (fileUpload.getFile_md5().equals(md5Hex)) {
+                    fileUpload.setState(FileUpload.SUCCESS);
+                }else {
+                    fileUpload.setDesc(fileUpload.getFile_md5() +" : " +md5Hex + " , " +fileUpload.getFileName() +" 文件校验不通过!");
+                    fileUpload.setState(FileUpload.FAIL);
+                }
+
             } else {
                 //没有传输完毕,就断点续传
                 fileUpload.setState(FileUpload.BREAKPOINT);
