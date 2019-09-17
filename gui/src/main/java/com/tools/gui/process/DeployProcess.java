@@ -39,10 +39,6 @@ public class DeployProcess extends ProcessBase {
             case SYNC_UPLOAD_WAR:
                 syncUploadWar(command, ctx);
                 break;
-            case SYNC_CR_CONFIG:
-                // TODO: 2019/9/12 暂未实现
-                log.warn("SYNC_CR_CONFIG 功能暂未实现");
-                break;
 
             case DEPLOY_START_PROGRESS:
                 if (command.getContent() instanceof DeployState) {

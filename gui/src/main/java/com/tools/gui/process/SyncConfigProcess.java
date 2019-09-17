@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * 获取agent已有配置的处理类
+ */
 public class SyncConfigProcess extends ProcessBase {
 
     @Override
@@ -54,8 +57,6 @@ public class SyncConfigProcess extends ProcessBase {
                     propertyUtils.setConfigurationProperty(entry.getKey(),entry.getValue());
                 }
                 break;
-
-
         }
 
     }

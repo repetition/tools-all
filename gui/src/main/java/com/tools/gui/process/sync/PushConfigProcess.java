@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * 推送配置
+ * 将配置推送给指定的部署工具处理类
  */
 public class PushConfigProcess extends ProcessServerBase {
 

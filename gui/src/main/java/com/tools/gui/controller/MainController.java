@@ -13,6 +13,7 @@ import com.tools.gui.process.sync.PushConfigProcess;
 import com.tools.gui.utils.view.AlertUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.ProgressUtils;
+import com.tools.gui.utils.view.RestartUtils;
 import com.tools.service.constant.DeployTypeEnum;
 import com.tools.service.constant.ServerStartTypeEnum;
 import com.tools.service.constant.TaskEnum;
@@ -1105,26 +1106,21 @@ public class MainController {
 
         //切换到windows菜单
         if (actionEvent.getSource() == mMenuItemWindows) {
-            Dialog<Button> dialog = new Dialog<>();
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/deploy_platform_dialog.fxml"));
                 VBox vBox = fxmlLoader.load();
-                dialog.getDialogPane().setContent(vBox);
 
-                // Popup popup = new Popup();
-                // popup.getContent().add(vBox);
-                dialog.initOwner(stage);
+                Stage stage = new Stage();
+                Scene scene = new Scene(vBox,300,200);
+                stage.setScene(scene);
+                stage.initOwner(this.stage);
 
-                dialog.initModality(Modality.APPLICATION_MODAL);
-                dialog.setTitle("切换到Windows");
-                dialog.getDialogPane().setContent(vBox);
-                dialog.setWidth(300);
-                dialog.setHeight(200);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setTitle("切换到Windows");
                 //   dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
                 Button mBTPullConfig = (Button) vBox.lookup("#mBTPullConfig");
                 TextField mTFAgentAddress = (TextField) vBox.lookup("#mTFAgentAddress");
                 Button mBTSwitch = (Button) vBox.lookup("#mBTSwitch");
-                dialog.setResult(mBTSwitch);
                 mBTSwitch.setOnAction(event -> {
                     String addressText = mTFAgentAddress.getText();
                     SocketManager.getSocketClient().setHost(addressText)
@@ -1134,7 +1130,7 @@ public class MainController {
 
                 mBTPullConfig.setOnAction(event -> {
                     Command command = new Command();
-                    command.setCommandCode(CommandMethodEnum.SET_CR_CONFIG.getCode());
+                    command.setCommandCode(CommandMethodEnum.SYNC_CR_CONFIG.getCode());
                     deployProcess.sendMessage(command);
                 });
                 SocketManager.getSocketClient().setOnConnectedListener(new SocketClient.OnConnectedListener() {
@@ -1156,6 +1152,13 @@ public class MainController {
                     @Override
                     public void onSyncComplete() {
                         JFXSnackbarUtils.show("同步成功", 2000L, vBox);
+                        AlertUtils.showCallBackAlert("重启应用","更新配置完成,重启后生效,是否重启应用?","更新配置完成,重启后生效,是否重启应用?", param -> {
+                            if (param == ButtonType.OK) {
+                                RestartUtils.restart();
+                            }
+                            return param;
+                        });
+
                     }
 
                     @Override
@@ -1164,7 +1167,7 @@ public class MainController {
                     }
                 });
 
-                dialog.show();
+                stage.show();
                 //  popup.show(stage);
             } catch (IOException e) {
                 e.printStackTrace();

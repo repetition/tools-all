@@ -32,6 +32,11 @@ public class SyncConfigProcess extends ProcessBase {
 
     }
 
+    /**
+     * 保存回传的配置
+     * @param command 指令
+     * @param ctx  tcp连接
+     */
     private void setCRConfig(Command command, ChannelHandlerContext ctx) {
         Map<String,String> map = (Map<String, String>) command.getContent();
         String confPath = ApplicationContext.getApplicationConfPath();
@@ -44,6 +49,11 @@ public class SyncConfigProcess extends ProcessBase {
         ctx.channel().writeAndFlush(command);
     }
 
+    /**
+     * 将本地的配置回传
+     * @param command 指令
+     * @param ctx  tcp连接
+     */
     private void syncCRConfig(Command command, ChannelHandlerContext ctx) {
         String confPath = ApplicationContext.getApplicationConfPath();
 
@@ -56,6 +66,8 @@ public class SyncConfigProcess extends ProcessBase {
         if (!keys.hasNext()) {
             command.setCommandCode(CommandMethodEnum.SET_CR_CONFIG.getCode());
             command.setCommandMethod(CommandMethodEnum.SET_CR_CONFIG.toString());
+            ctx.channel().writeAndFlush(command);
+            return;
         }
         while (keys.hasNext()) {
             String key = keys.next();

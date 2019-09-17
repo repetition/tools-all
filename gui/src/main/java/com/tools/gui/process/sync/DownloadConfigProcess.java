@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.Map;
 
 /**
- * 下载配置
+ * 从指定的部署工具下载配置处理器
  */
 public class DownloadConfigProcess extends ProcessClientBase {
 
@@ -24,6 +24,11 @@ public class DownloadConfigProcess extends ProcessClientBase {
         }
     }
 
+    /**
+     * 保存从服务器获取的配置
+     * @param command
+     * @param ctx
+     */
     private void saveConfig(Command command, ChannelHandlerContext ctx) {
 
         Object content = command.getContent();
