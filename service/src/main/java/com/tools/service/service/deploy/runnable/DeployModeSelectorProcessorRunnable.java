@@ -59,7 +59,7 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
         Boolean isApache_config = deployModeSelectorMap.get("apache_config");
 
 
-   /*     if (isZyfl) {
+        if (isZyfl) {
 
             deployStatusModel = apacheDeployServiceImpl.deleteFiles();
             if (!deployStatusModel.status()) {
@@ -164,10 +164,6 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
             }
             uploadTomcatDeployServiceImpl.configModifying();
         }
-*/
-        deployState.setState(true).setInfo("UPLOAD_TOMCAT 文件解压成功!").setTaskEnum(TaskEnum.UPLOAD_TOMCAT);
-        onDeployProcessorListener.onDeployProcessSuccess(deployState);
-        onDeployProcessorListener.onDeployProcessFail(deployState.setE("部署失败!"));
         onDeployProcessorListener.onDeployProcessorEnd();
     }
 

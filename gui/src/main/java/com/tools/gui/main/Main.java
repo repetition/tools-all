@@ -176,8 +176,8 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         // TODO: 2019/8/20 制作成exe后,使用计划任务启动时,user.dir路径不准确需要改成 install4j.exeDir
-        //String rootPath = System.getProperty("user.dir");
-        String rootPath = System.getProperty("install4j.exeDir");
+        String rootPath = System.getProperty("user.dir");
+       // String rootPath = System.getProperty("install4j.exeDir");
 
 
 /*        System.setProperty("dir.base", rootPath);

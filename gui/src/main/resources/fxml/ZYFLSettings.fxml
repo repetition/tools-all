@@ -10,14 +10,16 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane gridLinesVisible="true" prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.ZYFLSettingController">
+<GridPane fx:id="mGridPaneRoot" gridLinesVisible="true" prefHeight="700.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.ZYFLSettingController">
 
 
     <columnConstraints>
-        <ColumnConstraints halignment="CENTER" prefWidth="350" />
-        <ColumnConstraints prefWidth="350" />
-        <ColumnConstraints prefWidth="350" />
-        <ColumnConstraints prefWidth="350" />
+        <ColumnConstraints halignment="CENTER" prefWidth="320" />
+        <ColumnConstraints prefWidth="320" />
+        <ColumnConstraints prefWidth="320" />
+        <ColumnConstraints prefWidth="320" />
+        <ColumnConstraints prefWidth="320" />
+
     </columnConstraints>
 
     <rowConstraints>
@@ -28,9 +30,9 @@
         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
             <children>
                 <Label fx:id="mLabel" text="普通项目Apache配置" VBox.vgrow="ALWAYS">
-               <padding>
-                  <Insets bottom="5" left="10" right="10" top="10.0" />
-               </padding>
+                    <padding>
+                        <Insets bottom="5" left="10" right="10" top="10.0" />
+                    </padding>
                 </Label>
                 <TextArea fx:id="mTAEdit" editable="true" VBox.vgrow="ALWAYS" />
             </children>
@@ -46,7 +48,20 @@
                 <TextArea fx:id="mTAZYFLEdit" editable="true" VBox.vgrow="ALWAYS" />
             </children>
         </VBox>
+
+
         <VBox alignment="CENTER" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+            <children>
+                <Label fx:id="mLabelUpload1Tomcat" text="上传组件(单tomcat)Apache配置">
+                    <padding>
+                        <Insets bottom="5" left="10" right="10" top="10.0" />
+                    </padding>
+                </Label>
+                <TextArea fx:id="mTAUpload1TomcatEdit" editable="true" VBox.vgrow="ALWAYS" />
+            </children>
+        </VBox>
+
+        <VBox alignment="CENTER" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
             <children>
                 <Label fx:id="mLabelUpload" text="上传组件Apache配置">
                     <padding>
@@ -57,7 +72,7 @@
             </children>
         </VBox>
 
-        <VBox alignment="CENTER" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+        <VBox alignment="CENTER"  GridPane.columnIndex="4" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
             <children>
                 <Label fx:id="mLabelUploadIPM" text="上传组件(IPM)Apache配置">
                     <padding>

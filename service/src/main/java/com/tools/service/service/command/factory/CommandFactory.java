@@ -9,7 +9,7 @@ public class CommandFactory {
     public static ICommand getCommand() {
 
         ICommand command = null;
-        String osName = System.getProperty("os.name");
+        String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("windows")) {
             command = new WindowsCommandImpl();
         }

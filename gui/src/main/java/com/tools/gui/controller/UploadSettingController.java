@@ -32,6 +32,7 @@ public class UploadSettingController implements Initializable {
     public Button mBTSave;
     public Button mBTCancel;
     public TextField mTFUploadTomcatServiceName;
+    public TextField mTFComProjectName;
     private Stage stage;
     private PropertyUtils propertyUtils;
 
@@ -44,6 +45,8 @@ public class UploadSettingController implements Initializable {
         mTFUploadWarPath.setText(propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
         mTFUploadUnWarPath.setText(propertyUtils.getConfigurationPropertyStringByKey("upload.exportWar.path"));
         mTFUploadTomcatPort.setText(propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
+        mTFComProjectName.setText(propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.project.name"));
+
         mTFCMServerIp.setText(propertyUtils.getConfigurationPropertyStringByKey("cm.server.ip"));
         mTFApacheServerIp.setText(propertyUtils.getConfigurationPropertyStringByKey("apache.server.ip"));
         mTFUploadTomcatServiceName.setText(propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.serviceName"));
@@ -110,6 +113,7 @@ public class UploadSettingController implements Initializable {
             propertyUtils.setConfigurationProperty("cm.server.ip",mTFCMServerIp.getText());
             propertyUtils.setConfigurationProperty("apache.server.ip",mTFApacheServerIp.getText());
             propertyUtils.setConfigurationProperty("upload.tomcat.serviceName",mTFUploadTomcatServiceName.getText());
+            propertyUtils.setConfigurationProperty("upload.tomcat.project.name",mTFComProjectName.getText());
             stage.close();
         }
         if (actionEvent.getSource()==mBTCancel) {

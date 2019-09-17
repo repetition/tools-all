@@ -20,6 +20,7 @@
         <RowConstraints />
         <RowConstraints />
         <RowConstraints />
+        <RowConstraints />
     </rowConstraints>
 
     <columnConstraints>
@@ -60,11 +61,13 @@
         <TextField fx:id="mTFApacheServerIp" promptText="请输入Apache部署机IP" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
         <Label text="CM部署机IP:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-        <TextField fx:id="mTFCMServerIp" promptText="请输入路径" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        <TextField fx:id="mTFCMServerIp" promptText="请输入ip" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+        <Label text="组件项目名:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <TextField fx:id="mTFComProjectName" promptText="请输入名字" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
 
-
-        <HBox GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2" spacing="5" alignment="CENTER">
+        <HBox GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2" spacing="5" alignment="CENTER">
             <children>
                 <Button fx:id="mBTSave" text="保存" onAction="#onAction"/>
                 <Button fx:id="mBTCancel" text="取消" onAction="#onAction"/>

@@ -42,6 +42,8 @@ public class DeployConfigModel implements Serializable {
 
     private String httpdUploadChangedPath;
 
+    private String httpdUpload1TomcatChangedPath;
+
     private String httpdIPMChangedPath;
 
     private String workersOldChangedPath;
@@ -152,6 +154,14 @@ public class DeployConfigModel implements Serializable {
         return deployModeSelectorMap;
     }
 
+    public String getHttpdUpload1TomcatChangedPath() {
+        return httpdUpload1TomcatChangedPath;
+    }
+
+    public DeployConfigModel setHttpdUpload1TomcatChangedPath(String httpdUpload1TomcatChangedPath) {
+        this.httpdUpload1TomcatChangedPath = httpdUpload1TomcatChangedPath;
+        return this;
+    }
     @Override
     public String toString() {
         return "DeployConfigModel{" +

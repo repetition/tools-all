@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -162,6 +163,11 @@ public class PropertyUtils {
         FileInputStream fileInputStream = null;
         InputStreamReader inputStreamReader = null;
         try {
+
+            if (!mPropertiesFile.exists()) {
+                mPropertiesFile.createNewFile();
+            }
+
             fileInputStream = new FileInputStream(mPropertiesFile);
             //监测文件编码格式
             String encode = EncodeUtil.getEncode(mPropertiesFile.getAbsolutePath(), true);
@@ -269,6 +275,11 @@ public class PropertyUtils {
         }
         String value = mPropertiesConfiguration.getString(key);
         return value;
+    }
+
+    public Iterator<String> getConfigurationPropertyKeys() {
+        Iterator<String> keys = mPropertiesConfiguration.getKeys();
+        return keys;
     }
 
     public  Boolean getConfigurationPropertyBooleanByKey(String key) {

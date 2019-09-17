@@ -1,6 +1,7 @@
 package com.tools.service.service.deploy.impl;
 
 import com.tools.commons.utils.PropertyUtils;
+import com.tools.service.constant.DeployTypeEnum;
 import com.tools.service.constant.ServiceStateEnum;
 import com.tools.service.model.CommandModel;
 import com.tools.service.model.DeployConfigModel;
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,22 +34,69 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
     @Override
     public void clearCacheForTomcat() {
         log.info("清除Tomcat缓存...");
-        String cmTomcatCachePath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatCachePath");
-        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(cmTomcatCachePath);
+        String uploadTomcatCachePath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatCachePath");
+        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(uploadTomcatCachePath);
     }
 
     @Override
     public DeployStatusModel deleteOldFile() {
         log.info("正在删除Tomcat旧ROOT包...");
 
-        String cmTomcatRootPath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatExportPath");
-        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(cmTomcatRootPath);
+        String projectName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatProjectName");
+        String uploadWarPath = deployConfigModel.getUploadDeployConfigMap().get("uploadWarPath");
+        String uploadTomcatExportPath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatExportPath");
+        String cmTomcatExportPath = deployConfigModel.getCmDeployConfigMap().get("cmTomcatExportPath");
+
+        DeployTypeEnum deployTypeEnum = deployConfigModel.getDeployTypeEnum();
+        CommandModel commandModel = null;
+        File[] listFiles = null;
+        switch (deployTypeEnum) {
+            //单tomcat处理
+            case DEPLOY_UPLOAD2CM_1TOMCAT:
+                String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
+                commandModel = deployProcessorServiceImpl.deleteOldFiles(absolutePath + "\\" + projectName);
+                break;
+            default:
+                commandModel = deployProcessorServiceImpl.deleteOldFiles(uploadTomcatExportPath);
+                //删除单tomcat的上传组件旧文件.过滤的文件夹
+                String filter = "ROOT,hhrw";
+                String[] filters = filter.split(",");
+
+                List<String> filterList;
+                filterList = Arrays.asList(filters);
+                File file = new File(cmTomcatExportPath);
+                //过滤一部分文件
+                listFiles = file.getParentFile().listFiles(pathname -> {
+      /*      //将res目录过滤掉
+            if (pathname.getName().equals("res")) {
+                return false;
+            }*/
+                    //过滤文件
+                    if (filterList.contains(pathname.getName())) {
+                        return false;
+                    }
+                    //过滤文件
+                    if (!pathname.isDirectory()) {
+                        return false;
+                    }
+                    return true;
+                });
+                for (File listFile : listFiles) {
+                    log.info(listFile.getAbsolutePath());
+                }
+        }
+
+        log.info(listFiles == null ? "null" : Arrays.toString(listFiles));
+        //判断单tomcat部署后 切换到其模式部署时,要把遗留的上传组件包删除
+        if (null != listFiles&&listFiles.length != 0) {
+            for (File listFile : listFiles) {
+                deployProcessorServiceImpl.deleteOldFiles(listFile.getAbsolutePath());
+            }
+        }
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();
-
         Object excState = commandModel.getProcessExcState();
-
-        if (excState instanceof  Boolean) {
+        if (excState instanceof Boolean) {
             deployStatusModel.setDeployInfo(commandModel.getProcessOutputInfo());
             deployStatusModel.setStatus((Boolean) excState);
             deployStatusModel.setTime(deployStatusModel.getTime());
@@ -59,8 +109,8 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
     public DeployStatusModel startTomcatForConsole() {
         log.info("正在以控制台启动Tomcat...");
 
-        String cmTomcatStartUpPath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatStartUpPath");
-        CommandModel commandModel = serverControlServiceImpl.startServerForCommand(cmTomcatStartUpPath);
+        String uploadTomcatStartUpPath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatStartUpPath");
+        CommandModel commandModel = serverControlServiceImpl.startServerForCommand(uploadTomcatStartUpPath);
 
         Object processExcState = commandModel.getProcessExcState();
         DeployStatusModel deployStatusModel = new DeployStatusModel();
@@ -78,8 +128,8 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
     public DeployStatusModel startTomcatForService() {
         log.info("正在以服务启动Tomcat...");
 
-        String cmTomcatServiceName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatServiceName");
-        CommandModel commandModel = serverControlServiceImpl.startServerForService(cmTomcatServiceName);
+        String uploadTomcatServiceName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatServiceName");
+        CommandModel commandModel = serverControlServiceImpl.startServerForService(uploadTomcatServiceName);
 
         Object processExcState = commandModel.getProcessExcState();
         DeployStatusModel deployStatusModel = new DeployStatusModel();
@@ -98,9 +148,20 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
     @Override
     public DeployStatusModel stopTomcatForConsole() {
         log.info("停止tomcat服务...");
-        String cmTomcatPort = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatPort");
+        String uploadTomcatPort;
+        DeployTypeEnum deployTypeEnum = deployConfigModel.getDeployTypeEnum();
 
-        CommandModel commandModel = serverControlServiceImpl.stopServerForCommand(cmTomcatPort);
+        switch (deployTypeEnum) {
+            //单tomcat处理
+            case DEPLOY_UPLOAD2CM_1TOMCAT:
+                uploadTomcatPort = deployConfigModel.getCmDeployConfigMap().get("cmTomcatPort");
+                break;
+            default:
+                uploadTomcatPort = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatPort");
+        }
+
+
+        CommandModel commandModel = serverControlServiceImpl.stopServerForCommand(uploadTomcatPort);
         DeployStatusModel deployStatusModel = new DeployStatusModel();
 
         deployStatusModel.setTime(commandModel.getProcessExecTime());
@@ -114,9 +175,9 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
     public DeployStatusModel stopTomcatForService() {
         log.info("停止tomcat服务...");
 
-        String cmTomcatServiceName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatServiceName");
+        String uploadTomcatServiceName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatServiceName");
 
-        CommandModel commandModel = serverControlServiceImpl.stopServerForService(cmTomcatServiceName);
+        CommandModel commandModel = serverControlServiceImpl.stopServerForService(uploadTomcatServiceName);
         DeployStatusModel deployStatusModel = new DeployStatusModel();
         deployStatusModel.setTime(commandModel.getProcessExecTime());
         Object processExcState = commandModel.getProcessExcState();
@@ -137,13 +198,26 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
     @Override
     public DeployStatusModel exportWarForTomcat() {
         log.info("正在解压ROOT.war包...");
-        String cmWarPath = deployConfigModel.getUploadDeployConfigMap().get("uploadWarPath");
-        String cmTomcatExportPath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatExportPath");
 
-        CommandModel commandModel = deployProcessorServiceImpl.exportWar(cmWarPath, cmTomcatExportPath);
+        String projectName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatProjectName");
+        String uploadWarPath = deployConfigModel.getUploadDeployConfigMap().get("uploadWarPath");
+        String uploadTomcatExportPath = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatExportPath");
+        String cmTomcatExportPath = deployConfigModel.getCmDeployConfigMap().get("cmTomcatExportPath");
+
+        DeployTypeEnum deployTypeEnum = deployConfigModel.getDeployTypeEnum();
+        CommandModel commandModel = null;
+
+        switch (deployTypeEnum) {
+            //单tomcat处理
+            case DEPLOY_UPLOAD2CM_1TOMCAT:
+                String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
+                commandModel = deployProcessorServiceImpl.exportWar(uploadWarPath, absolutePath+"\\"+projectName);
+                break;
+            default:
+                commandModel = deployProcessorServiceImpl.exportWar(uploadWarPath, uploadTomcatExportPath);
+        }
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();
-
         deployStatusModel.setStatus((boolean) commandModel.getProcessExcState());
         deployStatusModel.setDeployInfo(commandModel.getProcessOutputInfo());
         deployStatusModel.setTime(commandModel.getProcessExecTime());
@@ -158,8 +232,22 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
 
         // 上传组件 配置文件修改
         String uploadTomcatExportPath = uploadDeployConfigMap.get("uploadTomcatExportPath");
+        String cmTomcatExportPath = deployConfigModel.getCmDeployConfigMap().get("cmTomcatExportPath");
+        String projectName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatProjectName");
+
+        DeployTypeEnum deployTypeEnum = deployConfigModel.getDeployTypeEnum();
+
+        switch (deployTypeEnum) {
+            //单tomcat处理
+            case DEPLOY_UPLOAD2CM_1TOMCAT:
+                String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
+                uploadTomcatExportPath = absolutePath+"\\"+projectName;
+                break;
+            default:
+        }
+        PropertyUtils propertyUtils;
+        propertyUtils = new PropertyUtils(new File(uploadTomcatExportPath + "\\WEB-INF\\classes\\stream-config.properties"));
         String apacheServerIp = uploadDeployConfigMap.get("apacheServerIp");
-        PropertyUtils propertyUtils = new PropertyUtils(new File(uploadTomcatExportPath + "\\WEB-INF\\classes\\stream-config.properties"));
         propertyUtils.getConfiguration2Properties();
         //这个配置 要设置apache的访问ip
         Map<String, String> cmDeployConfigMap = deployConfigModel.getCmDeployConfigMap();
@@ -167,12 +255,11 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
         propertyUtils.setConfigurationProperty("STREAM_CROSS_SERVER", "http://" + apacheServerIp);
         propertyUtils.setConfigurationProperty("local_base_path", cmResourcesPath.replace("\\", "/"));
 
-        String cmTomcatExportPath = cmDeployConfigMap.get("cmTomcatExportPath");
         String cmDBAddress = cmDeployConfigMap.get("cmDBAddress");
         String cmDBName = cmDeployConfigMap.get("cmDBName");
         String cmDBUserName = cmDeployConfigMap.get("cmDBUserName");
         String cmDBUserPass = cmDeployConfigMap.get("cmDBUserPass");
-        dbConfig(uploadTomcatExportPath,cmDBAddress,cmDBName,cmDBUserName,cmDBUserPass);
+        dbConfig(uploadTomcatExportPath, cmDBAddress, cmDBName, cmDBUserName, cmDBUserPass);
 
     }
 

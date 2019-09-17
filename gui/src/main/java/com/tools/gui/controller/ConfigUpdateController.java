@@ -2,9 +2,12 @@ package com.tools.gui.controller;
 
 import com.tools.commons.utils.StringUtils;
 import com.tools.commons.utils.Utils;
+import com.tools.gui.process.CommandMethodEnum;
+import com.tools.gui.process.sync.DownloadConfigProcess;
 import com.tools.gui.utils.view.AlertUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.RestartUtils;
+import com.tools.socket.bean.Command;
 import com.tools.socket.client.ClientInstructionProcess;
 import com.tools.socket.client.SocketClient;
 import com.tools.socket.manager.SocketManager;
@@ -30,9 +33,8 @@ public class ConfigUpdateController implements Initializable {
     private SocketClient socketClient;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
-        socketClient = SocketManager.getSocketClient();
+        DownloadConfigProcess process = new DownloadConfigProcess();
+        socketClient = SocketManager.getSocketPullClient();
         socketClient.setPort(port);
         socketClient.setOnConnectedListener(new SocketClient.OnConnectedListener() {
             @Override
@@ -40,6 +42,10 @@ public class ConfigUpdateController implements Initializable {
                 updateView(true,"正在更新...");
                 //下载更新
              //   new ClientInstructionProcess(channel).setController(ConfigUpdateController.this).updateConfig();
+                Command command = new Command();
+                command.setCommandMethod(CommandMethodEnum.DOWNLOAD_DEPLOY_CONFIG.toString());
+                command.setCommandCode(CommandMethodEnum.DOWNLOAD_DEPLOY_CONFIG.getCode());
+                channel.writeAndFlush(command);
             }
 
             @Override
@@ -51,24 +57,18 @@ public class ConfigUpdateController implements Initializable {
             }
         });
 
+        process.setOnDownloadListener(() -> {
+            complete();
+        });
+
     }
 
 
 
     public void onAction(ActionEvent actionEvent) {
         updateView(true,"正在更新...");
-
-        if (!socketClient.getConnect()) {
-            String addressText = mTFAddress.getText();
-            if (!StringUtils.isEmpty(addressText)) {
-                socketClient.setHost(addressText);
-                socketClient.connectServer();
-            }
-        }else {
-            //下载更新
-           // new ClientInstructionProcess(socketClient.getChannel()).setController(this).updateConfig();
-        }
-
+        socketClient.setHost(mTFAddress.getText());
+        socketClient.connectServer();
     }
 
 

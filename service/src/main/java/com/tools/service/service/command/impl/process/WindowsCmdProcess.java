@@ -76,6 +76,11 @@ public class WindowsCmdProcess {
                             commandModel.setProcessExcState(ServiceStateEnum.STATED);
                             return commandModel;
                         }
+                        //服务已经启动
+                        if (contains(cmdResult, "发生服务特定错误")) {
+                            commandModel.setProcessExcState(ServiceStateEnum.ERROR);
+                            return commandModel;
+                        }
                         process.destroy();
                     }
                 } catch (IOException e) {
@@ -105,8 +110,10 @@ public class WindowsCmdProcess {
     public CommandModel serviceStatusProcess(ProcessBuilder builder) {
         CommandModel commandModel = new CommandModel();
         try {
+            LocalTime now = LocalTime.now();
             Process process = builder.start();
             String resultStr = getCmdResultToString(process.getInputStream());
+            commandModel.setProcessWaitFor(process.waitFor());
             //STATE              :(.+?)\s(.+?)\s   \s匹配空格  (.+?) 两次匹配
             /**
              * SERVICE_NAME: ThinkWinCRRed5
@@ -118,10 +125,9 @@ public class WindowsCmdProcess {
              *         CHECKPOINT         : 0x0
              *         WAIT_HINT          : 0x0
              */
+            commandModel.setProcessOutputInfo(Arrays.asList(resultStr));
             List<String> matchers = matcherAll("STATE              :(.+?)\\s+(.+?)\\s", resultStr);
 
-            commandModel.setProcessOutputInfo(Arrays.asList(resultStr));
-            commandModel.setProcessWaitFor(process.waitFor());
             //==null 服务不存在
             if (matchers == null) {
                 commandModel.setProcessExcState(ServiceStateEnum.NOT_EXIST);
@@ -139,6 +145,9 @@ public class WindowsCmdProcess {
                         break;
                 }
             }
+            LocalTime end = LocalTime.now();
+            long seconds = Duration.between(now, end).getSeconds();
+            commandModel.setProcessEexcTime(seconds+"s");
         } catch (IOException e) {
             e.printStackTrace();
             commandModel.setProcessExcState(ServiceStateEnum.ERROR);

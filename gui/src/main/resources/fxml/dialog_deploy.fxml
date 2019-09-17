@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.DialogDeployTypeController">
+<GridPane prefHeight="200.0" prefWidth="220.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.DialogDeployTypeController">
 
     <rowConstraints>
         <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
@@ -26,6 +26,7 @@
                 <children>
                     <RadioButton fx:id="mRBOld" text="单机-旧版" />
                     <RadioButton fx:id="mRBZYFL" text="单机-资源分离" />
+                    <RadioButton fx:id="mRBUpload2CM1Tomcat" text="单机-上传组件+CM(单tomcat)" />
                     <RadioButton fx:id="mRBUpload2CM" text="单机-上传组件+CM" />
                     <RadioButton fx:id="mRBUpload2IPM" text="单机-上传组件+IPM" />
                     <RadioButton fx:id="mRB2UploadCM" text="双机-上传组件(只部CM)" />

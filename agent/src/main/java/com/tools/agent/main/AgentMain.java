@@ -20,10 +20,24 @@ public class AgentMain {
             }
         });
         //初始化处理器
-/*        CMProcess cmProcess = new CMProcess();
-        UploadProcess uploadProcess = new UploadProcess();
-        ApacheProcess apacheProcess = new ApacheProcess();*/
+
         DeployProcess deployProcess = new DeployProcess();
         FileUploadProcess fileUploadProcess = new FileUploadProcess();
+        SyncConfigProcess cmProcess = new SyncConfigProcess();
+
+        String rootPath = System.getProperty("user.dir");
+
+        System.setProperty("dir.base", rootPath);
+        //解压工具路径
+        System.setProperty("HaoZip.path", System.getProperty("dir.base") + "/HaoZipC");
+        //配置文件路径
+        System.setProperty("conf.path", System.getProperty("dir.base") + "/conf/");
+
+        //HaoZip.path
+        System.err.println("HaoZip.path: "+System.getProperty("HaoZip.path"));
+        //程序工作目录
+        System.err.println("dir.base: "+System.getProperty("dir.base"));
+
+        System.err.println("conf.path: "+System.getProperty("conf.path"));
     }
 }

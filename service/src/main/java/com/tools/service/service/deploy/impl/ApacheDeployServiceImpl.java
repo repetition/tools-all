@@ -75,20 +75,25 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
             case DEPLOY_ZYFL:
                 httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdZYFLChangedPath());
                 break;
-            case DEPLOY_UPLOAD2CM:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUploadChangedPath());
-                break;
-            case DEPLOY_2UPLOAD:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUploadChangedPath());
-                break;
-            case DEPLOY_2UPLOAD_CM:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUploadChangedPath());
-                break;
             case DEPLOY_UPLOAD2IPM:
                 httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdIPMChangedPath());
                 break;
+            case DEPLOY_UPLOAD2CM_1TOMCAT:
+                //单tomcat处理
+                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUpload1TomcatChangedPath());
+                break;
+            default:
+                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUploadChangedPath());
         }
         String httpdStr = FileUtils.readFile(apacheServiceHttpdPath);
+
+        //上传组件需要将一下模块打开
+        httpdStr = httpdStr.replace("#LoadModule deflate_module modules/mod_deflate.so", "LoadModule deflate_module modules/mod_deflate.so");
+        httpdStr = httpdStr.replace("#LoadModule proxy_module modules/mod_proxy.so", "LoadModule proxy_module modules/mod_proxy.so");
+        httpdStr = httpdStr.replace("#LoadModule proxy_ajp_module modules/mod_proxy_ajp.so", "LoadModule proxy_ajp_module modules/mod_proxy_ajp.so");
+        httpdStr = httpdStr.replace("#LoadModule proxy_connect_module modules/mod_proxy_connect.so", "LoadModule proxy_connect_module modules/mod_proxy_connect.so");
+        httpdStr = httpdStr.replace("#LoadModule proxy_http_module modules/mod_proxy_http.so", "LoadModule proxy_http_module modules/mod_proxy_http.so");
+
         httpdStr = httpdConfReplace(httpdStr, httpdReplace, apacheServiceHttpdPath);
         FileUtils.saveFile(httpdStr, apacheServiceHttpdPath);
     }
@@ -125,18 +130,10 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
             case DEPLOY_ZYFL:
                 workersReplace = FileUtils.readFile(deployConfigModel.getWorkersOldChangedPath());
                 break;
-            case DEPLOY_UPLOAD2CM:
+            default:
+                //其他模式统一是资源分离
                 workersReplace = FileUtils.readFile(deployConfigModel.getWordkersUploadChangedPath());
-                break;
-            case DEPLOY_2UPLOAD:
-                workersReplace = FileUtils.readFile(deployConfigModel.getWordkersUploadChangedPath());
-                break;
-            case DEPLOY_2UPLOAD_CM:
-                workersReplace = FileUtils.readFile(deployConfigModel.getWordkersUploadChangedPath());
-                break;
-            case DEPLOY_UPLOAD2IPM:
-                workersReplace = FileUtils.readFile(deployConfigModel.getWordkersUploadChangedPath());
-                break;
+
         }
         FileUtils.saveFile(workersReplace, apacheServiceWorkersPath);
         //分布部署

@@ -24,4 +24,16 @@ public class SocketManager {
         }
         return socketClient;
     }
+
+    /**
+     * 获取拉取配置的socket
+     */
+    private static SocketClient socketPullClient;
+    public static SocketClient getSocketPullClient() {
+
+        if (null == socketPullClient) {
+            socketPullClient = new SocketClient();
+        }
+        return socketPullClient;
+    }
 }

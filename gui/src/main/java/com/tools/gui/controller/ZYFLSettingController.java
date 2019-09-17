@@ -1,14 +1,18 @@
 package com.tools.gui.controller;
 
 import com.tools.commons.utils.FileUtils;
+import com.tools.commons.utils.StringUtils;
 import com.tools.gui.utils.view.AlertUtils;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +35,10 @@ public class ZYFLSettingController implements Initializable {
 
     public Label mLabelUploadIPM;
     public TextArea mTAUploadIPMEdit;
+    public GridPane mGridPaneRoot;
+
+    public Label mLabelUpload1Tomcat;
+    public TextArea mTAUpload1TomcatEdit;
 
     private Stage stage;
 
@@ -49,24 +57,35 @@ public class ZYFLSettingController implements Initializable {
 
             String uploadIPMEditText = mTAUploadIPMEdit.getText();
 
-            if (null != taEditText && !taEditText.isEmpty() && null != tazyflEditText && !tazyflEditText.isEmpty() && null != uploadEditText && !uploadEditText.isEmpty()) {
+            String upload1TomcatEditText = mTAUpload1TomcatEdit.getText();
 
-                //httpd配置
-                if (type == 0) {
+
+            //httpd配置
+            if (type == 0) {
+                if (!StringUtils.isEmpty(taEditText) && !StringUtils.isEmpty(tazyflEditText)
+                        && !StringUtils.isEmpty(uploadEditText) && !StringUtils.isEmpty(uploadIPMEditText) && !StringUtils.isEmpty(upload1TomcatEditText)) {
                     FileUtils.saveFile(taEditText, deployConfigModel.getHttpdOldChangedPath());
                     FileUtils.saveFile(tazyflEditText, deployConfigModel.getHttpdZYFLChangedPath());
+                    FileUtils.saveFile(upload1TomcatEditText, deployConfigModel.getHttpdUpload1TomcatChangedPath());
                     FileUtils.saveFile(uploadEditText, deployConfigModel.getHttpdUploadChangedPath());
                     FileUtils.saveFile(uploadIPMEditText, deployConfigModel.getHttpdIPMChangedPath());
+                    stage.close();
+                }else {
+                    AlertUtils.showAlert("错误", "将所有输入框输入", "");
                 }
-                //workers配置
-                if (type == 1) {
+            }
+            //workers配置
+            if (type == 1) {
+
+                if (!StringUtils.isEmpty(taEditText) && !StringUtils.isEmpty(tazyflEditText)
+                        && !StringUtils.isEmpty(uploadEditText)) {
                     FileUtils.saveFile(taEditText, deployConfigModel.getWorkersOldChangedPath());
                     FileUtils.saveFile(tazyflEditText, deployConfigModel.getWorkersOldChangedPath());
                     FileUtils.saveFile(uploadEditText, deployConfigModel.getWordkersUploadChangedPath());
+                    stage.close();
+                }else {
+                    AlertUtils.showAlert("错误", "将所有输入框输入", "");
                 }
-                stage.close();
-            } else {
-                AlertUtils.showAlert("错误", "将所有输入框输入", "");
             }
         }
         if (actionEvent.getSource() == mBTCancel) {
@@ -96,6 +115,7 @@ public class ZYFLSettingController implements Initializable {
 
             File httpd_replace_file = new File(deployConfigModel.getHttpdOldChangedPath());
             File httpd_zyfl_replace_file = new File(deployConfigModel.getHttpdZYFLChangedPath());
+            File httpd_upload_1tomcat_replace_file = new File(deployConfigModel.getHttpdUpload1TomcatChangedPath());
             File httpd_upload_replace_file = new File(deployConfigModel.getHttpdUploadChangedPath());
             File httpd_upload_IPM_replace_file = new File(deployConfigModel.getHttpdIPMChangedPath());
 
@@ -108,6 +128,9 @@ public class ZYFLSettingController implements Initializable {
             if (httpd_upload_replace_file.exists()) {
                 mTAUploadEdit.setText(FileUtils.readFile(httpd_upload_replace_file.getAbsolutePath()));
             }
+            if (httpd_upload_1tomcat_replace_file.exists()) {
+                mTAUpload1TomcatEdit.setText(FileUtils.readFile(httpd_upload_1tomcat_replace_file.getAbsolutePath()));
+            }
             if (httpd_upload_IPM_replace_file.exists()) {
                 mTAUploadIPMEdit.setText(FileUtils.readFile(httpd_upload_IPM_replace_file.getAbsolutePath()));
             }
@@ -118,7 +141,17 @@ public class ZYFLSettingController implements Initializable {
             mLabel.setText("Apache workers.properties(普通项目)");
             mLabelZYFL.setText("Apache workers.properties(资源分离项目)");
             mLabelUpload.setText("Apache workers.properties(上传组件项目)");
+
             mTAUploadIPMEdit.getParent().setManaged(false);
+            mTAUploadIPMEdit.getParent().setVisible(false);
+
+            mLabelUpload1Tomcat.getParent().setVisible(false);
+            mLabelUpload1Tomcat.getParent().setManaged(false);
+            //将GridPane 其中的列宽度设置为0
+            ObservableList<ColumnConstraints> columnConstraints = mGridPaneRoot.getColumnConstraints();
+            columnConstraints.get(columnConstraints.size() - 1).setMaxWidth(0);
+            columnConstraints.get(2).setMaxWidth(0);
+
             File httpd_replace_file = new File(deployConfigModel.getWorkersOldChangedPath());
             File httpd_zyfl_replace_file = new File(deployConfigModel.getWorkersOldChangedPath());
             File httpd_upload_replace_file = new File(deployConfigModel.getWordkersUploadChangedPath());

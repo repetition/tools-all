@@ -6,6 +6,7 @@ import com.jfoenix.controls.cells.editors.base.GenericEditableTreeTableCell;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
+import com.tools.commons.utils.Utils;
 import com.tools.gui.config.Config;
 import com.tools.gui.utils.view.FileChooserUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
@@ -61,17 +62,12 @@ public class JFXConfigAddController implements Initializable {
         String filePath = FileChooserUtils.showSelectFileChooser(new FileChooser.ExtensionFilter("config", "*.xml", "*.properties"),"D://",stage);
         File file = new File(filePath);
         if (!file.getName().equals("")&&!file.isDirectory()) {
-            //保存配置
-          //  PropertyUtils.getOrderedProperties("ConfigList.properties");
             //保存一个没有后缀名的
-           // PropertyUtils.setOrderedProperty(file.getName().substring(0,file.getName().lastIndexOf(".")),file.getAbsolutePath());
             String substring = file.getName().substring(0, file.getName().lastIndexOf("."));
-            propertyUtils.setOrderedProperty(substring,file.getAbsolutePath());
+            //key改成文件路径的md5值,防止存在重复的文件名
+            propertyUtils.setOrderedProperty(Utils.getMD5(filePath),filePath);
             //将文件添加到TreeTableView上
             observableList.add(new ConfigFileInfo(file.getName(),file.getAbsolutePath()));
- /*           orderedProperties = PropertyUtils.getOrderedProperties("isChangeForConfigList.properties");
-            PropertyUtils.setOrderedProperty("isChange","true");*/
-
         }
     }
 
@@ -81,14 +77,16 @@ public class JFXConfigAddController implements Initializable {
         //将当前选择的删除掉
         ConfigFileInfo configFileInfo = observableList.get(focusedIndex);
         //删除配置文件
-       // PropertyUtils.getOrderedProperties("ConfigList.properties");
         String fileName = configFileInfo.fileName.get();
-        propertyUtils.removeOrderedPropertyByKey(fileName.substring(0,fileName.lastIndexOf(".")));
-      //  PropertyUtils.removeOrderedPropertyByKey(fileName.substring(0,fileName.lastIndexOf(".")));
 
+        String key = propertyUtils.getOrderedPropertyStringByKey(fileName.substring(0, fileName.lastIndexOf(".")));
+        //新旧key规则兼容
+        if (key.equals("")) {
+            propertyUtils.removeOrderedPropertyByKey(Utils.getMD5(configFileInfo.filePath.get()));
+        }else {
+            propertyUtils.removeOrderedPropertyByKey(fileName.substring(0, fileName.lastIndexOf(".")));
+        }
         observableList.remove(focusedIndex);
-/*        orderedProperties = PropertyUtils.getOrderedProperties("isChangeForConfigList.properties");
-        PropertyUtils.setOrderedProperty("isChange","true");*/
     }
 
     @Override
@@ -97,8 +95,6 @@ public class JFXConfigAddController implements Initializable {
         propertyUtils = new PropertyUtils(Config.CRConfigListFileName);
         propertyUtils.getOrderedProperties();
         //初始化时，将文件是否变更置为false
-/*        orderedProperties = PropertyUtils.getOrderedProperties("isChangeForConfigList.properties");
-        PropertyUtils.setOrderedProperty("isChange","false");*/
 
         observableList = FXCollections.observableArrayList();
         //读取配置文件

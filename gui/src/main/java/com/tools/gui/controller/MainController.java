@@ -4,13 +4,12 @@ import com.tools.commons.thread.ThreadPoolManager;
 import com.tools.commons.utils.MySqlHelper;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.Utils;
+import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.gui.jenkins.ProjectBuild;
 import com.tools.gui.main.Main;
-import com.tools.gui.process.CommandMethodEnum;
-import com.tools.gui.process.DeployProcess;
-import com.tools.gui.process.FileUploadProcess;
-import com.tools.gui.process.ProcessBase;
+import com.tools.gui.process.*;
+import com.tools.gui.process.sync.PushConfigProcess;
 import com.tools.gui.utils.view.AlertUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.ProgressUtils;
@@ -35,6 +34,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -199,6 +199,7 @@ public class MainController {
     private JenkinsLoginController jenkinsLoginController;
     private String type;
     private DeployProcess deployProcess;
+    private SyncConfigProcess syncConfigProcess;
 
     /**
      * button点击事件
@@ -546,7 +547,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        propertyUtils = new PropertyUtils(ApplicationContext.getApplicationConfPath()+"/"+Config.CRConfigFileName);
+        propertyUtils = new PropertyUtils(System.getProperty("conf.path") +"/"+ ApplicationConfig.DEPLOY_CONFIG_FILE_NAME);
         propertyUtils.getConfiguration2ReloadProperties();
         //  OutputStreamConsole console = new OutputStreamConsole(mTAConsole);
         // System.setOut(new PrintStream(console, true));
@@ -812,6 +813,7 @@ public class MainController {
         setConfig();
 
         if (Config.isConfigSync) {
+            PushConfigProcess pushConfigProcess = new PushConfigProcess();
             ThreadPoolManager.getInstance().execute(() -> {
                 log.info("服务启动7777");
                 try {
@@ -825,6 +827,7 @@ public class MainController {
          * 初始化处理器
          */
         FileUploadProcess fileUploadProcess = new FileUploadProcess();
+        syncConfigProcess = new SyncConfigProcess();
         deployProcess = new DeployProcess();
 
         deployProcess.setOnDeployProcessorListener(new DeployListener());
@@ -1113,41 +1116,47 @@ public class MainController {
                 dialog.setWidth(300);
                 dialog.setHeight(200);
              //   dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                Button mBTPullConfig = (Button) vBox.lookup("#mBTPullConfig");
                 TextField mTFAgentAddress = (TextField) vBox.lookup("#mTFAgentAddress");
                 Button mBTSwitch = (Button) vBox.lookup("#mBTSwitch");
                 dialog.setResult(mBTSwitch);
                 mBTSwitch.setOnAction(event -> {
-                    JFXSnackbarUtils.show("切换到windows",2000L,anchorPaneRoot);
                     String addressText = mTFAgentAddress.getText();
                     SocketManager.getSocketClient().setHost(addressText)
                             .setPort(6767)
                             .connectServer();
                 });
+
+                mBTPullConfig.setOnAction(event -> {
+                    Command command = new Command();
+                    command.setCommandCode(CommandMethodEnum.SET_CR_CONFIG.getCode());
+                    deployProcess.sendMessage(command);
+                });
                 SocketManager.getSocketClient().setOnConnectedListener(new SocketClient.OnConnectedListener() {
                     @Override
                     public void onSuccess(Channel channel) {
                         System.out.println(Thread.currentThread().getName());
-                        JFXSnackbarUtils.show("连接成功"+channel.remoteAddress(),2000L,anchorPaneRoot);
-                        Platform.runLater(() -> {
-                            dialog.close();
-                        });
+                        mBTPullConfig.setDisable(false);
+                        JFXSnackbarUtils.show("连接成功"+channel.remoteAddress(),2000L,vBox);
                     }
                     @Override
                     public void onFail(Exception e) {
-                        JFXSnackbarUtils.show("连接失败",2000L,anchorPaneRoot);
+                        JFXSnackbarUtils.show("连接失败",2000L,vBox);
 
                     }
                 });
 
-
-                dialog.setOnCloseRequest(new EventHandler<DialogEvent>() {
+                syncConfigProcess.setOnSyncConfigListener(new SyncConfigProcess.OnSyncConfigListener() {
                     @Override
-                    public void handle(DialogEvent event) {
-                        System.out.println(event.toString());
+                    public void onSyncComplete() {
+                        JFXSnackbarUtils.show("同步成功",2000L,vBox);
+                    }
+
+                    @Override
+                    public void onSyncFail() {
+
                     }
                 });
-
-
 
                 dialog.show();
               //  popup.show(stage);

@@ -300,7 +300,7 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
     }
 
     private void propertiesChanged() {
-
+        // TODO: 2019/9/12  需要添加配置文件列表
         Properties properties = new PropertyUtils("").getOrderedProperties();
         //获取配置文件列表
         Set<String> propertyNames = properties.stringPropertyNames();

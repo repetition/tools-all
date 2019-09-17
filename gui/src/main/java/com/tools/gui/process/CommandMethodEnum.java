@@ -4,6 +4,9 @@ public enum CommandMethodEnum {
     //配置同步
     SYNC_CR_CONFIG("同步CM部署配置",3000),
     SYNC_APACHE_CONFIG("同步Apache部署配置",3001),
+    SET_CR_CONFIG("保存最新配置",3002),
+    //从服务器下载配置
+    DOWNLOAD_DEPLOY_CONFIG("从服务器下载配置",4000),
     //部署时的同步
     SYNC_CM_WAR("同步cm包",2001),
     SYNC_ZYFL_WAR("同步资源分离包",2002),

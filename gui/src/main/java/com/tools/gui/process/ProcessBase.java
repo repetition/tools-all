@@ -48,6 +48,8 @@ public abstract class ProcessBase implements Process {
             error();
         } else if (ctx.channel().isOpen()){
             send(obj);
+        }else {
+            error();
         }
     }
 
