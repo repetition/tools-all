@@ -1586,6 +1586,8 @@ public class MainController {
         DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
         deployConfigModel.setHttpdOldChangedPath(appConfigPath + "/httpd_replace.txt");
         deployConfigModel.setHttpdZYFLChangedPath(appConfigPath + "/httpd_zyfl_replace.txt");
+        deployConfigModel.setHttpdUpload1TomcatChangedPath(appConfigPath + "/httpd_upload_1tomcat_replace.txt");
+
         deployConfigModel.setHttpdUploadChangedPath(appConfigPath + "/httpd_upload_replace.txt");
         deployConfigModel.setHttpdIPMChangedPath(appConfigPath + "/httpd_ipm_replace.txt");
 
@@ -1646,6 +1648,7 @@ public class MainController {
         deployConfigModel.setZyflDeployConfigMap(zyflDeployConfigMap);
 
         Map<String, String> uploadDeployConfigMap = new HashMap<>();
+        String uploadProjectName = propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.project.name");
         String uploadExportPath = propertyUtils.getConfigurationPropertyStringByKey("upload.exportWar.path");
         File parentFile2 = new File(uploadExportPath).getParentFile();
 
@@ -1656,9 +1659,11 @@ public class MainController {
             uploadDeployConfigMap.put("uploadTomcatPort", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
             uploadDeployConfigMap.put("uploadWarPath", propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
             uploadDeployConfigMap.put("uploadWarFlag", Utils.getUUID32());
-            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + "\\ROOT");
+            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + "\\"+uploadProjectName);
             uploadDeployConfigMap.put("uploadTomcatServiceName", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.serviceName"));
-            uploadDeployConfigMap.put("uploadTomcatCachePath", absolutePath + "\\work");
+            uploadDeployConfigMap.put("uploadTomcatCachePath",  absolutePath + "\\work");
+            uploadDeployConfigMap.put("uploadTomcatProjectName",  uploadProjectName);
+
         }
         uploadDeployConfigMap.put("apacheServerIp", propertyUtils.getConfigurationPropertyStringByKey("apache.server.ip"));
 
