@@ -344,10 +344,10 @@ public class MainController {
                 return;
             }
             String deployType = propertyUtils.getConfigurationPropertyStringByKey("deploy.type");
-            DeployTypeEnum deployTYpe ;
-            if (deployType.isEmpty()){
+            DeployTypeEnum deployTYpe;
+            if (deployType.isEmpty()) {
                 deployTYpe = DEPLOY_UPLOAD2CM;
-            }else {
+            } else {
                 deployTYpe = DeployTypeEnum.valueOf(deployType);
             }
             if (!deployTYpe.equals(DEPLOY_2UPLOAD)) {
@@ -392,11 +392,11 @@ public class MainController {
                             //执行部署
                             ApplicationContext.getDeployConfigModel().setDeployModeSelectorMap(map);
                             Command command = new Command();
-                           command.setContent(ApplicationContext.getDeployConfigModel());
+                            command.setContent(ApplicationContext.getDeployConfigModel());
                             command.setCommandCode(CommandMethodEnum.DEPLOY_INIT.getCode());
                             deployProcess.sendMessage(command);
                         }
-                        if (param ==ButtonType.CANCEL){
+                        if (param == ButtonType.CANCEL) {
                             //不执行任何操作
                             dialog.close();
                         }
@@ -406,11 +406,11 @@ public class MainController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else {
+            } else {
             }
 
             //执行部署
-         //   ThreadPoolManager.getInstance().execute(deployProcessorRunnable);
+            //   ThreadPoolManager.getInstance().execute(deployProcessorRunnable);
         }
 
 
@@ -453,7 +453,7 @@ public class MainController {
                             // TODO: 2019/9/5 添加启动代码
                             ApplicationContext.getDeployConfigModel().setDeployModeSelectorMap(map);
 
-                           // ThreadPoolManager.getInstance().execute(deployModeSelectorServerControlRunnable);
+                            // ThreadPoolManager.getInstance().execute(deployModeSelectorServerControlRunnable);
                         }
                         if (param == ButtonType.CANCEL) {
                             //不执行任何操作
@@ -465,8 +465,8 @@ public class MainController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else {
-              //  ThreadPoolManager.getInstance().execute(deployServerControlRunnable);
+            } else {
+                //  ThreadPoolManager.getInstance().execute(deployServerControlRunnable);
             }
 
 
@@ -505,9 +505,9 @@ public class MainController {
     }
 
 
-
     /**
      * 更新部署时按钮的状态
+     *
      * @param disable
      * @param txt
      */
@@ -547,7 +547,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        propertyUtils = new PropertyUtils(System.getProperty("conf.path") +"/"+ ApplicationConfig.DEPLOY_CONFIG_FILE_NAME);
+        propertyUtils = new PropertyUtils(System.getProperty("conf.path") + "/" + ApplicationConfig.DEPLOY_CONFIG_FILE_NAME);
         propertyUtils.getConfiguration2ReloadProperties();
         //  OutputStreamConsole console = new OutputStreamConsole(mTAConsole);
         // System.setOut(new PrintStream(console, true));
@@ -700,14 +700,19 @@ public class MainController {
             //将文件后缀名截取掉
             //    String substring = name.substring(0, name.lastIndexOf("."));
             String filePath = properties.getProperty(name);
-            Button configButton = new Button(name);
+            File file = new File(filePath);
+            //截取后缀名
+            String substring = file.getName().substring(0, file.getName().lastIndexOf("."));
+            Button configButton = new Button(substring);
+            configButton.setId(name);
+
             mFlowPaneCfgRoot.getChildren().add(configButton);
 
             configButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     Button source = (Button) event.getSource();
-                    String path = properties.getProperty(source.getText());
+                    String path = properties.getProperty(source.getId());
                     File file = new File(path);
                     //打开编辑窗口
                     showEditWindowV2(file.getAbsolutePath(), file.getName());
@@ -780,27 +785,27 @@ public class MainController {
                                     //判断如果 之前的数据与最新数据不相同的话，再重新设置新的集合
                                 } else*/
 
-                            if (null != dbList && !observableList.equals(dbList)) {
-                                observableList = null;
-                                mDBPopupChoiceBox = null;
+                        if (null != dbList && !observableList.equals(dbList)) {
+                            observableList = null;
+                            mDBPopupChoiceBox = null;
 
-                                mDBPopup.getContent().clear();
-                                mDBPopupChoiceBox = new ChoiceBox<>();
-                                mDBPopup.getContent().add(mDBPopupChoiceBox);
-                                //将浮层的选择器大小设置和主框体一直，覆盖掉主窗体
-                                mDBPopupChoiceBox.setMaxWidth(mDBChoiceBox.getWidth());
-                                // observableList.clear();
-                                // observableList.addAll(dbList);
-                                //added by 2018-11-19 13:16  修复在连续addAll 或者setItem的时候响应过慢导致主线程堵塞
-                                observableList = FXCollections.observableArrayList(dbList);
-                                mDBPopupChoiceBox.setItems(observableList);
-                                initPopupChoiceBoxListener();
-                            }
-                            //  setProgressPopupShow(false);
-                            mDBProgressPopup.hide();
-                            //显示popup窗体，
-                            mDBPopup.show(stage, event.getScreenX() - event.getX(), event.getScreenY() - event.getY());
-                            mDBPopupChoiceBox.show();
+                            mDBPopup.getContent().clear();
+                            mDBPopupChoiceBox = new ChoiceBox<>();
+                            mDBPopup.getContent().add(mDBPopupChoiceBox);
+                            //将浮层的选择器大小设置和主框体一直，覆盖掉主窗体
+                            mDBPopupChoiceBox.setMaxWidth(mDBChoiceBox.getWidth());
+                            // observableList.clear();
+                            // observableList.addAll(dbList);
+                            //added by 2018-11-19 13:16  修复在连续addAll 或者setItem的时候响应过慢导致主线程堵塞
+                            observableList = FXCollections.observableArrayList(dbList);
+                            mDBPopupChoiceBox.setItems(observableList);
+                            initPopupChoiceBoxListener();
+                        }
+                        //  setProgressPopupShow(false);
+                        mDBProgressPopup.hide();
+                        //显示popup窗体，
+                        mDBPopup.show(stage, event.getScreenX() - event.getX(), event.getScreenY() - event.getY());
+                        mDBPopupChoiceBox.show();
                     });
                 });
 
@@ -1067,14 +1072,14 @@ public class MainController {
                 Stage stage = new Stage();
                 stage.setTitle("获取服务器配置");
                 stage.setScene(scene);
-              //  stage.initStyle(StageStyle.UTILITY);
+                //  stage.initStyle(StageStyle.UTILITY);
                 //anotherStage.centerOnScreen();
                 //设置弹窗时，堵塞父窗口
                 stage.initModality(Modality.WINDOW_MODAL);
                 stage.initOwner(Main.mainStage);
                 stage.show();
-              //  AboutController aboutController = fxmlLoader.getController();
-             //   aboutController.setStage(stage);
+                //  AboutController aboutController = fxmlLoader.getController();
+                //   aboutController.setStage(stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1106,16 +1111,16 @@ public class MainController {
                 VBox vBox = fxmlLoader.load();
                 dialog.getDialogPane().setContent(vBox);
 
-               // Popup popup = new Popup();
-               // popup.getContent().add(vBox);
+                // Popup popup = new Popup();
+                // popup.getContent().add(vBox);
                 dialog.initOwner(stage);
 
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.setTitle("切换到Windows");
-                    dialog.getDialogPane().setContent(vBox);
+                dialog.getDialogPane().setContent(vBox);
                 dialog.setWidth(300);
                 dialog.setHeight(200);
-             //   dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                //   dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
                 Button mBTPullConfig = (Button) vBox.lookup("#mBTPullConfig");
                 TextField mTFAgentAddress = (TextField) vBox.lookup("#mTFAgentAddress");
                 Button mBTSwitch = (Button) vBox.lookup("#mBTSwitch");
@@ -1137,11 +1142,12 @@ public class MainController {
                     public void onSuccess(Channel channel) {
                         System.out.println(Thread.currentThread().getName());
                         mBTPullConfig.setDisable(false);
-                        JFXSnackbarUtils.show("连接成功"+channel.remoteAddress(),2000L,vBox);
+                        JFXSnackbarUtils.show("连接成功" + channel.remoteAddress(), 2000L, vBox);
                     }
+
                     @Override
                     public void onFail(Exception e) {
-                        JFXSnackbarUtils.show("连接失败",2000L,vBox);
+                        JFXSnackbarUtils.show("连接失败", 2000L, vBox);
 
                     }
                 });
@@ -1149,7 +1155,7 @@ public class MainController {
                 syncConfigProcess.setOnSyncConfigListener(new SyncConfigProcess.OnSyncConfigListener() {
                     @Override
                     public void onSyncComplete() {
-                        JFXSnackbarUtils.show("同步成功",2000L,vBox);
+                        JFXSnackbarUtils.show("同步成功", 2000L, vBox);
                     }
 
                     @Override
@@ -1159,7 +1165,7 @@ public class MainController {
                 });
 
                 dialog.show();
-              //  popup.show(stage);
+                //  popup.show(stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1169,7 +1175,7 @@ public class MainController {
 
         //切换到linux模式
         if (actionEvent.getSource() == mMenuItemLinux) {
-            JFXSnackbarUtils.show("切换到linux",2000L,anchorPaneRoot);
+            JFXSnackbarUtils.show("切换到linux", 2000L, anchorPaneRoot);
 
         }
     }
@@ -1574,6 +1580,7 @@ public class MainController {
             }
         });
     }
+
     private void setConfig() {
         String appConfigPath = System.getProperty("conf.path");
         DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
@@ -1594,7 +1601,7 @@ public class MainController {
         Map<String, String> cmDeployConfigMap = new HashMap<>();
         String warUnPath = mTFWarUnPath.getText();
         File parentFile = new File(warUnPath).getParentFile();
-        if (null !=parentFile) {
+        if (null != parentFile) {
             String tomcatPath = parentFile.getAbsolutePath();
             cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + "\\work");
             cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + "\\ROOT");
@@ -1607,15 +1614,15 @@ public class MainController {
         cmDeployConfigMap.put("cmWarFlag", Utils.getUUID32());
         cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + "\\ROOT");
 
-        cmDeployConfigMap.put("localIp",propertyUtils.getConfigurationPropertyStringByKey("local.ip"));
+        cmDeployConfigMap.put("localIp", propertyUtils.getConfigurationPropertyStringByKey("local.ip"));
 
         cmDeployConfigMap.put("cmDBAddress", mTFDBAddress.getText());
         cmDeployConfigMap.put("cmDBName", mTFDBName.getText());
         cmDeployConfigMap.put("cmDBUserName", mTFDBUserName.getText());
         cmDeployConfigMap.put("cmDBUserPass", mTFDBPassword.getText());
 
-        cmDeployConfigMap.put("cmResourcesPath",mTFResourcePath.getText());
-        cmDeployConfigMap.put("cmServerIp",propertyUtils.getConfigurationPropertyStringByKey("cm.server.ip"));
+        cmDeployConfigMap.put("cmResourcesPath", mTFResourcePath.getText());
+        cmDeployConfigMap.put("cmServerIp", propertyUtils.getConfigurationPropertyStringByKey("cm.server.ip"));
         deployConfigModel.setCmDeployConfigMap(cmDeployConfigMap);
 
         Map<String, String> zyflDeployConfigMap = new HashMap<>();
@@ -1626,7 +1633,7 @@ public class MainController {
 
                 .getParentFile().getAbsolutePath();*/
 
-        if (null !=parentFile1) {
+        if (null != parentFile1) {
             String cmInstallPath = parentFile1.getParentFile().getAbsolutePath();
             zyflDeployConfigMap.put("apacheHttpdPath", cmInstallPath + "\\apache\\conf\\httpd.conf");
             zyflDeployConfigMap.put("apacheWorkersPath", cmInstallPath + "\\apache\\conf\\workers.properties");
@@ -1642,8 +1649,8 @@ public class MainController {
         String uploadExportPath = propertyUtils.getConfigurationPropertyStringByKey("upload.exportWar.path");
         File parentFile2 = new File(uploadExportPath).getParentFile();
 
-     //   String absolutePath = new File(uploadExportPath).getParentFile().getAbsolutePath();
-        if (null !=parentFile2) {
+        //   String absolutePath = new File(uploadExportPath).getParentFile().getAbsolutePath();
+        if (null != parentFile2) {
             String absolutePath = parentFile2.getAbsolutePath();
             uploadDeployConfigMap.put("uploadTomcatStartUpPath", absolutePath + "\\bin\\startup.bat");
             uploadDeployConfigMap.put("uploadTomcatPort", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
@@ -1651,14 +1658,14 @@ public class MainController {
             uploadDeployConfigMap.put("uploadWarFlag", Utils.getUUID32());
             uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + "\\ROOT");
             uploadDeployConfigMap.put("uploadTomcatServiceName", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.serviceName"));
-            uploadDeployConfigMap.put("uploadTomcatCachePath",  absolutePath + "\\work");
+            uploadDeployConfigMap.put("uploadTomcatCachePath", absolutePath + "\\work");
         }
         uploadDeployConfigMap.put("apacheServerIp", propertyUtils.getConfigurationPropertyStringByKey("apache.server.ip"));
 
         deployConfigModel.setUploadDeployConfigMap(uploadDeployConfigMap);
     }
-    class DeployListener implements ProcessBase.OnDeployProcessorListener {
 
+    class DeployListener implements ProcessBase.OnDeployProcessorListener {
 
 
         @Override
@@ -1738,10 +1745,11 @@ public class MainController {
             requestFocus();
 
         }
+
         @Override
         public void onDeployProcessSuccess(DeployState deployState) {
-            appendText( deployState.getInfo());
-            log.info("onDeployProcessSuccess ," +  deployState.getInfo());
+            appendText(deployState.getInfo());
+            log.info("onDeployProcessSuccess ," + deployState.getInfo());
         }
 
         @Override
@@ -1752,7 +1760,7 @@ public class MainController {
             setBTStartState(false, "启动");
             TaskEnum taskEnum = deployState.getTaskEnum();
             //AlertUtils.showAlert("错误",taskEnum.toString()+" 部署失败!",deployState.getE());
-            AlertUtils.showAlert("错误"," 部署失败!",deployState.getE());
+            AlertUtils.showAlert("错误", " 部署失败!", deployState.getE());
         }
 
     }
@@ -1770,7 +1778,7 @@ public class MainController {
         public void onServerStarted(DeployState deployState) {
             setBTStartState(false, "停止");
             log.info(deployState.getInfo());
-            appendText(deployState.getTaskEnum().toString()+deployState.getInfo());
+            appendText(deployState.getTaskEnum().toString() + deployState.getInfo());
         }
 
         @Override
@@ -1782,7 +1790,7 @@ public class MainController {
         @Override
         public void onServerStoped(DeployState deployState) {
             setBTStartState(false, "启动");
-            appendText(deployState.getTaskEnum().toString()+deployState.getInfo());
+            appendText(deployState.getTaskEnum().toString() + deployState.getInfo());
         }
 
         @Override
@@ -1790,7 +1798,7 @@ public class MainController {
             log.info(deployState.getInfo());
             log.info(deployState.getE());
             setBTStartState(false, "启动");
-            AlertUtils.showAlert("错误",deployState.getTaskEnum().toString()+" 错误",deployState.getE());
+            AlertUtils.showAlert("错误", deployState.getTaskEnum().toString() + " 错误", deployState.getE());
         }
     }
 }
