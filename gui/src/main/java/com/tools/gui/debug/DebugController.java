@@ -6,6 +6,7 @@ import com.tools.gui.process.FileBrowserProcess;
 import com.tools.gui.process.ProcessManager;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileItemInfo;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -100,53 +101,19 @@ public class DebugController {
         root.getChildren().add(new Label("complete"));*/
 
 
-        for (int i = 0; i < 10; i++) {
-/*            HBox hBox = new HBox();
-
-            Button button = new Button("treeview1");
-            CheckBox checkBox = new CheckBox("treeview2");
-
-            HBox.setMargin(checkBox,new Insets(5));
-            hBox.getChildren().add(button);
-            hBox.getChildren().add(checkBox);*/
-
-        }
-
-        TreeItem rootNode = new TreeItem<>();
+        //设置root节点,第一次将FileItemInfo 传null,等到监听回调再设置FileItemInfo
+        FileTreeItem rootNode = new FileTreeItem(null,mStage);
         treeView.setRoot(rootNode);
+
         FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
+        //设置处理器,用来发送和监听指令
+        rootNode.setFileBrowserProcess(fileBrowserProcess);
         fileBrowserProcess.setOnFileBrowserSyncListener(fileItemInfoList -> {
             for (FileItemInfo fileItemInfo : fileItemInfoList) {
-
-                if (fileItemInfo.getNodeType().equals(FileItemInfo.ROOT)) {
-                    log.info(fileItemInfo.getFileName());
-                    HBox hBox = new HBox();
-                    hBox.setPrefHeight(20);
-                    hBox.setAlignment(Pos.CENTER_LEFT);
-                    hBox.getChildren().add(new ImageView(image));
-                    hBox.getChildren().add(new Label(fileItemInfo.getFileName()));
-                    rootNode.setValue(fileItemInfo.getFileName());
-                    rootNode.setGraphic(new ImageView(image));
-
-                    for (FileItemInfo fileChild : fileItemInfo.getFileChilds()) {
-                        log.info(fileChild.getAbsolutePath() + " isDir :" + fileChild.getIsDirectory());
-
-                        HBox root = new HBox();
-                        root.setAlignment(Pos.CENTER_LEFT);
-                        root.getChildren().add(new ImageView(directoryImage));
-                        root.getChildren().add(new Label(fileChild.getFileName()));
-
-                        FileTreeItem childItemNode = new FileTreeItem(fileChild,mStage);
-                        childItemNode.setFileBrowserProcess(fileBrowserProcess);
-                        rootNode.getChildren().add(childItemNode);
-                    }
-                }
-
-                if (fileItemInfo.getNodeType().equals(FileItemInfo.CHILD)) {
-                    log.info(fileItemInfo.getAbsolutePath() + " isDir :" + fileItemInfo.getIsDirectory());
-                    FileTreeItem childItemNode = new FileTreeItem(fileItemInfo,mStage);
-                    childItemNode.setFileBrowserProcess(fileBrowserProcess);
-                }
+                Platform.runLater(() -> {
+                    //收到数据需要设置fileItemInfo,ROOT节点只会收到一个节点
+                    rootNode.setFileItemInfo(fileItemInfo);
+                });
             }
         });
     }
