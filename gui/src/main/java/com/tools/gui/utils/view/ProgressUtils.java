@@ -7,13 +7,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 import java.io.IOException;
 
 public class ProgressUtils {
 
 
-    public static Stage createProgress(Stage stage){
+    public static Stage createProgress(Window stage){
 
         FXMLLoader fxmlLoader = new FXMLLoader(ProgressUtils.class.getResource("/fxml/progress.fxml"));
         try {

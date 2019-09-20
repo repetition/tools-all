@@ -22,6 +22,7 @@ public abstract class ProcessBase implements Process {
 
     @Override
     public void process(Object obj, ChannelHandlerContext ctx) {
+        this.ctx = ctx;
         if (obj instanceof Command) {
             processCommand((Command)obj, ctx);
         }

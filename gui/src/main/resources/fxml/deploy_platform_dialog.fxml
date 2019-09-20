@@ -21,7 +21,7 @@
         </Label>
         <HBox alignment="CENTER" spacing="3">
             <children>
-                <TextField fx:id="mTFAgentAddress" promptText="服务ip地址" text="10.10.10.214"/>
+                <TextField fx:id="mTFAgentAddress" promptText="服务ip地址" text="10.10.9.229"/>
             </children>
         </HBox>
 
@@ -32,7 +32,7 @@
                         <Font size="14.0" />
                     </font>
                 </Button>
-                <Button fx:id="mBTPullConfig" text="获取服务配置" disable="true">
+                <Button fx:id="mBTPullConfig" text="从agent获取配置" disable="true">
                     <font>
                         <Font size="14.0" />
                     </font>

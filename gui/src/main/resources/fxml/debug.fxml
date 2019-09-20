@@ -10,23 +10,30 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.controller.DebugController">
-   <children>
-      <ChoiceBox fx:id="choicebox" cacheShape="true " centerShape="true" layoutX="154.0" layoutY="49.0" onAction="#onAction" prefHeight="25.0" prefWidth="21.0" scaleShape="true" snapToPixel="true" value="选择" />
-      <ComboBox fx:id="combobox" editable="true" layoutX="105.0" layoutY="93.0" prefHeight="25.0" prefWidth="70.0" promptText="选择" />
-      <ColorPicker layoutX="25.0" layoutY="141.0" />
-      <SplitMenuButton fx:id="splitmenubutton" layoutX="25.0" layoutY="188.0" mnemonicParsing="false" text="SplitMenuButton">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
-      </SplitMenuButton>
-      <Spinner layoutX="25.0" layoutY="242.0" />
-      <ToggleButton layoutX="195.0" layoutY="49.0" mnemonicParsing="false" text="ToggleButton" />
-      <Pagination layoutX="243.0" layoutY="118.0" prefHeight="200.0" prefWidth="200.0" />
-      <Button layoutX="263.0" layoutY="177.0" mnemonicParsing="false" onAction="#onAlertAction" text="alert测试" />
-      <CheckBox layoutX="317.0" layoutY="125.0" mnemonicParsing="false" text="CheckBox" />
-   </children>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tools.gui.debug.DebugController">
+    <children>
+        <ChoiceBox fx:id="choicebox" cacheShape="true " centerShape="true" layoutX="26.0" layoutY="47.0"
+                   onAction="#onAction" prefHeight="25.0" prefWidth="21.0" scaleShape="true" snapToPixel="true"
+                   value="选择"/>
+        <ComboBox fx:id="combobox" editable="true" layoutX="23.0" layoutY="94.0" prefHeight="25.0" prefWidth="70.0"
+                  promptText="选择"/>
+        <ColorPicker layoutX="25.0" layoutY="141.0"/>
+        <SplitMenuButton fx:id="splitmenubutton" layoutX="25.0" layoutY="188.0" mnemonicParsing="false"
+                         text="SplitMenuButton">
+            <items>
+                <MenuItem mnemonicParsing="false" text="Action 1"/>
+                <MenuItem mnemonicParsing="false" text="Action 2"/>
+            </items>
+        </SplitMenuButton>
+        <Spinner layoutX="25.0" layoutY="242.0"/>
+        <ToggleButton layoutX="67.0" layoutY="47.0" mnemonicParsing="false" text="ToggleButton"/>
+        <Pagination layoutX="9.0" layoutY="332.0" prefHeight="54.0" prefWidth="230.0"/>
+        <Button layoutX="25.0" layoutY="309.0" mnemonicParsing="false" onAction="#onAlertAction" text="alert测试"/>
+        <CheckBox layoutX="136.0" layoutY="145.0" mnemonicParsing="false" text="CheckBox"/>
+        <TreeView fx:id="treeView" layoutX="300.0" layoutY="88.0" prefHeight="200.0" prefWidth="200.0"/>
+    </children>
 </AnchorPane>

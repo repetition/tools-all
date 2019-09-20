@@ -24,6 +24,7 @@ public class AgentMain {
         DeployProcess deployProcess = new DeployProcess();
         FileUploadProcess fileUploadProcess = new FileUploadProcess();
         SyncConfigProcess cmProcess = new SyncConfigProcess();
+        FileBrowserProcess fileBrowserProcess = new FileBrowserProcess();
 
         String rootPath = System.getProperty("user.dir");
 

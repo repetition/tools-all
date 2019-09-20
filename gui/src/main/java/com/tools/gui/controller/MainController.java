@@ -6,6 +6,8 @@ import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.Utils;
 import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
+import com.tools.gui.debug.DebugController;
+import com.tools.socket.bean.FileItemInfo;
 import com.tools.gui.jenkins.ProjectBuild;
 import com.tools.gui.main.Main;
 import com.tools.gui.process.*;
@@ -35,7 +37,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -233,7 +234,10 @@ public class MainController {
         }
         //选择解压路径
         if (actionEvent.getSource() == mBTSelectUnZIP) {
-            String dirPathStr = "";
+
+            createRemoteFileBrowserWindow();
+
+/*            String dirPathStr = "";
             if (defaultUnZIPWarPath.equals("")) {
                 dirPathStr = showSelectDirectoryChooser(null, "d:\\", stage);
             } else {
@@ -246,7 +250,7 @@ public class MainController {
 
             mTFWarUnPath.setText(dirPathStr);
             log.info("UnPath:" + dirPathStr);
-            appendText("UnPath:" + dirPathStr);
+            appendText("UnPath:" + dirPathStr);*/
         }
 
         //选择ROOT静态资源war文件
@@ -833,6 +837,7 @@ public class MainController {
          * 初始化处理器
          */
         FileUploadProcess fileUploadProcess = new FileUploadProcess();
+        //FileBrowserProcess fileBrowserProcess = new FileBrowserProcess();
         syncConfigProcess = new SyncConfigProcess();
         deployProcess = new DeployProcess();
 
@@ -1489,6 +1494,10 @@ public class MainController {
 
 
     public void onDebugAction(ActionEvent event) {
+
+
+
+
         try {
             String dbAddress = mTFDBAddress.getText();
             String userName = mTFDBUserName.getText();
@@ -1509,6 +1518,8 @@ public class MainController {
 
             DebugController debugController = fxmlLoader.getController();
             debugController.setStage(debugStage);
+            debugController.setProcess(deployProcess);
+
 
             debugController.setDBList(dbList);
             debugStage.show();
@@ -1571,8 +1582,28 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void createRemoteFileBrowserWindow() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/window_remote_file_browser.fxml"));
+            Parent parent = fxmlLoader.load();
+            Scene scene = new Scene(parent);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("远程文件浏览器");
 
+            RemoteFileBrowserController controller = fxmlLoader.getController();
+            controller.setStage(stage);
+            //设置图标
+            stage.getIcons().addAll(new Image(this.getClass().getResource("/image/icons8_logo.png").toString()));
+            stage.initStyle(StageStyle.DECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(this.stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void requestFocus() {

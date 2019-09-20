@@ -2,7 +2,7 @@ package com.tools.gui.config;
 
 public class Config {
 
-    public static final boolean isDebug = false;
+    public static final boolean isDebug = true;
     public static final boolean isHome = false;
     public static final boolean isModeSelector = true;
     public static final boolean isConfigSync = true;

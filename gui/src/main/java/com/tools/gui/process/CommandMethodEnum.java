@@ -1,6 +1,7 @@
 package com.tools.gui.process;
 
 public enum CommandMethodEnum {
+    GET_FILE_DIRECTORY("获取文件目录",5000),
     //配置同步
     SYNC_CR_CONFIG("同步CM部署配置",3000),
     SYNC_APACHE_CONFIG("同步Apache部署配置",3001),
