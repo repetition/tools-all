@@ -35,6 +35,7 @@ public class FileTreeItem extends TreeItem<Object> {
     //文件图标
     Image fileImage = new Image(getClass().getResourceAsStream("/image/white.png"), 18, 18, true, true);
 
+    private String filter;
 
     public FileTreeItem(FileItemInfo fileItemInfo, Stage stage) {
         this.fileItemInfo = fileItemInfo;
@@ -90,9 +91,11 @@ public class FileTreeItem extends TreeItem<Object> {
 
             for (FileItemInfo fileChild : fileItemInfo.getFileChilds()) {
                 log.info(fileChild.getAbsolutePath() + " isDir :" + fileChild.getIsDirectory());
-
+                //设置过滤器类型
+                fileChild.setFilter(fileItemInfo.getFilter());
                 FileTreeItem childItemNode = new FileTreeItem(fileChild, stage);
                 childItemNode.setFileBrowserProcess(fileBrowserProcess);
+                childItemNode.setFileFilter(filter);
                 this.getChildren().add(childItemNode);
             }
         }
@@ -100,6 +103,7 @@ public class FileTreeItem extends TreeItem<Object> {
         if (fileItemInfo.getNodeType().equals(FileItemInfo.CHILD)) {
             log.info(fileItemInfo.getAbsolutePath() + " isDir :" + fileItemInfo.getIsDirectory());
             FileTreeItem childItemNode = new FileTreeItem(fileItemInfo,stage);
+            childItemNode.setFileFilter(filter);
             childItemNode.setFileBrowserProcess(fileBrowserProcess);
         }
 
@@ -112,6 +116,14 @@ public class FileTreeItem extends TreeItem<Object> {
      */
     public void setFileBrowserProcess(FileBrowserProcess fileBrowserProcess) {
         this.fileBrowserProcess = fileBrowserProcess;
+    }
+
+    /**
+     * 设置文件浏览处理器
+     * @param filter  过滤器
+     */
+    public void setFileFilter(String filter) {
+        this.filter = filter;
     }
 
     @Override
@@ -153,7 +165,7 @@ public class FileTreeItem extends TreeItem<Object> {
         progress.show();
         FileItemInfo fileItemInfo = fileTreeItem.getFileItemInfo();
         //设置过滤器
-        fileItemInfo.setFilter(FileItemInfo.FILTER_ALL);
+        fileItemInfo.setFilter(this.filter);
         Command command = new Command();
         command.setCommandCode(CommandMethodEnum.GET_FILE_DIRECTORY.getCode());
         command.setCommandMethod(CommandMethodEnum.GET_FILE_DIRECTORY.toString());
@@ -166,6 +178,7 @@ public class FileTreeItem extends TreeItem<Object> {
             //遍历创建添加子节点
             for (FileItemInfo itemInfo : fileItemInfoList) {
                 FileTreeItem childItem = new FileTreeItem(itemInfo, stage);
+                childItem.setFileFilter(filter);
                 childItem.setFileBrowserProcess(fileBrowserProcess);
                 observableList.add(childItem);
             }

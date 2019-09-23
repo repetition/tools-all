@@ -18,12 +18,18 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * 远程文件浏览器
+ */
 public class RemoteFileBrowserController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(RemoteFileBrowserController.class);
     public TreeView mTreeView;
     public Button mBTSelector;
     public Button mBTCancel;
     private Stage currentStage;
+
+    private BaseController baseController;
+    private String filter;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -33,6 +39,7 @@ public class RemoteFileBrowserController extends BaseController implements Initi
 
         //设置root节点,第一次将FileItemInfo 传null,等到监听回调再设置FileItemInfo
         FileTreeItem rootNode = new FileTreeItem(null, currentStage);
+
         mTreeView.setRoot(rootNode);
 
         //设置处理器,用来发送和监听指令
@@ -40,6 +47,8 @@ public class RemoteFileBrowserController extends BaseController implements Initi
         fileBrowserProcess.setOnFileBrowserSyncListener(fileItemInfoList -> {
             for (FileItemInfo fileItemInfo : fileItemInfoList) {
                 Platform.runLater(() -> {
+                    //设置过滤器
+                    rootNode.setFileFilter(filter);
                     //收到数据需要设置fileItemInfo,ROOT节点只会收到一个节点
                     rootNode.setFileItemInfo(fileItemInfo);
                 });
@@ -70,13 +79,26 @@ public class RemoteFileBrowserController extends BaseController implements Initi
         log.info("setStage");
     }
 
+    public void setFileFilter(String filter) {
+        log.info("setFileFilter");
+        this.filter =filter;
+
+    }
+
+    public void setBaseController(BaseController baseController) {
+        this.baseController = baseController;
+    }
+
     public void onCancelAction(ActionEvent actionEvent) {
         currentStage.close();
     }
 
     public void onSelectorAction(ActionEvent actionEvent) {
-        Object selectedItem = mTreeView.getSelectionModel().getSelectedItem();
+        FileTreeItem selectedItem = (FileTreeItem) mTreeView.getSelectionModel().getSelectedItem();
 
+        baseController.onFileSelector(selectedItem.getFileItemInfo().getAbsolutePath());
         log.info(selectedItem+"");
+        currentStage.close();
     }
+
 }

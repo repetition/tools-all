@@ -25,7 +25,7 @@ public class FileBrowserProcess extends ProcessBase {
         switch (commandMethodEnum) {
             case GET_FILE_DIRECTORY:
 
-                fileBrowser(command,ctx);
+                fileBrowser(command, ctx);
 
                 break;
         }
@@ -49,7 +49,7 @@ public class FileBrowserProcess extends ProcessBase {
             rootItem.setFileName(hostName);
             fileItemInfoList.add(rootItem);
 
-            //获取最顶级的计算机目录 作为第二节点
+            //获取最顶级的计算机目录 作为第二节点 必须传数据
             Iterable<Path> rootDirectories = FileSystems.getDefault().getRootDirectories();
             List<FileItemInfo> childList = new ArrayList<>();
             for (Path directory : rootDirectories) {
@@ -70,6 +70,10 @@ public class FileBrowserProcess extends ProcessBase {
             File file = new File(absolutePath);
             File[] listFiles = file.listFiles(pathname -> {
 
+                //过滤隐藏文件
+                if (pathname.isHidden()) {
+                    return false;
+                }
                 if (filter.equals(FileItemInfo.FILTER_DIRECTORY_ONLY)) {
                     if (pathname.isDirectory()) {
                         return true;
@@ -77,17 +81,13 @@ public class FileBrowserProcess extends ProcessBase {
                 }
 
                 if (filter.equals(FileItemInfo.FILTER_ALL)) {
-                        return true;
-                }
-                //过滤隐藏文件
-                if (!pathname.isHidden()) {
                     return true;
                 }
 
                 return false;
             });
 
-            if (null!=listFiles) {
+            if (null != listFiles) {
                 for (File listFile : listFiles) {
                     FileItemInfo childItem = new FileItemInfo();
                     childItem.setNodeType(FileItemInfo.CHILD);

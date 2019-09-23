@@ -7,6 +7,7 @@ import com.tools.commons.utils.Utils;
 import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.gui.debug.DebugController;
+import com.tools.gui.item.FileTreeItem;
 import com.tools.socket.bean.FileItemInfo;
 import com.tools.gui.jenkins.ProjectBuild;
 import com.tools.gui.main.Main;
@@ -1595,6 +1596,8 @@ public class MainController extends BaseController{
 
             RemoteFileBrowserController controller = fxmlLoader.getController();
             controller.setStage(stage);
+            controller.setFileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
+            controller.setBaseController(this);
             //设置图标
             stage.getIcons().addAll(new Image(this.getClass().getResource("/image/icons8_logo.png").toString()));
             stage.initStyle(StageStyle.DECORATED);
@@ -1604,6 +1607,11 @@ public class MainController extends BaseController{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onFileSelector(String absolutePath) {
+        mTFWarUnPath.setText(absolutePath);
     }
 
     private void requestFocus() {
