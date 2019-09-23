@@ -12,7 +12,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DialogController implements Initializable {
+public class DialogController extends BaseController implements Initializable {
     public CheckBox mCB_CM;
     public CheckBox mCB_ZYFL;
     public CheckBox mCB_UPLOAD;

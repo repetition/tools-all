@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DialogDeployTypeController implements Initializable {
+public class DialogDeployTypeController extends BaseController implements Initializable {
     /**
      * 单机-旧版项目
      */

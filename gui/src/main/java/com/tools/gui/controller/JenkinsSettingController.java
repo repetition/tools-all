@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 
-public class JenkinsSettingController {
+public class JenkinsSettingController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(JenkinsSettingController.class);
 
     public TextField mTFJenkinsAddress;

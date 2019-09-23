@@ -7,7 +7,7 @@ import javafx.scene.control.ToggleGroup;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DeployTypeController implements Initializable {
+public class DeployTypeController extends BaseController implements Initializable {
     public RadioButton mRBUpload;
     public RadioButton mRBZYFL;
     public RadioButton mRBOld;

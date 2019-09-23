@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ModuleListController {
+public class ModuleListController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(ModuleListController.class);
     public Button mBTSelect;
     public Button mBTCancel;

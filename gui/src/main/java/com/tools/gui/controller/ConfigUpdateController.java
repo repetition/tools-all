@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ConfigUpdateController implements Initializable {
+public class ConfigUpdateController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(ConfigUpdateController.class);
     public TextField mTFAddress;
     public Hyperlink mHLUpdate;

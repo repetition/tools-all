@@ -79,6 +79,11 @@ public class FileBrowserProcess extends ProcessBase {
                 if (filter.equals(FileItemInfo.FILTER_ALL)) {
                         return true;
                 }
+                //过滤隐藏文件
+                if (!pathname.isHidden()) {
+                    return true;
+                }
+
                 return false;
             });
 

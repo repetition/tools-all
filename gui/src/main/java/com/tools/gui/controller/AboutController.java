@@ -14,7 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class AboutController {
+public class AboutController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(AboutController.class);
     public Stage mStage;
     public Label mLBMaxMemory;

@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class JenkinsBuildController {
+public class JenkinsBuildController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(JenkinsBuildController.class);
     //构建列表
     public ListView mTVBuildList;

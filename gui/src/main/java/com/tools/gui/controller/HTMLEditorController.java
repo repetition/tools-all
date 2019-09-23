@@ -17,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-public class HTMLEditorController {
+public class HTMLEditorController extends BaseController{
     public HTMLEditor mHEditor;
     private static final Logger log = LoggerFactory.getLogger(HTMLEditorController.class);
     public TextArea mTAEditor;

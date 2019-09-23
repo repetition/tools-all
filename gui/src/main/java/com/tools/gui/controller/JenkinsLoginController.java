@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 
 import static com.tools.gui.utils.view.ProgressUtils.createProgress;
 
-public class JenkinsLoginController implements Initializable {
+public class JenkinsLoginController extends BaseController implements Initializable {
 
     private static final Logger log = LoggerFactory.getLogger(JenkinsLoginController.class);
     public TextField mTFUser;

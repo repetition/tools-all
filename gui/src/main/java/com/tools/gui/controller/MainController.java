@@ -73,7 +73,7 @@ import static com.tools.service.constant.DeployTypeEnum.DEPLOY_2UPLOAD;
 import static com.tools.service.constant.DeployTypeEnum.DEPLOY_UPLOAD2CM;
 
 
-public class MainController {
+public class MainController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
     private static Boolean isStart = false;
@@ -837,7 +837,7 @@ public class MainController {
          * 初始化处理器
          */
         FileUploadProcess fileUploadProcess = new FileUploadProcess();
-        //FileBrowserProcess fileBrowserProcess = new FileBrowserProcess();
+        FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
         syncConfigProcess = new SyncConfigProcess();
         deployProcess = new DeployProcess();
 

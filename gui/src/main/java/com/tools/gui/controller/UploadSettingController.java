@@ -19,7 +19,7 @@ import static com.tools.gui.utils.view.FileChooserUtils.showSelectDirectoryChoos
 import static com.tools.gui.utils.view.FileChooserUtils.showSelectFileChooser;
 
 
-public class UploadSettingController implements Initializable {
+public class UploadSettingController extends BaseController implements Initializable {
     public TextField mTFUploadWarPath;
     public Button mBTUploadWarPath;
     public TextField mTFUploadUnWarPath;

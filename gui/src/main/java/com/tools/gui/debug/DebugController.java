@@ -1,5 +1,6 @@
 package com.tools.gui.debug;
 
+import com.tools.gui.controller.BaseController;
 import com.tools.gui.process.CommandMethodEnum;
 import com.tools.gui.process.DeployProcess;
 import com.tools.gui.process.FileBrowserProcess;
@@ -36,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DebugController {
+public class DebugController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(DebugController.class);
     public TreeView treeView;
     public ComboBox combobox;

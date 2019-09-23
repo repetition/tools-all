@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class DownloadInfoController {
+public class DownloadInfoController extends BaseController{
     private static final Logger log = LoggerFactory.getLogger(DownloadInfoController.class);
     public ProgressIndicator mPBDownload;
     public Button mBTDownload;

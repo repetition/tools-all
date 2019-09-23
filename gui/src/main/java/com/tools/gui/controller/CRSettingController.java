@@ -25,7 +25,7 @@ import java.io.File;
 import static com.tools.gui.utils.view.RestartUtils.restart;
 
 
-public class CRSettingController {
+public class CRSettingController extends BaseController{
     //war地址
     public TextField mTFWarPath;
     //war解压地址

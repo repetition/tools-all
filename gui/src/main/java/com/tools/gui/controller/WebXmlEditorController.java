@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class WebXmlEditorController   implements Initializable  {
+public class WebXmlEditorController extends BaseController  implements Initializable  {
     private static final Logger log = LoggerFactory.getLogger(WebXmlEditorController.class);
     /**
      * CodeEditor 用来加载codemirror 进行xml格式化

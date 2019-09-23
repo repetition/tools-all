@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 /**
  * 嵌套控制器，配置文件修改值列表控制器。
  */
-public class ConfigItemController implements Initializable {
+public class ConfigItemController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(ConfigItemController.class);
     public JFXTextField mTFConfigName;
     public JFXTextField mTFConfigValue;

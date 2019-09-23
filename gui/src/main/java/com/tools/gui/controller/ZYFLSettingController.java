@@ -21,7 +21,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ZYFLSettingController implements Initializable {
+public class ZYFLSettingController extends BaseController implements Initializable {
     private final static Logger log = LoggerFactory.getLogger(ZYFLSettingController.class);
     public Button mBTSave;
     public Button mBTCancel;

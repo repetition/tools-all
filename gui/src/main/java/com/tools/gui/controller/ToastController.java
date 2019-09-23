@@ -14,7 +14,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
-public class ToastController {
+public class ToastController extends BaseController{
 
     public static final int TOAST_SUCCESS = 11;
     public static final int TOAST_WARN = 12;

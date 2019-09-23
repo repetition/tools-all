@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * 添加配置文件 MainController
  */
-public class JFXConfigAddController implements Initializable {
+public class JFXConfigAddController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(JFXConfigAddController.class);
 
     public VBox mVBoxItemRoot;

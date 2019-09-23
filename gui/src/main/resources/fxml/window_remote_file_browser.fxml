@@ -15,8 +15,8 @@
         <HBox alignment="CENTER" spacing="20">
 
             <children>
-                <Button  fx:id="mBTSelector" text="选择"/>
-                <Button fx:id="mBTCancel" text="取消"/>
+                <Button  fx:id="mBTSelector" text="选择" onAction="#onSelectorAction"/>
+                <Button fx:id="mBTCancel" text="取消" onAction="#onCancelAction"/>
             </children>
         </HBox>
     </children>
