@@ -7,6 +7,7 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.Utils;
+import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.gui.utils.view.FileChooserUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
@@ -94,7 +95,7 @@ public class JFXConfigAddController extends BaseController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        propertyUtils = new PropertyUtils(Config.CRConfigListFileName);
+        propertyUtils = new PropertyUtils(ApplicationConfig.CONFIG_LIST_FILE_PATH);
         propertyUtils.getOrderedProperties();
         //初始化时，将文件是否变更置为false
 

@@ -29,7 +29,7 @@ public class PropertyUtils {
     private  Properties mProperties = null;
 
     private File mPropertiesFile;
-    private String propertiesName;
+    private String propertiesPath;
     private PropertiesConfiguration mPropertiesConfiguration;
     private PropertiesConfigurationLayout mLayout;
     ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder;
@@ -40,12 +40,12 @@ public class PropertyUtils {
 
     /**
      * 配置文件名字
-     * @param propertiesName
+     * @param propertiesPath
      */
-    public PropertyUtils(String propertiesName) {
-        this.propertiesName = propertiesName;
+    public PropertyUtils(String propertiesPath) {
+        this.propertiesPath = propertiesPath;
         //初始化配置文件
-        initPropertiesFile(propertiesName);
+        initPropertiesFile(propertiesPath);
     }
     /**
      * 配置文件
@@ -231,14 +231,14 @@ public class PropertyUtils {
 
     /**
      * 初始化配置文件，文件不存在则创建配置文件,默认读取System.getProperty("conf.path") 路径
-     * @param propertiesName 配置文件名称
+     * @param filePath 配置文件路径
      */
     private void initPropertiesFile(String filePath) {
         mPropertiesFile = null;
         mPropertiesFile = new File(filePath);
         if (!mPropertiesFile.exists()) {
             try {
-                log.info(propertiesName + "配置文件不存在，创建配置文件,路径：" + mPropertiesFile.getAbsolutePath());
+                log.info(propertiesPath + "配置文件不存在，创建配置文件,路径：" + mPropertiesFile.getAbsolutePath());
                 mPropertiesFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();

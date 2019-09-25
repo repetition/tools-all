@@ -14,7 +14,7 @@ public class FileBrowserProcessTest {
 
         FileBrowserProcess fileBrowserProcess = new FileBrowserProcess();
 
-        fileBrowserProcess.processCommand(null,null);
+        fileBrowserProcess.processCommand(null, null);
     }
 
     @Test
@@ -35,6 +35,27 @@ public class FileBrowserProcessTest {
         System.out.println(substring);
     }
 
+
+    @Test
+    public void listSort() {
+
+        List<String> list = new ArrayList<>();
+        list.add("c");
+        list.add("o");
+        list.add("b");
+        list.add("k");
+        list.add("z");
+        list.add("p");
+        list.add("p");
+
+        list.sort((o1, o2) -> {
+
+            return -o2.compareTo(o1);
+        });
+
+        System.out.println(list.size());
+
+    }
 
 
 }

@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class FileBrowserProcess extends ProcessBase {
@@ -123,6 +124,20 @@ public class FileBrowserProcess extends ProcessBase {
                 }
             }
         }
+        //增加排序,将文件夹排序在上方,文件在下方
+        fileItemInfoList.sort(new Comparator<FileItemInfo>() {
+            @Override
+            public int compare(FileItemInfo fileItemInfo1, FileItemInfo fileItemInfo2) {
+
+                if (fileItemInfo2.getIsDirectory()) {
+                    return 1;
+                }
+                if (fileItemInfo2.getIsFile()){
+                    return -1;
+                }
+                return 0;
+            }
+        });
         command.setContent(fileItemInfoList);
         //发送消息
         ctx.channel().writeAndFlush(command);
