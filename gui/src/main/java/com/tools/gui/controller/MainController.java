@@ -235,8 +235,12 @@ public class MainController extends BaseController{
         }
         //选择解压路径
         if (actionEvent.getSource() == mBTSelectUnZIP) {
-
-            createRemoteFileBrowserWindow();
+            RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
+            createRemoteFileBrowserWindow(fileFilter, filePath -> {
+                mTFWarUnPath.setText(filePath);
+                log.info("UnPath:" + filePath);
+                appendText("UnPath:" + filePath);
+            });
 
 /*            String dirPathStr = "";
             if (defaultUnZIPWarPath.equals("")) {
@@ -281,7 +285,18 @@ public class MainController extends BaseController{
 
         //选择静态资源解压路径
         if (actionEvent.getSource() == mBTSelectStaticUnZIP) {
-            String dirPathStr = "";
+
+            RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
+
+            createRemoteFileBrowserWindow(fileFilter,filePath -> {
+                mTFStaticWarUnPath.setText(filePath);
+                log.info("StaticUnPath:" + filePath);
+                appendText("StaticUnPath:" + filePath);
+            });
+
+
+
+/*            String dirPathStr = "";
             if (defaultStaticUnZIPWarPath.equals("")) {
                 dirPathStr = showSelectDirectoryChooser(null, "d:\\", stage);
             } else {
@@ -294,7 +309,7 @@ public class MainController extends BaseController{
 
             mTFStaticWarUnPath.setText(dirPathStr);
             log.info("StaticUnPath:" + dirPathStr);
-            appendText("StaticUnPath:" + dirPathStr);
+            appendText("StaticUnPath:" + dirPathStr);*/
         }
 
 
@@ -1585,7 +1600,7 @@ public class MainController extends BaseController{
         }
     }
 
-    public void createRemoteFileBrowserWindow() {
+    public void createRemoteFileBrowserWindow(RemoteFileBrowserController.FileFilter fileFilter, RemoteFileBrowserController.OnFileSelectorCallBack onFileSelectorCallBack) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/window_remote_file_browser.fxml"));
             Parent parent = fxmlLoader.load();
@@ -1596,8 +1611,8 @@ public class MainController extends BaseController{
 
             RemoteFileBrowserController controller = fxmlLoader.getController();
             controller.setStage(stage);
-            controller.setFileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
-            controller.setBaseController(this);
+            controller.setFileFilter(fileFilter);
+            controller.setOnFileSelectorCallBack(onFileSelectorCallBack);
             //设置图标
             stage.getIcons().addAll(new Image(this.getClass().getResource("/image/icons8_logo.png").toString()));
             stage.initStyle(StageStyle.DECORATED);
@@ -1609,10 +1624,6 @@ public class MainController extends BaseController{
         }
     }
 
-    @Override
-    protected void onFileSelector(String absolutePath) {
-        mTFWarUnPath.setText(absolutePath);
-    }
 
     private void requestFocus() {
         Platform.runLater(() -> {

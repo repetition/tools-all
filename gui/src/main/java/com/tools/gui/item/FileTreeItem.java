@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class FileTreeItem extends TreeItem<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(FileTreeItem.class);
@@ -36,6 +38,7 @@ public class FileTreeItem extends TreeItem<Object> {
     Image fileImage = new Image(getClass().getResourceAsStream("/image/white.png"), 18, 18, true, true);
 
     private String filter;
+    private List<String> suffixFilterList;
 
     public FileTreeItem(FileItemInfo fileItemInfo, Stage stage) {
         this.fileItemInfo = fileItemInfo;
@@ -95,15 +98,17 @@ public class FileTreeItem extends TreeItem<Object> {
                 fileChild.setFilter(fileItemInfo.getFilter());
                 FileTreeItem childItemNode = new FileTreeItem(fileChild, stage);
                 childItemNode.setFileBrowserProcess(fileBrowserProcess);
-                childItemNode.setFileFilter(filter);
+                childItemNode.setFileFilter(filter, suffixFilterList);
                 this.getChildren().add(childItemNode);
             }
+            //添加root节点时,默认将节点展开
+            setExpanded(true);
         }
         //判断子节点
         if (fileItemInfo.getNodeType().equals(FileItemInfo.CHILD)) {
             log.info(fileItemInfo.getAbsolutePath() + " isDir :" + fileItemInfo.getIsDirectory());
             FileTreeItem childItemNode = new FileTreeItem(fileItemInfo,stage);
-            childItemNode.setFileFilter(filter);
+            childItemNode.setFileFilter(filter, suffixFilterList);
             childItemNode.setFileBrowserProcess(fileBrowserProcess);
         }
 
@@ -121,9 +126,11 @@ public class FileTreeItem extends TreeItem<Object> {
     /**
      * 设置文件浏览处理器
      * @param filter  过滤器
+     * @param suffixFilterList
      */
-    public void setFileFilter(String filter) {
+    public void setFileFilter(String filter, List<String> suffixFilterList) {
         this.filter = filter;
+        this.suffixFilterList = suffixFilterList;
     }
 
     @Override
@@ -166,6 +173,7 @@ public class FileTreeItem extends TreeItem<Object> {
         FileItemInfo fileItemInfo = fileTreeItem.getFileItemInfo();
         //设置过滤器
         fileItemInfo.setFilter(this.filter);
+        fileItemInfo.setSuffixFilterList(this.suffixFilterList);
         Command command = new Command();
         command.setCommandCode(CommandMethodEnum.GET_FILE_DIRECTORY.getCode());
         command.setCommandMethod(CommandMethodEnum.GET_FILE_DIRECTORY.toString());
@@ -178,7 +186,7 @@ public class FileTreeItem extends TreeItem<Object> {
             //遍历创建添加子节点
             for (FileItemInfo itemInfo : fileItemInfoList) {
                 FileTreeItem childItem = new FileTreeItem(itemInfo, stage);
-                childItem.setFileFilter(filter);
+                childItem.setFileFilter(this.filter, suffixFilterList);
                 childItem.setFileBrowserProcess(fileBrowserProcess);
                 observableList.add(childItem);
             }

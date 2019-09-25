@@ -21,10 +21,27 @@ public class FileItemInfo implements Serializable {
     private boolean isFile;
     //绝对路径
     private String absolutePath;
-
+    /**
+     * 节点类型
+     */
     private String nodeType;
-
+    /**
+     * 文件过滤器
+     */
     private String filter;
+    /**
+     * 文件后缀名过滤器
+     */
+    private List<String> suffixFilterList;
+
+    public List<String> getSuffixFilterList() {
+        return suffixFilterList;
+    }
+
+    public FileItemInfo setSuffixFilterList(List<String> suffixFilterList) {
+        this.suffixFilterList = suffixFilterList;
+        return this;
+    }
 
     public String getFilter() {
         return filter;

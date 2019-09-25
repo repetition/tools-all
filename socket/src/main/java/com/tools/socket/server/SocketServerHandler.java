@@ -36,7 +36,6 @@ public class SocketServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("channelRead: " + ctx.channel().remoteAddress());
         ThreadPoolManager.getInstance().execute(() -> {
             ObserverManager.getSocketServerObserver().receive(msg, ctx);
         });

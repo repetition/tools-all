@@ -10,13 +10,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * 远程文件浏览器
@@ -26,10 +27,11 @@ public class RemoteFileBrowserController extends BaseController implements Initi
     public TreeView mTreeView;
     public Button mBTSelector;
     public Button mBTCancel;
+    public Label mLabelFilter;
     private Stage currentStage;
 
     private BaseController baseController;
-    private String filter;
+    private FileFilter fileFilter;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,7 +50,7 @@ public class RemoteFileBrowserController extends BaseController implements Initi
             for (FileItemInfo fileItemInfo : fileItemInfoList) {
                 Platform.runLater(() -> {
                     //设置过滤器
-                    rootNode.setFileFilter(filter);
+                    rootNode.setFileFilter(fileFilter.getFilter(), fileFilter.getSuffixFilterList());
                     //收到数据需要设置fileItemInfo,ROOT节点只会收到一个节点
                     rootNode.setFileItemInfo(fileItemInfo);
                 });
@@ -70,6 +72,10 @@ public class RemoteFileBrowserController extends BaseController implements Initi
                 return;
             }
             currentStage.setTitle("远程路径选择 - " + fileItemInfo.getAbsolutePath());
+
+            if (fileFilter.getSuffixFilterList().size()>=1) {
+                mLabelFilter.setText("filter : ("+String.join(",",fileFilter.getSuffixFilterList())+")");
+            }
         });
 
     }
@@ -79,10 +85,14 @@ public class RemoteFileBrowserController extends BaseController implements Initi
         log.info("setStage");
     }
 
-    public void setFileFilter(String filter) {
+    /**
+     * 设置文件过滤器
+     *
+     * @param fileFilter 过滤器
+     */
+    public void setFileFilter(FileFilter fileFilter) {
         log.info("setFileFilter");
-        this.filter =filter;
-
+        this.fileFilter = fileFilter;
     }
 
     public void setBaseController(BaseController baseController) {
@@ -95,10 +105,49 @@ public class RemoteFileBrowserController extends BaseController implements Initi
 
     public void onSelectorAction(ActionEvent actionEvent) {
         FileTreeItem selectedItem = (FileTreeItem) mTreeView.getSelectionModel().getSelectedItem();
-
-        baseController.onFileSelector(selectedItem.getFileItemInfo().getAbsolutePath());
-        log.info(selectedItem+"");
+        if (selectedItem != null) {
+            onFileSelectorCallBack.onFileSelector(selectedItem.getFileItemInfo().getAbsolutePath());
+            log.info(selectedItem + "");
+        }
         currentStage.close();
     }
 
+    private OnFileSelectorCallBack onFileSelectorCallBack;
+
+    public void setOnFileSelectorCallBack(OnFileSelectorCallBack onFileSelectorCallBack) {
+        this.onFileSelectorCallBack = onFileSelectorCallBack;
+    }
+
+    public interface OnFileSelectorCallBack {
+        void onFileSelector(String filePath);
+    }
+
+
+    public static class FileFilter {
+
+        private List<String> suffixFilterList;
+        private String filter;
+
+        public FileFilter(String filter, String... suffixFilters) {
+            this.filter = filter;
+            if (suffixFilters == null) {
+                this.suffixFilterList = Collections.unmodifiableList(new ArrayList<>());
+            } else {
+                this.suffixFilterList = Collections.unmodifiableList(Arrays.asList(suffixFilters.clone()));
+            }
+        }
+
+        public FileFilter(String filter) {
+            this.filter = filter;
+            this.suffixFilterList = Collections.unmodifiableList(new ArrayList<>());
+        }
+
+        public List<String> getSuffixFilterList() {
+            return suffixFilterList;
+        }
+
+        public String getFilter() {
+            return filter;
+        }
+    }
 }

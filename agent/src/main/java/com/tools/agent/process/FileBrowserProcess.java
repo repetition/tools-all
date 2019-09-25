@@ -66,6 +66,7 @@ public class FileBrowserProcess extends ProcessBase {
         //获取子目录
         if (fileItemInfo.getNodeType().equals(FileItemInfo.CHILD)) {
             String filter = fileItemInfo.getFilter();
+            List<String> suffixFilterList = fileItemInfo.getSuffixFilterList();
             String absolutePath = fileItemInfo.getAbsolutePath();
             File file = new File(absolutePath);
             File[] listFiles = file.listFiles(pathname -> {
@@ -81,7 +82,30 @@ public class FileBrowserProcess extends ProcessBase {
                 }
 
                 if (filter.equals(FileItemInfo.FILTER_ALL)) {
-                    return true;
+                    //文件夹不过滤
+                    if (pathname.isDirectory()) {
+                        return true;
+                    }
+                    //判断后缀过滤不能为空
+                    if (null==suffixFilterList || suffixFilterList.size()==0) {
+                        //没有后缀过滤器默认不过滤,返回所有类型文件
+                        return true;
+                    }
+
+                    //获取文件名
+                    String fileName = pathname.getName();
+
+                    int lastIndexOf = fileName.lastIndexOf(".");
+                    //文件如果没有格式,则过滤
+                    if (lastIndexOf == -1) {
+                        return false;
+                    }
+                    //截取后缀
+                    String suffix = fileName.substring(lastIndexOf, fileName.length());
+                    //和文件过滤器集合进行对比
+                    if (suffixFilterList.contains(suffix)) {
+                        return true;
+                    }
                 }
 
                 return false;

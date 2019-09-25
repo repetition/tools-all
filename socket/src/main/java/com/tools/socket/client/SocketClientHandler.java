@@ -34,7 +34,6 @@ public class SocketClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)  {
-        log.info("channelRead" + ctx.channel().remoteAddress());
         ThreadPoolManager.getInstance().execute(() -> {
 
             if (msg instanceof Command) {
