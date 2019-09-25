@@ -11,6 +11,7 @@ import com.tools.gui.config.Config;
 import com.tools.gui.utils.view.FileChooserUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.RestartUtils;
+import com.tools.socket.bean.FileItemInfo;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -59,16 +60,17 @@ public class JFXConfigAddController extends BaseController implements Initializa
 
     public void onConfigAddAction(ActionEvent actionEvent) {
         //文件选择器
-        String filePath = FileChooserUtils.showSelectFileChooser(new FileChooser.ExtensionFilter("config", "*.xml", "*.properties"),"D://",stage);
-        File file = new File(filePath);
-        if (!file.getName().equals("")&&!file.isDirectory()) {
-            //保存一个没有后缀名的
-            String substring = file.getName().substring(0, file.getName().lastIndexOf("."));
-            //key改成文件路径的md5值,防止存在重复的文件名
-            propertyUtils.setOrderedProperty(Utils.getMD5(filePath),filePath);
-            //将文件添加到TreeTableView上
-            observableList.add(new ConfigFileInfo(file.getName(),file.getAbsolutePath()));
-        }
+        RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_ALL,".xml", ".properties");
+        FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter,fileItemInfo -> {
+            String filePath = fileItemInfo.getAbsolutePath();
+            String fileName = fileItemInfo.getFileName();
+            if (fileItemInfo.getIsFile()) {
+                //key改成文件路径的md5值,防止存在重复的文件名
+                propertyUtils.setOrderedProperty(Utils.getMD5(filePath),filePath);
+                //将文件添加到TreeTableView上
+                observableList.add(new ConfigFileInfo(fileName,filePath));
+            }
+        });
     }
 
     public void onConfigRemoveAction(ActionEvent actionEvent) {

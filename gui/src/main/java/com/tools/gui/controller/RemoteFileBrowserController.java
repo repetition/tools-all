@@ -106,7 +106,7 @@ public class RemoteFileBrowserController extends BaseController implements Initi
     public void onSelectorAction(ActionEvent actionEvent) {
         FileTreeItem selectedItem = (FileTreeItem) mTreeView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
-            onFileSelectorCallBack.onFileSelector(selectedItem.getFileItemInfo().getAbsolutePath());
+            onFileSelectorCallBack.onFileSelector(selectedItem.getFileItemInfo());
             log.info(selectedItem + "");
         }
         currentStage.close();
@@ -119,7 +119,7 @@ public class RemoteFileBrowserController extends BaseController implements Initi
     }
 
     public interface OnFileSelectorCallBack {
-        void onFileSelector(String filePath);
+        void onFileSelector(FileItemInfo fileItemInfo);
     }
 
 

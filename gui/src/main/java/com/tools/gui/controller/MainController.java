@@ -8,15 +8,12 @@ import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.gui.debug.DebugController;
 import com.tools.gui.item.FileTreeItem;
+import com.tools.gui.utils.view.*;
 import com.tools.socket.bean.FileItemInfo;
 import com.tools.gui.jenkins.ProjectBuild;
 import com.tools.gui.main.Main;
 import com.tools.gui.process.*;
 import com.tools.gui.process.sync.PushConfigProcess;
-import com.tools.gui.utils.view.AlertUtils;
-import com.tools.gui.utils.view.JFXSnackbarUtils;
-import com.tools.gui.utils.view.ProgressUtils;
-import com.tools.gui.utils.view.RestartUtils;
 import com.tools.service.constant.DeployTypeEnum;
 import com.tools.service.constant.ServerStartTypeEnum;
 import com.tools.service.constant.TaskEnum;
@@ -67,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
+import static com.tools.gui.config.ApplicationConfig.DEPLOY_CONFIG_FILE_PATH;
 import static com.tools.gui.utils.view.AlertUtils.showAlert;
 import static com.tools.gui.utils.view.FileChooserUtils.showSelectDirectoryChooser;
 import static com.tools.gui.utils.view.FileChooserUtils.showSelectFileChooser;
@@ -236,7 +234,9 @@ public class MainController extends BaseController{
         //选择解压路径
         if (actionEvent.getSource() == mBTSelectUnZIP) {
             RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
-            createRemoteFileBrowserWindow(fileFilter, filePath -> {
+            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter, fileItemInfo -> {
+                String filePath = fileItemInfo.getAbsolutePath();
+
                 mTFWarUnPath.setText(filePath);
                 log.info("UnPath:" + filePath);
                 appendText("UnPath:" + filePath);
@@ -288,7 +288,8 @@ public class MainController extends BaseController{
 
             RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
 
-            createRemoteFileBrowserWindow(fileFilter,filePath -> {
+            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter,fileItemInfo -> {
+                String filePath = fileItemInfo.getAbsolutePath();
                 mTFStaticWarUnPath.setText(filePath);
                 log.info("StaticUnPath:" + filePath);
                 appendText("StaticUnPath:" + filePath);
@@ -568,7 +569,7 @@ public class MainController extends BaseController{
 
     @FXML
     public void initialize() {
-        propertyUtils = new PropertyUtils(System.getProperty("conf.path") + "/" + ApplicationConfig.DEPLOY_CONFIG_FILE_NAME);
+        propertyUtils = new PropertyUtils(DEPLOY_CONFIG_FILE_PATH);
         propertyUtils.getConfiguration2ReloadProperties();
         //  OutputStreamConsole console = new OutputStreamConsole(mTAConsole);
         // System.setOut(new PrintStream(console, true));
@@ -1600,29 +1601,7 @@ public class MainController extends BaseController{
         }
     }
 
-    public void createRemoteFileBrowserWindow(RemoteFileBrowserController.FileFilter fileFilter, RemoteFileBrowserController.OnFileSelectorCallBack onFileSelectorCallBack) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/window_remote_file_browser.fxml"));
-            Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("远程文件浏览器");
 
-            RemoteFileBrowserController controller = fxmlLoader.getController();
-            controller.setStage(stage);
-            controller.setFileFilter(fileFilter);
-            controller.setOnFileSelectorCallBack(onFileSelectorCallBack);
-            //设置图标
-            stage.getIcons().addAll(new Image(this.getClass().getResource("/image/icons8_logo.png").toString()));
-            stage.initStyle(StageStyle.DECORATED);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(this.stage);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private void requestFocus() {

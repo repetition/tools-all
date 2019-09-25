@@ -1,10 +1,14 @@
 package com.tools.gui.utils.view;
 
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import com.tools.gui.controller.RemoteFileBrowserController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.*;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileChooserUtils {
 
@@ -57,5 +61,30 @@ public class FileChooserUtils {
         //获取选择的文件
         File selectDirectory = directoryChooser.showDialog(stage);
         return null == selectDirectory ? "" : selectDirectory.getAbsoluteFile().toString();
+    }
+
+
+    public static void showRemoteFileBrowserWindow(Stage parentStage,RemoteFileBrowserController.FileFilter fileFilter, RemoteFileBrowserController.OnFileSelectorCallBack onFileSelectorCallBack) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(FileChooserUtils.class.getClass().getResource("/fxml/window_remote_file_browser.fxml"));
+            Parent parent = fxmlLoader.load();
+            Scene scene = new Scene(parent);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("远程文件浏览器");
+
+            RemoteFileBrowserController controller = fxmlLoader.getController();
+            controller.setStage(stage);
+            controller.setFileFilter(fileFilter);
+            controller.setOnFileSelectorCallBack(onFileSelectorCallBack);
+            //设置图标
+            stage.getIcons().addAll(new Image(FileChooserUtils.class.getClass().getResource("/image/icons8_logo.png").toString()));
+            stage.initStyle(StageStyle.DECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
