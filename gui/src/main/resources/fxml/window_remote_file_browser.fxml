@@ -14,11 +14,11 @@
     <children>
         <TreeView fx:id="mTreeView" VBox.vgrow="SOMETIMES" />
 
-        <GridPane alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+        <GridPane alignment="CENTER_LEFT" VBox.vgrow="NEVER" gridLinesVisible="true" fx:id="gridPane" >
             <columnConstraints>
-                <ColumnConstraints />
-                <ColumnConstraints halignment="CENTER" />
-                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints fx:id="column1" hgrow="SOMETIMES"/>
+                <ColumnConstraints fx:id="column2" halignment="CENTER" hgrow="SOMETIMES"/>
+                <ColumnConstraints fx:id="column3" hgrow="SOMETIMES"/>
             </columnConstraints>
 
             <rowConstraints>
@@ -27,13 +27,13 @@
 
             <children>
 
-                <Label fx:id="mLabelFilter" alignment="CENTER_RIGHT" GridPane.columnIndex="0" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="0">
+                <Label fx:id="mLabelFilter"  GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="220">
                     <GridPane.margin>
                         <Insets left="10.0" />
                     </GridPane.margin>
                 </Label>
 
-                <HBox alignment="CENTER" spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="SOMETIMES">
+                <HBox alignment="CENTER" spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="NEVER">
                     <children>
                         <Button fx:id="mBTSelector" alignment="CENTER" onAction="#onSelectorAction" text="选择" />
                         <Button fx:id="mBTCancel" alignment="CENTER" onAction="#onCancelAction" text="取消" />

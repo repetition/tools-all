@@ -12,6 +12,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,10 @@ public class RemoteFileBrowserController extends BaseController implements Initi
     public Button mBTSelector;
     public Button mBTCancel;
     public Label mLabelFilter;
+    public ColumnConstraints column1;
+    public GridPane gridPane;
+    public ColumnConstraints column2;
+    public ColumnConstraints column3;
     private Stage currentStage;
 
     private BaseController baseController;
@@ -36,6 +42,10 @@ public class RemoteFileBrowserController extends BaseController implements Initi
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("initialize");
+        //让三个列自适应  将三个列的宽度  = gridPane宽度的三分之一
+        column1.percentWidthProperty().bind(gridPane.widthProperty().divide(gridPane.getColumnConstraints().size()));
+        column2.percentWidthProperty().bind(gridPane.widthProperty().divide(gridPane.getColumnConstraints().size()));
+        column3.percentWidthProperty().bind(gridPane.widthProperty().divide(gridPane.getColumnConstraints().size()));
 
         FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
 
