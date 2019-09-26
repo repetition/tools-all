@@ -20,13 +20,13 @@ public class SyncConfigProcess extends ProcessBase {
         int code = command.getCommandCode();
         CommandMethodEnum methodEnum = CommandMethodEnum.getEnum(code);
 
-        switch (methodEnum){
+        switch (methodEnum) {
             case SYNC_CR_CONFIG:
-                syncCRConfig(command,ctx);
+                syncDeployConfig(command, ctx);
                 break;
 
             case SET_CR_CONFIG:
-                setCRConfig(command,ctx);
+                setDeployConfig(command, ctx);
                 break;
         }
 
@@ -34,16 +34,22 @@ public class SyncConfigProcess extends ProcessBase {
 
     /**
      * 保存回传的配置
+     *
      * @param command 指令
-     * @param ctx  tcp连接
+     * @param ctx     tcp连接
      */
-    private void setCRConfig(Command command, ChannelHandlerContext ctx) {
-        Map<String,String> map = (Map<String, String>) command.getContent();
-        String confPath = ApplicationContext.getApplicationConfPath();
-        PropertyUtils propertyUtils = new PropertyUtils(new File(confPath + ApplicationConfig.DEPLOY_CONFIG_FILE_NAME));
-        propertyUtils.getConfiguration2Properties();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            propertyUtils.setConfigurationProperty(entry.getKey(),entry.getValue());
+    private void setDeployConfig(Command command, ChannelHandlerContext ctx) {
+        Map<String, Map<String, String>> map = (Map<String, Map<String, String>>) command.getContent();
+
+        for (Map.Entry<String, Map<String, String>> stringMapEntry : map.entrySet()) {
+
+            PropertyUtils propertyUtils = new PropertyUtils(new File(ApplicationConfig.getApplicationConfPath()+stringMapEntry.getKey()));
+            propertyUtils.getConfiguration2Properties();
+            Map<String, String> value = stringMapEntry.getValue();
+
+            for (Map.Entry<String, String> stringEntry : value.entrySet()) {
+                propertyUtils.setConfigurationProperty(stringEntry.getKey(), stringEntry.getValue());
+            }
         }
         command.setContent("ok");
         ctx.channel().writeAndFlush(command);
@@ -51,15 +57,15 @@ public class SyncConfigProcess extends ProcessBase {
 
     /**
      * 将本地的配置回传
+     *
      * @param command 指令
-     * @param ctx  tcp连接
+     * @param ctx     tcp连接
      */
-    private void syncCRConfig(Command command, ChannelHandlerContext ctx) {
-        String confPath = ApplicationContext.getApplicationConfPath();
-
-        Map<String,String> configMap = new HashMap<>();
-
-        PropertyUtils propertyUtils = new PropertyUtils(new File(confPath + ApplicationConfig.DEPLOY_CONFIG_FILE_NAME));
+    private void syncDeployConfig(Command command, ChannelHandlerContext ctx) {
+        Map<String, Map<String, String>> fileListMap = new HashMap<>();
+        Map<String, String> configMap = new HashMap<>();
+//deploy.properties
+        PropertyUtils propertyUtils = new PropertyUtils(new File(ApplicationConfig.getDeployConfigFilePath()));
         propertyUtils.getConfiguration2Properties();
         Iterator<String> keys = propertyUtils.getConfigurationPropertyKeys();
         //如果当前的配置 文件key为空,则向服务器获取配置
@@ -72,9 +78,23 @@ public class SyncConfigProcess extends ProcessBase {
         while (keys.hasNext()) {
             String key = keys.next();
             String value = propertyUtils.getConfigurationPropertyStringByKey(key);
-            configMap.put(key,value);
+            configMap.put(key, value);
         }
-        command.setContent(configMap);
+        fileListMap.put(ApplicationConfig.DEPLOY_CONFIG_FILE_NAME, configMap);
+//config_list.properties
+        propertyUtils = new PropertyUtils(new File(ApplicationConfig.getConfigListFilePath()));
+        propertyUtils.getConfiguration2Properties();
+
+        keys = propertyUtils.getConfigurationPropertyKeys();
+        configMap = new HashMap<>();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            String value = propertyUtils.getConfigurationPropertyStringByKey(key);
+            configMap.put(key, value);
+        }
+        fileListMap.put(ApplicationConfig.CONFIG_LIST_FILE_NAME, configMap);
+
+        command.setContent(fileListMap);
         ctx.channel().writeAndFlush(command);
     }
 

@@ -14,7 +14,7 @@
     <children>
         <TreeView fx:id="mTreeView" VBox.vgrow="SOMETIMES" />
 
-        <GridPane alignment="CENTER_LEFT" VBox.vgrow="NEVER" gridLinesVisible="true" fx:id="gridPane" >
+        <GridPane alignment="CENTER_LEFT" VBox.vgrow="NEVER" gridLinesVisible="false" fx:id="gridPane" >
             <columnConstraints>
                 <ColumnConstraints fx:id="column1" hgrow="SOMETIMES"/>
                 <ColumnConstraints fx:id="column2" halignment="CENTER" hgrow="SOMETIMES"/>
