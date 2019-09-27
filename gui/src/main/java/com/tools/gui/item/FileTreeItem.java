@@ -2,6 +2,7 @@ package com.tools.gui.item;
 
 import com.tools.gui.process.CommandMethodEnum;
 import com.tools.gui.process.FileBrowserProcess;
+import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.ProgressUtils;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileItemInfo;
@@ -11,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,32 +176,50 @@ public class FileTreeItem extends TreeItem<Object> {
         //设置过滤器
         fileItemInfo.setFilter(this.filter);
         fileItemInfo.setSuffixFilterList(this.suffixFilterList);
+        //添加子节点回调监听
+        fileBrowserProcess.setOnFileBrowserSyncListener(new FileBrowserProcess.OnFileBrowserSyncListener() {
+            @Override
+            public void onDirectoryUpdate(List<FileItemInfo> fileItemInfoList) {
+                ObservableList<FileTreeItem> observableList = FXCollections.observableArrayList();
+                //遍历创建添加子节点
+                for (FileItemInfo itemInfo : fileItemInfoList) {
+                    FileTreeItem childItem = new FileTreeItem(itemInfo, stage);
+                    childItem.setFileFilter(filter, suffixFilterList);
+                    childItem.setFileBrowserProcess(fileBrowserProcess);
+                    observableList.add(childItem);
+                }
+                log.info(getFileItemInfo().getAbsolutePath());
+                //将子节点添加到当前节点中
+                fileTreeItem.getChildren().setAll(observableList);
+                //加载完成,关闭进度条
+                Platform.runLater(() -> {
+                    progress.close();
+                });
+            }
+            @Override
+            public void onError() {
+                Platform.runLater(() -> {
+                    if (progress.isShowing()) {
+                        progress.close();
+                    }
+                });
+                JFXSnackbarUtils.show("没有连接agent服务,请重新连接agent服务",2000,(Pane) stage.getScene().getRoot());
+            }
+        });
+
+        //发送获取子节点的指令
         Command command = new Command();
         command.setCommandCode(CommandMethodEnum.GET_FILE_DIRECTORY.getCode());
         command.setCommandMethod(CommandMethodEnum.GET_FILE_DIRECTORY.toString());
         command.setContent(fileItemInfo);
         //发动指令到agent
         fileBrowserProcess.sendMessage(command);
-        //添加子节点回调监听
-        fileBrowserProcess.setOnFileBrowserSyncListener(fileItemInfoList -> {
-            ObservableList<FileTreeItem> observableList = FXCollections.observableArrayList();
-            //遍历创建添加子节点
-            for (FileItemInfo itemInfo : fileItemInfoList) {
-                FileTreeItem childItem = new FileTreeItem(itemInfo, stage);
-                childItem.setFileFilter(this.filter, suffixFilterList);
-                childItem.setFileBrowserProcess(fileBrowserProcess);
-                observableList.add(childItem);
-            }
-            log.info(this.getFileItemInfo().getAbsolutePath());
-            //将子节点添加到当前节点中
-            fileTreeItem.getChildren().setAll(observableList);
-            //加载完成,关闭进度条
-            Platform.runLater(() -> {
-                progress.close();
-            });
-        });
 
         return FXCollections.emptyObservableList();
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
 }

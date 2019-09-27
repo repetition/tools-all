@@ -23,6 +23,12 @@ public class FileBrowserProcess extends ProcessBase {
         }
     }
 
+    @Override
+    protected void error() {
+        super.error();
+        onFileBrowserSyncListener.onError();
+    }
+
     private void fileBrowser(Command command, ChannelHandlerContext ctx) {
         List<FileItemInfo> fileItemInfoList = (List<FileItemInfo>) command.getContent();
         onFileBrowserSyncListener.onDirectoryUpdate(fileItemInfoList);
@@ -36,5 +42,6 @@ public class FileBrowserProcess extends ProcessBase {
 
     public interface OnFileBrowserSyncListener {
         void onDirectoryUpdate(List<FileItemInfo> fileItemInfoList);
+        void onError();
     }
 }

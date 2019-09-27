@@ -109,12 +109,20 @@ public class DebugController extends BaseController {
         FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
         //设置处理器,用来发送和监听指令
         rootNode.setFileBrowserProcess(fileBrowserProcess);
-        fileBrowserProcess.setOnFileBrowserSyncListener(fileItemInfoList -> {
-            for (FileItemInfo fileItemInfo : fileItemInfoList) {
-                Platform.runLater(() -> {
-                    //收到数据需要设置fileItemInfo,ROOT节点只会收到一个节点
-                    rootNode.setFileItemInfo(fileItemInfo);
-                });
+        fileBrowserProcess.setOnFileBrowserSyncListener(new FileBrowserProcess.OnFileBrowserSyncListener() {
+            @Override
+            public void onDirectoryUpdate(List<FileItemInfo> fileItemInfoList) {
+                for (FileItemInfo fileItemInfo : fileItemInfoList) {
+                    Platform.runLater(() -> {
+                        //收到数据需要设置fileItemInfo,ROOT节点只会收到一个节点
+                        rootNode.setFileItemInfo(fileItemInfo);
+                    });
+                }
+            }
+
+            @Override
+            public void onError() {
+
             }
         });
     }

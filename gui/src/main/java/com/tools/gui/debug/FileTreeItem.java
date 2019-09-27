@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class FileTreeItem extends TreeItem<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(FileTreeItem.class);
@@ -162,21 +164,29 @@ public class FileTreeItem extends TreeItem<Object> {
         //发动指令到agent
         fileBrowserProcess.sendMessage(command);
         //添加子节点回调监听
-        fileBrowserProcess.setOnFileBrowserSyncListener(fileItemInfoList -> {
-            ObservableList<FileTreeItem> observableList = FXCollections.observableArrayList();
-            //遍历创建添加子节点
-            for (FileItemInfo itemInfo : fileItemInfoList) {
-                FileTreeItem childItem = new FileTreeItem(itemInfo, stage);
-                childItem.setFileBrowserProcess(fileBrowserProcess);
-                observableList.add(childItem);
+        fileBrowserProcess.setOnFileBrowserSyncListener(new FileBrowserProcess.OnFileBrowserSyncListener() {
+            @Override
+            public void onDirectoryUpdate(List<FileItemInfo> fileItemInfoList) {
+                ObservableList<FileTreeItem> observableList = FXCollections.observableArrayList();
+                //遍历创建添加子节点
+                for (FileItemInfo itemInfo : fileItemInfoList) {
+                    FileTreeItem childItem = new FileTreeItem(itemInfo, stage);
+                    childItem.setFileBrowserProcess(fileBrowserProcess);
+                    observableList.add(childItem);
+                }
+                log.info(getFileItemInfo().getAbsolutePath());
+                //将子节点添加到当前节点中
+                fileTreeItem.getChildren().setAll(observableList);
+                //加载完成,关闭进度条
+                Platform.runLater(() -> {
+                    progress.close();
+                });
             }
-            log.info(this.getFileItemInfo().getAbsolutePath());
-            //将子节点添加到当前节点中
-            fileTreeItem.getChildren().setAll(observableList);
-            //加载完成,关闭进度条
-            Platform.runLater(() -> {
-                progress.close();
-            });
+
+            @Override
+            public void onError() {
+
+            }
         });
 
         return FXCollections.emptyObservableList();
