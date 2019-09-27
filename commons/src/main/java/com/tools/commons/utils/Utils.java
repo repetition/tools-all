@@ -290,4 +290,19 @@ public class Utils {
         return uuid;
 //  return UUID.randomUUID().toString().replace("-", "").toLowerCase();
     }
+
+    /**
+     * 替换地址
+     * @param sourceStr 源字符串
+     * @param address
+     * @return 返回替换后的字符串
+     */
+    public   static String replaceAddress(String sourceStr, String address){
+        //截取符合规则的ip地址
+        address = address.split(":")[0].split("/")[1];
+
+        sourceStr = sourceStr.replaceAll("(\\d+[.]\\d+[.]\\d+[.]\\d+)",address);
+
+        return sourceStr;
+    }
 }

@@ -2,9 +2,11 @@ package com.tools.agent.process;
 
 
 import com.tools.agent.ApplicationConfig;
+import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.service.context.ApplicationContext;
 import com.tools.socket.bean.Command;
+import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.File;
@@ -28,6 +30,61 @@ public class SyncConfigProcess extends ProcessBase {
             case SET_CR_CONFIG:
                 setDeployConfig(command, ctx);
                 break;
+
+            case SYNC_APACHE_CONFIG:
+                syncApacheConfig(command, ctx);
+                break;
+
+            case GET_CONFIG_FILE:
+
+                getConfigFile(command, ctx);
+
+                break;
+        }
+
+    }
+
+    private void getConfigFile(Command command, ChannelHandlerContext ctx) {
+
+        Map<String, String> content = (Map<String, String>) command.getContent();
+
+        String filePath = content.get("filePath");
+
+        byte[] bytes = FileUtils.readFileToByte(filePath);
+
+        File file = new File(filePath);
+        FileUpload fileUpload = new FileUpload();
+
+        fileUpload.setFile(file);
+        fileUpload.setFileName(file.getName());
+        fileUpload.setBytes(bytes);
+        fileUpload.setState(FileUpload.SUCCESS);
+        command.setContent(fileUpload);
+        ctx.channel().writeAndFlush(command);
+    }
+
+    private void syncApacheConfig(Command command, ChannelHandlerContext ctx) {
+
+        Object content = command.getContent();
+
+        if (content instanceof Map) {
+
+            Map<String, Map<String, String>> contentMaps = ((Map) content);
+
+            Map<String, String> httpdConfigMap = contentMaps.get("httpdConfig");
+
+            for (Map.Entry<String, String> stringEntry : httpdConfigMap.entrySet()) {
+                //保存配置
+                FileUtils.saveFile(stringEntry.getValue(), ApplicationConfig.getApplicationConfPath() + stringEntry.getKey());
+            }
+            Map<String, String> workerConfigMap = contentMaps.get("workerConfig");
+            for (Map.Entry<String, String> stringEntry : workerConfigMap.entrySet()) {
+                //保存配置
+                FileUtils.saveFile(stringEntry.getValue(), ApplicationConfig.getApplicationConfPath() + stringEntry.getKey());
+            }
+
+            command.setContent("ok");
+            ctx.channel().writeAndFlush(command);
         }
 
     }
@@ -39,17 +96,10 @@ public class SyncConfigProcess extends ProcessBase {
      * @param ctx     tcp连接
      */
     private void setDeployConfig(Command command, ChannelHandlerContext ctx) {
-        Map<String, Map<String, String>> map = (Map<String, Map<String, String>>) command.getContent();
+        Map<String, String> map = (Map<String, String>) command.getContent();
 
-        for (Map.Entry<String, Map<String, String>> stringMapEntry : map.entrySet()) {
-
-            PropertyUtils propertyUtils = new PropertyUtils(new File(ApplicationConfig.getApplicationConfPath()+stringMapEntry.getKey()));
-            propertyUtils.getConfiguration2Properties();
-            Map<String, String> value = stringMapEntry.getValue();
-
-            for (Map.Entry<String, String> stringEntry : value.entrySet()) {
-                propertyUtils.setConfigurationProperty(stringEntry.getKey(), stringEntry.getValue());
-            }
+        for (Map.Entry<String, String> stringMapEntry : map.entrySet()) {
+            FileUtils.saveFile(ApplicationConfig.getApplicationConfPath() + stringMapEntry.getKey(), stringMapEntry.getValue());
         }
         command.setContent("ok");
         ctx.channel().writeAndFlush(command);
@@ -62,8 +112,7 @@ public class SyncConfigProcess extends ProcessBase {
      * @param ctx     tcp连接
      */
     private void syncDeployConfig(Command command, ChannelHandlerContext ctx) {
-        Map<String, Map<String, String>> fileListMap = new HashMap<>();
-        Map<String, String> configMap = new HashMap<>();
+        Map<String, String> fileListMap = new HashMap<>();
 //deploy.properties
         PropertyUtils propertyUtils = new PropertyUtils(new File(ApplicationConfig.getDeployConfigFilePath()));
         propertyUtils.getConfiguration2Properties();
@@ -75,24 +124,12 @@ public class SyncConfigProcess extends ProcessBase {
             ctx.channel().writeAndFlush(command);
             return;
         }
-        while (keys.hasNext()) {
-            String key = keys.next();
-            String value = propertyUtils.getConfigurationPropertyStringByKey(key);
-            configMap.put(key, value);
-        }
-        fileListMap.put(ApplicationConfig.DEPLOY_CONFIG_FILE_NAME, configMap);
-//config_list.properties
-        propertyUtils = new PropertyUtils(new File(ApplicationConfig.getConfigListFilePath()));
-        propertyUtils.getConfiguration2Properties();
 
-        keys = propertyUtils.getConfigurationPropertyKeys();
-        configMap = new HashMap<>();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            String value = propertyUtils.getConfigurationPropertyStringByKey(key);
-            configMap.put(key, value);
-        }
-        fileListMap.put(ApplicationConfig.CONFIG_LIST_FILE_NAME, configMap);
+        String deploy_Config_str = FileUtils.readFile(ApplicationConfig.getDeployConfigFilePath());
+        fileListMap.put(ApplicationConfig.DEPLOY_CONFIG_FILE_NAME, deploy_Config_str);
+
+        String config_List_str = FileUtils.readFile(ApplicationConfig.getConfigListFilePath());
+        fileListMap.put(ApplicationConfig.CONFIG_LIST_FILE_NAME, config_List_str);
 
         command.setContent(fileListMap);
         ctx.channel().writeAndFlush(command);

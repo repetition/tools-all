@@ -74,7 +74,6 @@ public class FileChooserUtils {
             stage.setTitle("远程文件浏览器");
 
             RemoteFileBrowserController controller = fxmlLoader.getController();
-            controller.setStage(stage);
             controller.setFileFilter(fileFilter);
             controller.setOnFileSelectorCallBack(onFileSelectorCallBack);
             //设置图标
@@ -83,6 +82,7 @@ public class FileChooserUtils {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(parentStage);
             stage.show();
+            controller.setStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }

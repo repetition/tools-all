@@ -1,5 +1,6 @@
 package com.tools.gui.process;
 
+import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.IOUtils;
 import com.tools.commons.utils.StringUtils;
 import com.tools.service.context.ApplicationContext;
@@ -9,18 +10,20 @@ import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import static com.tools.commons.utils.Utils.replaceAddress;
 
 public class DeployProcess extends ProcessBase {
     private static final Logger log = LoggerFactory.getLogger(DeployProcess.class);
+    //保存正在传输的文件总数
     private LinkedList<CommandMethodEnum> commandMethodEnumList = new LinkedList<>();
 
     @Override
@@ -39,6 +42,9 @@ public class DeployProcess extends ProcessBase {
             case SYNC_UPLOAD_WAR:
                 syncUploadWar(command, ctx);
                 break;
+            case SYNC_APACHE_CONFIG:
+                syncApacheConfig(command, ctx);
+                break;
 
             case DEPLOY_START_PROGRESS:
                 if (command.getContent() instanceof DeployState) {
@@ -54,6 +60,7 @@ public class DeployProcess extends ProcessBase {
                 onDeployProcessorListener.onDeployProcessorEnd();
                 break;
         }
+
     }
 
     @Override
@@ -67,6 +74,7 @@ public class DeployProcess extends ProcessBase {
             commandMethodEnumList.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
             log.info(commandMethodEnumList.size() + "");
             if (commandMethodEnumList.size() == 0) {
+                //文件传输成功,发送开始部署指令
                 Command command = new Command();
                 command.setCommandCode(CommandMethodEnum.DEPLOY_START.getCode());
                 command.setCommandMethod(CommandMethodEnum.DEPLOY_START.toString());
@@ -78,6 +86,75 @@ public class DeployProcess extends ProcessBase {
             deployState.setE(CommandMethodEnum.valueOf(fileUpload.getFileType()).getDesc() + "失败!" + "\r\n" + fileUpload.getDesc());
             onDeployProcessorListener.onDeployProcessFail(deployState);
         }
+    }
+
+    private void syncApacheConfig(Command command, ChannelHandlerContext ctx) {
+        commandMethodEnumList.add(CommandMethodEnum.getEnum(command.getCommandCode()));
+
+        if (command.getContent()!=null && command.getContent() instanceof String){
+            String content = command.getContent().toString();
+            if (content.equals("ok")) {
+                commandMethodEnumList.remove(CommandMethodEnum.getEnum(command.getCommandCode()));
+            }
+            if (commandMethodEnumList.size() == 0) {
+                //文件传输成功,发送开始部署指令
+                command.setCommandCode(CommandMethodEnum.DEPLOY_START.getCode());
+                command.setCommandMethod(CommandMethodEnum.DEPLOY_START.toString());
+                ctx.channel().writeAndFlush(command);
+            }
+            return;
+        }
+        DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
+
+        String httpdOldChangedPath = deployConfigModel.getHttpdOldChangedPath();
+        String httpdZYFLChangedPath = deployConfigModel.getHttpdZYFLChangedPath();
+        String httpdUpload1TomcatChangedPath = deployConfigModel.getHttpdUpload1TomcatChangedPath();
+        String httpdUploadChangedPath = deployConfigModel.getHttpdUploadChangedPath();
+        String httpdIPMChangedPath = deployConfigModel.getHttpdIPMChangedPath();
+
+        String address = ctx.channel().remoteAddress().toString();
+
+        Map<String,String> httpdConfigInfoMap = new HashedMap();
+
+        String httpdOld = FileUtils.readFile(httpdOldChangedPath);
+        //替换ip
+        httpdOld = replaceAddress(httpdOld,address);
+        httpdConfigInfoMap.put(new File(httpdOldChangedPath).getName(),httpdOld);
+
+        String httpdZYFL = FileUtils.readFile(httpdZYFLChangedPath);
+        //替换ip
+        httpdZYFL = replaceAddress(httpdZYFL, address);
+        httpdConfigInfoMap.put(new File(httpdZYFLChangedPath).getName(),httpdZYFL);
+        //单tomcat替换ip
+        String httpdUpload1Tomcat = FileUtils.readFile(httpdUpload1TomcatChangedPath);
+        //替换ip
+        httpdUpload1Tomcat = replaceAddress(httpdUpload1Tomcat, address);
+        httpdConfigInfoMap.put(new File(httpdUpload1TomcatChangedPath).getName(),httpdUpload1Tomcat);
+
+        String httpdUpload = FileUtils.readFile(httpdUploadChangedPath);
+        //替换ip
+        httpdUpload = replaceAddress(httpdUpload, address);
+        httpdConfigInfoMap.put(new File(httpdUploadChangedPath).getName(),httpdUpload);
+
+        String httpdIPM = FileUtils.readFile(httpdIPMChangedPath);
+        //替换ip
+        httpdIPM = replaceAddress(httpdIPM, address);
+        httpdConfigInfoMap.put(new File(httpdIPMChangedPath).getName(),httpdIPM);
+
+
+        String workersOldChangedPath = deployConfigModel.getWorkersOldChangedPath();
+        String wordkersUploadChangedPath = deployConfigModel.getWordkersUploadChangedPath();
+
+        Map<String,String> workerConfigInfoMap = new HashedMap();
+        workerConfigInfoMap.put(new File(workersOldChangedPath).getName(),FileUtils.readFile(workersOldChangedPath));
+        workerConfigInfoMap.put(new File(wordkersUploadChangedPath).getName(),FileUtils.readFile(wordkersUploadChangedPath));
+
+
+        Map<String,Map<String,String>> configInfoMaps = new HashedMap();
+        configInfoMaps.put("httpdConfig",httpdConfigInfoMap);
+        configInfoMaps.put("workerConfig",workerConfigInfoMap);
+        command.setContent(configInfoMaps);
+        super.sendMessage(command);
     }
 
     private void syncCMWar(Command command, ChannelHandlerContext ctx) {

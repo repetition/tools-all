@@ -95,7 +95,7 @@ public class JFXConfigAddController extends BaseController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        propertyUtils = new PropertyUtils(ApplicationConfig.CONFIG_LIST_FILE_PATH);
+        propertyUtils = new PropertyUtils(ApplicationConfig.getConfigListFilePath());
         propertyUtils.getOrderedProperties();
         //初始化时，将文件是否变更置为false
 

@@ -64,7 +64,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
-import static com.tools.gui.config.ApplicationConfig.DEPLOY_CONFIG_FILE_PATH;
 import static com.tools.gui.utils.view.AlertUtils.showAlert;
 import static com.tools.gui.utils.view.FileChooserUtils.showSelectDirectoryChooser;
 import static com.tools.gui.utils.view.FileChooserUtils.showSelectFileChooser;
@@ -569,7 +568,7 @@ public class MainController extends BaseController{
 
     @FXML
     public void initialize() {
-        propertyUtils = new PropertyUtils(DEPLOY_CONFIG_FILE_PATH);
+        propertyUtils = new PropertyUtils(ApplicationConfig.getDeployConfigFilePath());
         propertyUtils.getConfiguration2ReloadProperties();
         //  OutputStreamConsole console = new OutputStreamConsole(mTAConsole);
         // System.setOut(new PrintStream(console, true));
@@ -715,7 +714,7 @@ public class MainController extends BaseController{
         }
         mFlowPaneCfgRoot.setVgap(3.0);
         /*-------初始化配置文件列表----------*/
-        Properties properties = new PropertyUtils(Config.CRConfigListFileName).getOrderedProperties();
+        Properties properties = new PropertyUtils(ApplicationConfig.getConfigListFilePath()).getOrderedProperties();
 
         Set<String> propertyNames = properties.stringPropertyNames();
         for (String name : propertyNames) {
@@ -733,11 +732,40 @@ public class MainController extends BaseController{
             configButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+
+                    Stage progress = ProgressUtils.createProgress(stage);
+                    progress.show();
+
+                    syncConfigProcess.setOnFileGetListener(new SyncConfigProcess.OnFileGetListener() {
+                        @Override
+                        public void onFile(String filePath) {
+                            File file = new File(filePath);
+                            //打开编辑窗口
+                            Platform.runLater(() -> {
+                                showEditWindowV2(file.getAbsolutePath(), file.getName());
+                                progress.close();
+                            });
+                        }
+
+                        @Override
+                        public void onFail() {
+                            Platform.runLater(() -> {
+                                JFXSnackbarUtils.show("没有tcp连接",2000,mVBox);
+                                progress.close();
+                            });
+                        }
+                    });
+
                     Button source = (Button) event.getSource();
                     String path = properties.getProperty(source.getId());
-                    File file = new File(path);
-                    //打开编辑窗口
-                    showEditWindowV2(file.getAbsolutePath(), file.getName());
+
+                    Command command = new Command();
+                    command.setCommandMethod(CommandMethodEnum.GET_CONFIG_FILE.toString());
+                    command.setCommandCode(CommandMethodEnum.GET_CONFIG_FILE.getCode());
+                    Map<String, String> content = new HashMap<>();
+                    content.put("filePath",path);
+                    command.setContent(content);
+                    syncConfigProcess.sendMessage(command);
                 }
             });
         }
@@ -853,10 +881,10 @@ public class MainController extends BaseController{
         /**
          * 初始化处理器
          */
-        FileUploadProcess fileUploadProcess = new FileUploadProcess();
+        FileUploadProcess fileUploadProcess =ProcessManager.getFileUploadProcess();
         FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
-        syncConfigProcess = new SyncConfigProcess();
-        deployProcess = new DeployProcess();
+        syncConfigProcess = ProcessManager.getSyncConfigProcess();
+        deployProcess = ProcessManager.getDeployProcess();
 
         deployProcess.setOnDeployProcessorListener(new DeployListener());
     }
@@ -1142,6 +1170,7 @@ public class MainController extends BaseController{
                 //   dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
                 Button mBTPullConfig = (Button) vBox.lookup("#mBTPullConfig");
                 TextField mTFAgentAddress = (TextField) vBox.lookup("#mTFAgentAddress");
+                mTFAgentAddress.setText("10.10.11.127");
                 Button mBTSwitch = (Button) vBox.lookup("#mBTSwitch");
                 mBTSwitch.setOnAction(event -> {
                     String addressText = mTFAgentAddress.getText();

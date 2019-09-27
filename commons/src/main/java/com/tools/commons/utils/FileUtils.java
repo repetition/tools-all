@@ -80,6 +80,44 @@ public class FileUtils {
 
         return builder.toString();
     }
+    /**
+     * 读取文件
+     * @param filePathStr 文件路径
+     * @return 返回字节数组
+     */
+    public static byte[] readFileToByte(String filePathStr) {
+        FileInputStream fileInputStream = null;
+        InputStreamReader reader = null;
+        BufferedReader bufferedReader = null;
+        StringBuilder builder = null;
+        try {
+            fileInputStream = new FileInputStream(filePathStr);
+            //监测文件编码格式
+            String encode = EncodeUtil.getEncode(filePathStr, true);
+            // reader = new InputStreamReader(fileInputStream, Charset.forName("utf-8"));
+            reader = new InputStreamReader(fileInputStream,Charset.forName(encode));
+            bufferedReader = new BufferedReader(reader);
+            String line = "";
+            String result = "";
+            builder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line + "\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.close(fileInputStream);
+            IOUtils.close(reader);
+            IOUtils.close(bufferedReader);
+        }
+        return builder.toString().getBytes();
+    }
 
     /**
      * 文件保存
@@ -94,6 +132,28 @@ public class FileUtils {
 
             fileOutputStream = new FileOutputStream(filePath);
             fileOutputStream.write(editorText.getBytes(Charset.forName("utf-8")));
+            fileOutputStream.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            IOUtils.close(fileOutputStream);
+        }
+    }
+
+    /**
+     * 文件保存
+     * @param bytes 保存的字节数组
+     * @param filePath  保存的路径
+     */
+    public static void saveFileForBytes(byte[] bytes,String filePath) {
+
+        FileOutputStream fileOutputStream = null;
+        try {
+
+            fileOutputStream = new FileOutputStream(filePath);
+            fileOutputStream.write(bytes);
             fileOutputStream.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

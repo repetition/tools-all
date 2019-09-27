@@ -12,6 +12,8 @@ import org.apache.commons.collections.map.HashedMap;
 import java.io.File;
 import java.util.Map;
 
+import static com.tools.commons.utils.Utils.replaceAddress;
+
 /**
  * 将配置推送给指定的部署工具处理类
  */
@@ -107,19 +109,6 @@ public class PushConfigProcess extends ProcessServerBase {
         configInfoMaps.put("crConfig",crConfigInfoMap);
     }
 
-    /**
-     * 替换地址
-     * @param sourceStr 源字符串
-     * @param address
-     * @return 返回替换后的字符串
-     */
-    private  String replaceAddress(String sourceStr, String address){
-        //截取符合规则的ip地址
-        address = address.split(":")[0].split("/")[1];
 
-        sourceStr = sourceStr.replaceAll("(\\d+[.]\\d+[.]\\d+[.]\\d+)",address);
-
-        return sourceStr;
-    }
 
 }
