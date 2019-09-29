@@ -145,11 +145,6 @@ public class WebXmlEditorController extends BaseController  implements Initializ
 
         webEngine = mWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
-        String url = WebXmlEditorController.class.getResource("/codemirror/codeEditor.html").toExternalForm();
-        log.info(url);
-        webEngine.load(url);
-
-
 
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
 
@@ -162,10 +157,10 @@ public class WebXmlEditorController extends BaseController  implements Initializ
                     javaScriptLog = new JavaScriptLog();
                     window.setMember("java",javaScriptLog);
 
-                //    log.info("执行js");
+                    //    log.info("执行js");
                     /*读取文件*/
                     String str = FileUtils.readFile(filePath);
-                //    log.info(str);
+                    //    log.info(str);
                     //  webEngine.executeScript("setValue("+str+")");
                     //codemirror \ 会被转义，所以赋值之前 直接给转义掉 将\ 替换成 \\
                     String replace_Str = str.replace("\\", "\\\\");
@@ -173,22 +168,26 @@ public class WebXmlEditorController extends BaseController  implements Initializ
                     /*html不支持\r\n 需要 转义 \\r\\n */
                     String replace = replace_Str.replace("\n", "\\n");
 
+                    //xml中如果存在 ' 号,在进行 executeScript时会报异常, setValue之前将所有'号替换成其他符号
+                    replace = replace.replace("'","&#x27;");
+
+
                     webEngine.executeScript("setValue('"+replace+"');");
 
-                   // webEngine.executeScript("setValue();");
-                   // webEngine.executeScript("setValue(\""+str+"\");");
-                //    webEngine.executeScript("demo('test');");
-                  //   webEngine.executeScript("setValue('"+str+"');");
-                   // webEngine.executeScript("setValue('"+replace+"');");
+                    // webEngine.executeScript("setValue();");
+                    // webEngine.executeScript("setValue(\""+str+"\");");
+                    //    webEngine.executeScript("demo('test');");
+                    //   webEngine.executeScript("setValue('"+str+"');");
+                    // webEngine.executeScript("setValue('"+replace+"');");
                     /*隐藏web自带滚动条*/
                     webEngine.executeScript("document.body.style.overflow = 'hidden';");
                     /*获取底部拖动栏的高度*/
                     Object scrollBar_horizontal_height = webEngine.executeScript("document.getElementsByClassName('CodeMirror-simplescroll-horizontal')[0].offsetHeight");
                     log.info("scrollBar_horizontal_height:"+scrollBar_horizontal_height);
-                   // VBox parent = (VBox) mWebView.getParent().getParent();
+                    // VBox parent = (VBox) mWebView.getParent().getParent();
                     BorderPane borderpane = (BorderPane) mWebView.getParent();
 
-                   // log.info("VBox.getHeight() : "+parent.getHeight());
+                    // log.info("VBox.getHeight() : "+parent.getHeight());
                     log.info("borderpane.getHeight() : "+borderpane.getHeight());
 
                     double height = mWebView.getHeight();
@@ -206,12 +205,13 @@ public class WebXmlEditorController extends BaseController  implements Initializ
             @Override
             public void handle(WebEvent<String> event) {
                 String data = event.getData();
-              //  log.info(data);
+                //  log.info(data);
             }
         });
 
-
-     //webEngine.executeScript("setValue();");
+        String url = WebXmlEditorController.class.getResource("/codemirror/codeEditor.html").toExternalForm();
+        log.info(url);
+        webEngine.load(url);
 
     }
 

@@ -1,11 +1,14 @@
 package com.tools.gui.process;
 
 
+import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.LanguageFormatUtils;
 import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GuiTest {
 
@@ -47,5 +50,25 @@ public class GuiTest {
         //把字符串所有小写字母改为大写成为正规的mac地址并返回
         return sb.toString().toUpperCase();
     }
+
+    @Test
+    public void testMatcher() {
+
+     //   String str = "<!-- keep 180 days' worth of history -->";
+        /*读取文件*/
+        String str = FileUtils.readFile("E:\\ThinkWin\\ThinkWinCR\\tomcat\\webapps\\ROOT\\WEB-INF\\classes\\logback.xml");
+        //    log.info(str);
+        //  webEngine.executeScript("setValue("+str+")");
+        //codemirror \ 会被转义，所以赋值之前 直接给转义掉 将\ 替换成 \\
+        String replace_Str = str.replace("\\", "\\\\");
+
+        /*html不支持\r\n 需要 转义 \\r\\n */
+        String replace = replace_Str.replace("\n", "\\n");
+        //xml中如果存在 ' 号,在进行 executeScript时会报异常, setValue之前将所有'号替换成其他符号
+        replace = replace.replace("'","&#x27;");
+
+        System.out.println(replace);
+    }
+
 
 }

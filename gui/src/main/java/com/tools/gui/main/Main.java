@@ -185,11 +185,11 @@ public class Main extends Application {
         System.out.println("dir.base: "+System.getProperty("dir.base"));*/
 
 
-        for (String name : System.getProperties().stringPropertyNames()) {
+  /*      for (String name : System.getProperties().stringPropertyNames()) {
 
             System.out.println(name+ " : "+ System.getProperty(name));
         }
-
+*/
         if (Config.isDebug) {
             /*------------------------------------------------*/
             //调试状态下程序路径

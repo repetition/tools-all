@@ -336,7 +336,17 @@
 
     /*java call js ， java回调此方法，给编辑器赋值*/
     function setValue(date) {
-        editor.setValue(date);
+      //  log(date);
+        var decode = HTMLDecode(date);
+        editor.setValue(decode);
+
+    }
+
+    function HTMLDecode(text) {
+        //将转义字符替换回来
+        var output = text.replace(/&#x27;/g,'\'');
+      //  log(output);
+        return output;
     }
 
     /*java call js ， java回调此方法，给编辑器赋值*/
