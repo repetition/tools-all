@@ -71,6 +71,7 @@ public class WebXmlEditorController extends BaseController  implements Initializ
      */
     @FXML
     private ConfigItemController mHBoxInputChildrenController;
+    private String remotePath;
 
     /**
      * 搜索事件
@@ -110,6 +111,8 @@ public class WebXmlEditorController extends BaseController  implements Initializ
         if (!checked) {
             return;
         }
+
+        onFileSaveListener.onSave(filePath,remotePath);
         mHtmlEditorStage.close();
     }
 
@@ -343,6 +346,10 @@ public class WebXmlEditorController extends BaseController  implements Initializ
         return open_Timeline;
     }
 
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath;
+    }
+
     /**
      * js回调方法
      */
@@ -350,6 +357,17 @@ public class WebXmlEditorController extends BaseController  implements Initializ
         public void log (Object message){
             log.info("JavaScript: "+message);
         }
+    }
+
+
+    private onFileSaveListener onFileSaveListener;
+
+    public void setOnFileSaveListener(WebXmlEditorController.onFileSaveListener onFileSaveListener) {
+        this.onFileSaveListener = onFileSaveListener;
+    }
+
+    public interface onFileSaveListener{
+        void onSave(String filePath,String remotePath);
     }
 
 

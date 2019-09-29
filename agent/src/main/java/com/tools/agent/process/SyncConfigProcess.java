@@ -40,8 +40,23 @@ public class SyncConfigProcess extends ProcessBase {
                 getConfigFile(command, ctx);
 
                 break;
+            case SAVE_CONFIG_FILE:
+
+                saveConfigFile(command, ctx);
+
+                break;
+
         }
 
+    }
+
+    private void saveConfigFile(Command command, ChannelHandlerContext ctx) {
+
+        FileUpload fileUpload = (FileUpload) command.getContent();
+        if (fileUpload.getState() == FileUpload.SUCCESS) {
+            byte[] bytes = fileUpload.getBytes();
+            FileUtils.saveFileForBytes(bytes, fileUpload.getFileFlag());
+        }
     }
 
     private void getConfigFile(Command command, ChannelHandlerContext ctx) {

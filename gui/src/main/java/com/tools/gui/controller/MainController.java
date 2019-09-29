@@ -1,6 +1,7 @@
 package com.tools.gui.controller;
 
 import com.tools.commons.thread.ThreadPoolManager;
+import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.MySqlHelper;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.Utils;
@@ -21,6 +22,7 @@ import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.service.model.DeployState;
 import com.tools.socket.bean.Command;
+import com.tools.socket.bean.FileUpload;
 import com.tools.socket.client.SocketClient;
 import com.tools.socket.manager.SocketManager;
 import io.netty.channel.Channel;
@@ -732,6 +734,8 @@ public class MainController extends BaseController{
             configButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+                    Button source = (Button) event.getSource();
+                    String path = properties.getProperty(source.getId());
 
                     Stage progress = ProgressUtils.createProgress(stage);
                     progress.show();
@@ -742,7 +746,7 @@ public class MainController extends BaseController{
                             File file = new File(filePath);
                             //打开编辑窗口
                             Platform.runLater(() -> {
-                                showEditWindowV2(file.getAbsolutePath(), file.getName());
+                                showEditWindowV2(file.getAbsolutePath(),path, file.getName());
                                 progress.close();
                             });
                         }
@@ -755,9 +759,6 @@ public class MainController extends BaseController{
                             });
                         }
                     });
-
-                    Button source = (Button) event.getSource();
-                    String path = properties.getProperty(source.getId());
 
                     Command command = new Command();
                     command.setCommandMethod(CommandMethodEnum.GET_CONFIG_FILE.toString());
@@ -1277,22 +1278,22 @@ public class MainController extends BaseController{
         if (event.getSource() == mBTCmCfg) {
             //  showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\cm.cfg.xml", "cm.cfg.xml");
             // showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\cm.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\cm.cfg.xml", "cm.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\cm.cfg.xml", "","cm.cfg.xml");
         }
         if (event.getSource() == mBTIntegrationCfg) {
             //  showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\integration.cfg.xml", "integration.cfg.xml");
             //  showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\integration.cfg.xml", "integration.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\integration.cfg.xml", "","integration.cfg.xml");
         }
         if (event.getSource() == mBTSpring) {
             // showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\spring\\spring.properties", "spring.properties");
             //  showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\spring\\spring.properties", "spring.properties");
+            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\spring\\spring.properties", "","spring.properties");
         }
         if (event.getSource() == mBTPublishCfg) {
             //  showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\publish.cfg.xml", "publish.cfg.xml");
             //  showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\publish.cfg.xml", "publish.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\publish.cfg.xml", "","publish.cfg.xml");
         }
 
     }
@@ -1303,7 +1304,7 @@ public class MainController extends BaseController{
      * @param path  文件路径
      * @param title 标题
      */
-    private void showEditWindowV2(String path, String title) {
+    private void showEditWindowV2(String localPath,String remotePath, String title) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("/fxml/WebViewEditor.fxml"));
 
@@ -1333,8 +1334,27 @@ public class MainController extends BaseController{
 
             WebXmlEditorController controller = fxmlLoader.getController();
             controller.setStage(htmlEditorStage);
-            controller.setFilePath(path);
+            controller.setFilePath(localPath);
+            controller.setRemotePath(remotePath);
 
+            controller.setOnFileSaveListener((filePath, remotePath1) -> {
+                Command command = new Command();
+                command.setCommandCode(CommandMethodEnum.SAVE_CONFIG_FILE.getCode());
+                command.setCommandMethod(CommandMethodEnum.SAVE_CONFIG_FILE.toString());
+                byte[] bytes = FileUtils.readFileToByte(filePath);
+
+                File file = new File(filePath);
+                FileUpload fileUpload = new FileUpload();
+
+                fileUpload.setFile(file);
+                fileUpload.setFileName(file.getName());
+                fileUpload.setBytes(bytes);
+                fileUpload.setState(FileUpload.SUCCESS);
+                fileUpload.setFileFlag(remotePath1);
+                command.setContent(fileUpload);
+                deployProcess.sendMessage(command);
+
+            });
             //创建的时候重新设置高度， 解决有时候 webview高度获取fxml的高度问题
             vBox.setPrefHeight(height * 0.9);
             borderPane.setPrefHeight(height * 0.9);
