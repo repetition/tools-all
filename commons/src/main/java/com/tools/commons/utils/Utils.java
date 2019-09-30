@@ -33,7 +33,7 @@ public class Utils {
     //四舍五入把double转化为int类型整数,0.5也舍去,0.51进一
     public static int DoubleFormatInt(Double dou) {
         //四色五入转换成整数
-        if (null ==df) {
+        if (null == df) {
             df = new DecimalFormat("######0");
         }
         return Integer.parseInt(df.format(dou));
@@ -41,27 +41,30 @@ public class Utils {
 
     /**
      * 获取屏幕高度
+     *
      * @return 返回屏幕高度
      */
-    public static double getScreenHeight(){
+    public static double getScreenHeight() {
         double height = Screen.getPrimary().getBounds().getHeight();
         return height;
     }
 
     /**
      * 获取屏幕宽度
+     *
      * @return 返回屏幕宽度
      */
-    public static double getScreenWidth(){
+    public static double getScreenWidth() {
         double width = Screen.getPrimary().getBounds().getWidth();
         return width;
     }
 
     /**
      * 获取本机ip
+     *
      * @return 返回获取本机ip
      */
-    public static String getLocalIP(){
+    public static String getLocalIP() {
         InetAddress IP = null;
         try {
             IP = InetAddress.getLocalHost();
@@ -78,7 +81,7 @@ public class Utils {
      * @param unRootWarPath ROOT.war解压路径路径
      */
     public static boolean unZIP(String rootWarPath, String unRootWarPath) {
-        FileOutputStream decFOS =null;
+        FileOutputStream decFOS = null;
         try {
             long start = System.currentTimeMillis();
             ZipFile zipFile = new ZipFile(rootWarPath, Charset.forName("GBK"));
@@ -98,7 +101,7 @@ public class Utils {
                 if (!decDir.exists()) {
                     decDir.mkdirs();
                 }
-                File outFile = new File(decDir.getAbsoluteFile() + "\\" + zipEntry.getName());
+                File outFile = new File(decDir.getAbsoluteFile() + File.separator + zipEntry.getName());
                 if (!outFile.getParentFile().exists()) {
                     outFile.getParentFile().mkdirs();
                 }
@@ -158,7 +161,7 @@ public class Utils {
                 }
             });
             return false;
-        }finally {
+        } finally {
             if (null != decFOS) {
                 try {
                     decFOS.close();
@@ -256,7 +259,7 @@ public class Utils {
         return "";
     }
 
-    public static String getIPForAddress(SocketAddress address){
+    public static String getIPForAddress(SocketAddress address) {
 
         String ip = address.toString();
         //截取符合规则的ip地址
@@ -293,16 +296,32 @@ public class Utils {
 
     /**
      * 替换地址
+     *
      * @param sourceStr 源字符串
      * @param address
      * @return 返回替换后的字符串
      */
-    public   static String replaceAddress(String sourceStr, String address){
+    public static String replaceAddress(String sourceStr, String address) {
         //截取符合规则的ip地址
         address = address.split(":")[0].split("/")[1];
 
-        sourceStr = sourceStr.replaceAll("(\\d+[.]\\d+[.]\\d+[.]\\d+)",address);
+        sourceStr = sourceStr.replaceAll("(\\d+[.]\\d+[.]\\d+[.]\\d+)", address);
 
         return sourceStr;
+    }
+
+    /**
+     * 根据指定路径来获取 上一层路径
+     * @param sourcePath 路径
+     * @return
+     */
+    public static String getParentPath(String sourcePath) {
+        String parentPath = "";
+        if (sourcePath.lastIndexOf("/") != -1) {
+            parentPath = sourcePath.substring(0, sourcePath.lastIndexOf("/"));
+        } else if (sourcePath.lastIndexOf("\\") != -1) {
+            parentPath = sourcePath.substring(0, sourcePath.lastIndexOf("\\"));
+        }
+        return parentPath;
     }
 }

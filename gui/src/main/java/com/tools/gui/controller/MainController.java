@@ -171,7 +171,7 @@ public class MainController extends BaseController{
     public String dbNameStr = "cr_4_0_6_100";
     public String dbUserNameStr = "root";
     public String dbPassWordStr = "root";
-    public String resourcePath = "E:\\ThinkWin\\ThinkWinCRV3.5.0\\apache/htdocs/res/";
+    public String resourcePath = "E:/ThinkWin/ThinkWinCRV3.5.0/apache/htdocs/res/";
     public Button mBTDebug;
     public Button mBTTest;
     public GridPane gridPaneRoot;
@@ -213,7 +213,7 @@ public class MainController extends BaseController{
         if (actionEvent.getSource() == mBTSelectWar) {
             String filePathStr = "";
             if (defaultWarPath.equals("")) {
-                filePathStr = showSelectFileChooser(new FileChooser.ExtensionFilter("war(*.war)", "*.war"), "C:\\", stage);
+                filePathStr = showSelectFileChooser(new FileChooser.ExtensionFilter("war(*.war)", "*.war"), "C:/", stage);
             } else {
                 File file = new File(defaultWarPath);
                 if (file.isDirectory()) {
@@ -245,7 +245,7 @@ public class MainController extends BaseController{
 
 /*            String dirPathStr = "";
             if (defaultUnZIPWarPath.equals("")) {
-                dirPathStr = showSelectDirectoryChooser(null, "d:\\", stage);
+                dirPathStr = showSelectDirectoryChooser(null, "d:/", stage);
             } else {
                 dirPathStr = showSelectDirectoryChooser(null, defaultUnZIPWarPath, stage);
             }
@@ -263,7 +263,7 @@ public class MainController extends BaseController{
         if (actionEvent.getSource() == mBTSelectStaticWar) {
             String filePathStr = "";
             if (defaultStaticWarPath.equals("")) {
-                filePathStr = showSelectFileChooser(new FileChooser.ExtensionFilter("war(*.war)", "*.war"), "D:\\Downloads", stage);
+                filePathStr = showSelectFileChooser(new FileChooser.ExtensionFilter("war(*.war)", "*.war"), "D:/Downloads", stage);
             } else {
                 File file = new File(defaultStaticWarPath);
                 if (file.isDirectory()) {
@@ -300,7 +300,7 @@ public class MainController extends BaseController{
 
 /*            String dirPathStr = "";
             if (defaultStaticUnZIPWarPath.equals("")) {
-                dirPathStr = showSelectDirectoryChooser(null, "d:\\", stage);
+                dirPathStr = showSelectDirectoryChooser(null, "d:/", stage);
             } else {
                 dirPathStr = showSelectDirectoryChooser(null, defaultStaticUnZIPWarPath, stage);
             }
@@ -319,7 +319,7 @@ public class MainController extends BaseController{
         if (actionEvent.getSource() == mBTSelectResource) {
             String selectDirPath = "";
             if (defaultResourcePath.equals("")) {
-                selectDirPath = showSelectDirectoryChooser(null, "D:\\", stage);
+                selectDirPath = showSelectDirectoryChooser(null, "D:/", stage);
             } else {
                 selectDirPath = showSelectDirectoryChooser(null, defaultResourcePath, stage);
             }
@@ -345,7 +345,7 @@ public class MainController extends BaseController{
                 return;
             }
 
-            warUnPath = warUnPath + "\\ROOT";
+            warUnPath = warUnPath + "/ROOT";
             String dbAddressStr = mTFDBAddress.getText().trim();
             String dbNameStr = mTFDBName.getText().trim();
             String dbUserNameStr = mTFDBUserName.getText().trim();
@@ -657,11 +657,11 @@ public class MainController extends BaseController{
         mBTStart.setVisible(true);
 
 
-        // mTFWarPath.setText("F:\\QQdownload\\ROOT.war");
-        //  mTFWarUnPath.setText("E:\\ThinkWin\\ThinkWinCRV3.5.0\\tomcat\\webapps");
+        // mTFWarPath.setText("F:/QQdownload/ROOT.war");
+        //  mTFWarUnPath.setText("E:/ThinkWin/ThinkWinCRV3.5.0/tomcat/webapps");
 
         if (Config.isHome) {
-            defaultWarPath = "D:\\Downloads";
+            defaultWarPath = "D:/Downloads";
         } else {
             defaultWarPath = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.war.path");
             defaultUnZIPWarPath = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.exportWar.path");
@@ -1276,24 +1276,24 @@ public class MainController extends BaseController{
      */
     public void onEditAction(ActionEvent event) {
         if (event.getSource() == mBTCmCfg) {
-            //  showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\cm.cfg.xml", "cm.cfg.xml");
-            // showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\cm.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\cm.cfg.xml", "","cm.cfg.xml");
+            //  showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/cm.cfg.xml", "cm.cfg.xml");
+            // showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/cm.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/cm.cfg.xml", "","cm.cfg.xml");
         }
         if (event.getSource() == mBTIntegrationCfg) {
-            //  showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\integration.cfg.xml", "integration.cfg.xml");
-            //  showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\integration.cfg.xml", "","integration.cfg.xml");
+            //  showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/integration.cfg.xml", "integration.cfg.xml");
+            //  showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/integration.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/integration.cfg.xml", "","integration.cfg.xml");
         }
         if (event.getSource() == mBTSpring) {
-            // showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\spring\\spring.properties", "spring.properties");
-            //  showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\spring\\spring.properties", "","spring.properties");
+            // showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/spring/spring.properties", "spring.properties");
+            //  showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/integration.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/spring/spring.properties", "","spring.properties");
         }
         if (event.getSource() == mBTPublishCfg) {
-            //  showEditWindow(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\publish.cfg.xml", "publish.cfg.xml");
-            //  showEditWindow("F:\\JavaWeb\\ThinkWin-Code\\thinkwin-cr\\target\\classes\\config\\integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "\\ROOT\\WEB-INF\\classes\\config\\publish.cfg.xml", "","publish.cfg.xml");
+            //  showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/publish.cfg.xml", "publish.cfg.xml");
+            //  showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/integration.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/publish.cfg.xml", "","publish.cfg.xml");
         }
 
     }
@@ -1301,8 +1301,9 @@ public class MainController extends BaseController{
     /**
      * 显示编辑窗口, 代码高亮 和 搜索采用codemirror  基于 javafx webView实现。
      *
-     * @param path  文件路径
-     * @param title 标题
+     * @param localPath  本地路径
+     * @param remotePath  远程路径
+     * @param title  标题
      */
     private void showEditWindowV2(String localPath,String remotePath, String title) {
         try {
@@ -1683,19 +1684,18 @@ public class MainController extends BaseController{
 
         Map<String, String> cmDeployConfigMap = new HashMap<>();
         String warUnPath = mTFWarUnPath.getText();
-        File parentFile = new File(warUnPath).getParentFile();
-        if (null != parentFile) {
-            String tomcatPath = parentFile.getAbsolutePath();
-            cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + "\\work");
-            cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + "\\ROOT");
-            cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + "\\bin\\startup.bat");
+        if (!warUnPath.trim().isEmpty()) {
+            String tomcatPath = Utils.getParentPath(warUnPath);
+            cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + "/work");
+            cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + "/ROOT");
+            cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + "/bin/startup.bat");
         }
         String cmTomcatServiceName = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.service.name");
         cmDeployConfigMap.put("cmTomcatServiceName", cmTomcatServiceName);
         cmDeployConfigMap.put("cmTomcatPort", mTFTomcatPort.getText());
         cmDeployConfigMap.put("cmWarPath", mTFWarPath.getText());
         cmDeployConfigMap.put("cmWarFlag", Utils.getUUID32());
-        cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + "\\ROOT");
+        cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + "/ROOT");
 
         cmDeployConfigMap.put("localIp", propertyUtils.getConfigurationPropertyStringByKey("local.ip"));
 
@@ -1711,16 +1711,15 @@ public class MainController extends BaseController{
         Map<String, String> zyflDeployConfigMap = new HashMap<>();
         String apacheServiceName = propertyUtils.getConfigurationPropertyStringByKey("apache.service.name");
         zyflDeployConfigMap.put("apacheServiceName", apacheServiceName);
-        File parentFile1 = new File(warUnPath).getParentFile();
-     /*   String cmInstallPath = new File(warUnPath).getParentFile()
 
-                .getParentFile().getAbsolutePath();*/
+        String zyflWarUnPath = mTFStaticWarUnPath.getText().trim();
 
-        if (null != parentFile1) {
-            String cmInstallPath = parentFile1.getParentFile().getAbsolutePath();
-            zyflDeployConfigMap.put("apacheHttpdPath", cmInstallPath + "\\apache\\conf\\httpd.conf");
-            zyflDeployConfigMap.put("apacheWorkersPath", cmInstallPath + "\\apache\\conf\\workers.properties");
-            zyflDeployConfigMap.put("apacheHtdocsPath", cmInstallPath + "\\apache\\htdocs");
+        if (!zyflWarUnPath.isEmpty()) {
+            //截取apache根目录
+            String apachePath = Utils.getParentPath(zyflWarUnPath);
+            zyflDeployConfigMap.put("apacheHttpdPath", apachePath + "/conf/httpd.conf");
+            zyflDeployConfigMap.put("apacheWorkersPath", apachePath + "/conf/workers.properties");
+            zyflDeployConfigMap.put("apacheHtdocsPath", apachePath + "/htdocs");
         }
         zyflDeployConfigMap.put("zyflWarPath", mTFStaticWarPath.getText());
         zyflDeployConfigMap.put("zyflWarFlag", Utils.getUUID32());
@@ -1731,18 +1730,17 @@ public class MainController extends BaseController{
         Map<String, String> uploadDeployConfigMap = new HashMap<>();
         String uploadProjectName = propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.project.name");
         String uploadExportPath = propertyUtils.getConfigurationPropertyStringByKey("upload.exportWar.path");
-        File parentFile2 = new File(uploadExportPath).getParentFile();
 
-        //   String absolutePath = new File(uploadExportPath).getParentFile().getAbsolutePath();
-        if (null != parentFile2) {
-            String absolutePath = parentFile2.getAbsolutePath();
-            uploadDeployConfigMap.put("uploadTomcatStartUpPath", absolutePath + "\\bin\\startup.bat");
+        if (!uploadExportPath.trim().isEmpty()) {
+            String uploadTomcatPath = Utils.getParentPath(uploadExportPath);
+
+            uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + "/bin/startup.bat");
             uploadDeployConfigMap.put("uploadTomcatPort", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
             uploadDeployConfigMap.put("uploadWarPath", propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
             uploadDeployConfigMap.put("uploadWarFlag", Utils.getUUID32());
-            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + "\\"+uploadProjectName);
+            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + "/"+uploadProjectName);
             uploadDeployConfigMap.put("uploadTomcatServiceName", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.serviceName"));
-            uploadDeployConfigMap.put("uploadTomcatCachePath",  absolutePath + "\\work");
+            uploadDeployConfigMap.put("uploadTomcatCachePath",  uploadTomcatPath + "/work");
             uploadDeployConfigMap.put("uploadTomcatProjectName",  uploadProjectName);
 
         }

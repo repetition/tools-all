@@ -2,7 +2,7 @@ package com.tools.service.service.command.impl;
 
 import com.tools.service.model.CommandModel;
 import com.tools.service.service.command.ICommand;
-import com.tools.service.service.command.impl.process.WindowsCmdProcess;
+import com.tools.service.service.command.impl.process.LiunxCmdProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +29,13 @@ public class LinuxCommandImpl implements ICommand {
         ProcessBuilder processBuilder = newProcessBuilder();
         processBuilder.redirectErrorStream(true);
         List<String> cmd = new ArrayList<>();
-        cmd.add("cmd.exe");
-        cmd.add("/c");
-        cmd.add("netstat");
-        cmd.add("-ano");
-        cmd.add("|");
-        cmd.add("findstr");
-        cmd.add(port);
+        cmd.add("sh");
+        cmd.add("-c");
+        cmd.add("netstat -tunlp | grep " +port);
         processBuilder.command(cmd);
         System.out.println(cmd.toString());
 
-        return new WindowsCmdProcess().searchPidProcess(processBuilder);
+        return new LiunxCmdProcess().searchPidProcess(processBuilder);
     }
 
     @Override
@@ -60,7 +56,7 @@ public class LinuxCommandImpl implements ICommand {
         log.info("bat:" + batPath);
         //  builder.command("cmd.exe", "/c", "start", "/b", batPath);
         builder.command(cmdStartBat);
-        WindowsCmdProcess cmdProcess = new WindowsCmdProcess();
+        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
         return cmdProcess.batProcess(builder);
     }
 
@@ -78,7 +74,7 @@ public class LinuxCommandImpl implements ICommand {
         cmdNetStart.add("start");
         cmdNetStart.add(serviceName);
         builder.command(cmdNetStart);
-        WindowsCmdProcess cmdProcess = new WindowsCmdProcess();
+        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
         CommandModel commandModel = cmdProcess.serviceProcess(builder);
 
         return commandModel;
@@ -98,7 +94,7 @@ public class LinuxCommandImpl implements ICommand {
         cmdNetStop.add(serviceName);
         builder.command(cmdNetStop);
         // Process process = builder.command("cmd.exe", "/c", "start", batPath).start();
-        WindowsCmdProcess cmdProcess = new WindowsCmdProcess();
+        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
         CommandModel commandModel = cmdProcess.serviceProcess(builder);
         return commandModel;
     }
@@ -107,18 +103,14 @@ public class LinuxCommandImpl implements ICommand {
     public CommandModel cmdKillPid(String pidStr) {
 
         List<String> cmdTaskKill = new ArrayList<>();
-        // taskkill -F -PID 15792
-        //  cmdTaskKill.add("cmd.exe");
-        //  cmdTaskKill.add("/c");
-        cmdTaskKill.add("taskkill");
-        cmdTaskKill.add("/F");
-        cmdTaskKill.add("/PID");
+        cmdTaskKill.add("kill");
+        cmdTaskKill.add("-9");
         cmdTaskKill.add(pidStr);
         System.out.println(cmdTaskKill.toString());
         ProcessBuilder processBuilder = newProcessBuilder();
         processBuilder.redirectErrorStream(true);
         processBuilder.command(cmdTaskKill);
-        WindowsCmdProcess cmdProcess = new WindowsCmdProcess();
+        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
         return cmdProcess.pidKillProcess(processBuilder);
     }
 
@@ -127,16 +119,15 @@ public class LinuxCommandImpl implements ICommand {
         ProcessBuilder processBuilder = newProcessBuilder();
         processBuilder.redirectErrorStream(true);
         List<String> command = new ArrayList<>();
-        command.add(System.getProperty("HaoZip.path") + "\\HaoZipC.exe");
-        command.add("x");
+        command.add("unzip");
+        command.add("-o");//不提示的情况下覆盖文件
         command.add(rootWarPath);
-        command.add("-o" + unRootWarPath);
-        command.add("-aoa");
-        command.add("-y");
+        command.add("-d");//解压到指定目录
+        command.add(unRootWarPath);
 
         System.out.println(Arrays.asList(command));
         processBuilder.command(command);
-        WindowsCmdProcess cmdProcess = new WindowsCmdProcess();
+        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
         return cmdProcess.exportZIPProcess(processBuilder);
     }
 
@@ -146,14 +137,11 @@ public class LinuxCommandImpl implements ICommand {
         ProcessBuilder processBuilder = newProcessBuilder();
         processBuilder.redirectErrorStream(true);
         List<String> command = new ArrayList<>();
-        command.add("cmd.exe");
-        command.add("/c");
-        command.add("rmdir");
-        command.add("/s");
-        command.add("/q");
+        command.add("rm");
+        command.add("-rf");
         command.add(filePath);
         processBuilder.command(command);
-        return new WindowsCmdProcess().deleteFileProcess(processBuilder);
+        return new LiunxCmdProcess().deleteFileProcess(processBuilder);
     }
 
     @Override
@@ -179,7 +167,7 @@ public class LinuxCommandImpl implements ICommand {
      * @param path 返回文件上一级路径
      */
     public  String subString(String path) {
-        int index = path.lastIndexOf("\\");
+        int index = path.lastIndexOf("/");
         String substring = path.substring(0, index);
         return substring;
     }

@@ -1,5 +1,6 @@
 package com.tools.agent.process;
 
+import com.tools.agent.ApplicationConfig;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.socket.bean.Command;
@@ -41,9 +42,14 @@ public class FileUploadProcess extends ProcessBase {
     }
 
     private void upload(FileUpload fileUpload, ChannelHandlerContext ctx) {
-        File file = new File(System.getProperty("user.home") + "\\Downloads\\" + fileUpload.getFileFlag() + "." + fileUpload.getSuffixName());
+        File file = new File(ApplicationConfig.getWarPath() + fileUpload.getFileFlag() + "." + fileUpload.getSuffixName());
         RandomAccessFile randomAccessFile = null;
         try {
+            //文件夹不存在创建文件夹
+            if (!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+            //创建文件
             if (!file.exists()) {
                 file.createNewFile();
                 fileUpload.setAgentFile(file);
@@ -77,9 +83,11 @@ public class FileUploadProcess extends ProcessBase {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             fileUpload.setState(FileUpload.FAIL);
+            fileUpload.setDesc(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             fileUpload.setState(FileUpload.FAIL);
+            fileUpload.setDesc(e.getMessage());
         } finally {
             fileUpload.setBytes(null);
             //写入

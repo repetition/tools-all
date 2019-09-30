@@ -3,11 +3,14 @@ package com.tools.gui.controller;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
+import com.tools.gui.utils.view.FileChooserUtils;
 import com.tools.service.context.ApplicationContext;
+import com.tools.socket.bean.FileItemInfo;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -34,6 +37,7 @@ public class UploadSettingController extends BaseController implements Initializ
     public Button mBTCancel;
     public TextField mTFUploadTomcatServiceName;
     public TextField mTFComProjectName;
+    public GridPane gridPane;
     private Stage stage;
     private PropertyUtils propertyUtils;
 
@@ -84,24 +88,13 @@ public class UploadSettingController extends BaseController implements Initializ
 
 
         if (actionEvent.getSource()==mBTUploadUnWarPath) {
-            String uploadUnWarPath = mTFUploadUnWarPath.getText();
-            String filePathStr = "";
-            if (null!=uploadUnWarPath&&!uploadUnWarPath.isEmpty()){
-                File file = new File(uploadUnWarPath);
+            RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
 
-                if (file.isDirectory()) {
-                    filePathStr = showSelectDirectoryChooser(null, file.getAbsolutePath(), stage);
-                }
-                if (file.isFile()){
-                    filePathStr = showSelectDirectoryChooser(null, file.getParentFile().getAbsolutePath(), stage);
-                }
-            }else {
-                filePathStr = showSelectDirectoryChooser(null, "D:\\", stage);
-            }
-            if (filePathStr.trim().equals("")) {
-                return;
-            }
-            mTFUploadUnWarPath.setText(filePathStr);
+            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter,fileItemInfo -> {
+                String filePath = fileItemInfo.getAbsolutePath();
+                mTFUploadUnWarPath.setText(filePath);
+            });
+
         }
     }
 

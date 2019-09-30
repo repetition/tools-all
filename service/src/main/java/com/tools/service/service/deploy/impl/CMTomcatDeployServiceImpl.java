@@ -174,8 +174,8 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
         log.info("正在修改配置文件...");
 //旧版配置修改
         oldCustomPropertiesChanged();
-
-        propertiesChanged();
+        // TODO: 2019/9/30 部署时修改配置文件稍后修改
+        //propertiesChanged();
     }
 
     private void oldCustomPropertiesChanged() {
@@ -207,7 +207,7 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
 
     public void dbConfig(String rootPath, String dbAddressStr, String dbNameStr, String dbUserNameStr, String dbPassWordStr) {
 
-        String dbConfigPath = rootPath + "\\WEB-INF\\classes\\config\\spring\\spring.properties";
+        String dbConfigPath = rootPath + "/WEB-INF/classes/config/spring/spring.properties";
         PropertyUtils propertyUtils = new PropertyUtils(new File(dbConfigPath));
         propertyUtils.getConfiguration2Properties();
 
@@ -217,18 +217,18 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
     }
 
     public void streamConfig(String rootPath, String resourcePath) {
-        String streamConfigPath = rootPath + "\\WEB-INF\\classes\\stream-config.properties";
+        String streamConfigPath = rootPath + "/WEB-INF/classes/stream-config.properties";
         File file = new File(streamConfigPath);
         if (file.exists()) {
             PropertyUtils propertyUtils = new PropertyUtils(file);
             propertyUtils.getConfiguration2Properties();
-            propertyUtils.setConfigurationProperty("local_base_path", resourcePath.replace("\\", "/"));
+            propertyUtils.setConfigurationProperty("local_base_path", resourcePath.replace("/", "/"));
         } else {
         }
     }
     public void publishCfg2(String rootPath, String resourcePath, String ip) {
         try {
-            String publishXml = rootPath + "\\WEB-INF\\classes\\config\\publish.cfg.xml";
+            String publishXml = rootPath + "/WEB-INF/classes/config/publish.cfg.xml";
 
             SAXReader saxReader = new SAXReader();
             org.dom4j.Document document = saxReader.read(new File(publishXml));
@@ -272,7 +272,7 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
     }
 
     public void integrationCfg(String rootPath, String ip) {
-        String integrationXml = rootPath + "\\WEB-INF\\classes\\config\\integration.cfg.xml";
+        String integrationXml = rootPath + "/WEB-INF/classes/config/integration.cfg.xml";
 
         SAXReader saxReader = new SAXReader();
         org.dom4j.Document document = null;

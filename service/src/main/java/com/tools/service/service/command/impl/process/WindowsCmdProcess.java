@@ -459,8 +459,6 @@ public class WindowsCmdProcess {
                 return commandModel;
             }
             commandModel.setProcessWaitFor(process.waitFor());
-            // Pattern pattern = Pattern.compile("LISTENING       (.+)");
-            //Pattern pattern = Pattern.compile("LISTENING\\s+(.\\d+)");
             List<String> strings = matcherAll("LISTENING       (.+)", cmdResult.get(0));
 
             if (strings.size() >= 2) {

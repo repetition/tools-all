@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,6 +70,19 @@ public class GuiTest {
 
         System.out.println(replace);
     }
+
+
+    @Test
+    public void testPath() {
+
+      String path = "/usr/local/thinkwin/tomcat-cm/webapps";
+
+        String substring = path.substring(0, path.lastIndexOf("/"));
+
+        System.out.println(substring);
+
+    }
+
 
 
 }

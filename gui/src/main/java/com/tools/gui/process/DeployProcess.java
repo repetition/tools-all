@@ -71,6 +71,12 @@ public class DeployProcess extends ProcessBase {
             DeployState deployState = new DeployState();
             deployState.setInfo(fileUpload.getFileType() + "成功!");
             onDeployProcessorListener.onDeployProcessSuccess(deployState);
+
+            for (CommandMethodEnum commandMethodEnum : commandMethodEnumList) {
+
+                log.info(commandMethodEnum + " remove:" + CommandMethodEnum.valueOf(fileUpload.getFileType()));
+            }
+
             commandMethodEnumList.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
             log.info(commandMethodEnumList.size() + "");
             if (commandMethodEnumList.size() == 0) {
@@ -82,6 +88,8 @@ public class DeployProcess extends ProcessBase {
             }
         }
         if (fileUpload.getState() == FileUpload.FAIL) {
+            //失败也将删除这个任务
+            commandMethodEnumList.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
             DeployState deployState = new DeployState();
             deployState.setE(CommandMethodEnum.valueOf(fileUpload.getFileType()).getDesc() + "失败!" + "\r\n" + fileUpload.getDesc());
             onDeployProcessorListener.onDeployProcessFail(deployState);

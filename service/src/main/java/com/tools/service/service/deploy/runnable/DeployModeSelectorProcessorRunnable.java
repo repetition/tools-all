@@ -162,7 +162,7 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
             } else {
                 onDeployProcessorListener.onDeployProcessSuccess(deployState.setState(true).setInfo("UPLOAD_TOMCAT 文件解压成功!").setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
             }
-            uploadTomcatDeployServiceImpl.configModifying();
+          //  uploadTomcatDeployServiceImpl.configModifying();
         }
         onDeployProcessorListener.onDeployProcessorEnd();
     }

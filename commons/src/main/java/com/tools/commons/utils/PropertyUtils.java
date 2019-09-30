@@ -288,7 +288,14 @@ public class PropertyUtils {
     }
 
     public  void setConfigurationProperty(String key, String value) {
-      //  log.info(mPropertiesConfiguration.getLayout().hashCode()+" | "+mLayout.hashCode());
+
+        if (mPropertiesConfiguration == null) {
+            try {
+                throw new Exception("mPropertiesConfiguration为null , 请调用 propertyUtils.getConfiguration2Properties()方法初始化");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         mPropertiesConfiguration.setProperty(key, value);
         if (configurationType.equals("")){
             storePropertiesConfiguration(mPropertiesConfiguration);

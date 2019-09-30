@@ -26,7 +26,8 @@ public class OnDeployProcessorListener implements DeployModeSelectorProcessorRun
 
         DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
         Map<String, String> cmDeployConfigMap = deployConfigModel.getCmDeployConfigMap();
-        PropertyUtils propertyUtils = new PropertyUtils(new File(System.getProperty("conf.path") + ApplicationConfig.DEPLOY_CONFIG_FILE_NAME));
+        PropertyUtils propertyUtils = new PropertyUtils(new File(ApplicationConfig.getDeployConfigFilePath()));
+        propertyUtils.getConfiguration2Properties();
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_WAR_PATH,cmDeployConfigMap.get("cmWarPath"));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_EXPORTWAR_PATH,cmDeployConfigMap.get("cmTomcatExportPath"));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_PORT,cmDeployConfigMap.get("cmTomcatPort"));

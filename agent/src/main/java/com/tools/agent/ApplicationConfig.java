@@ -1,5 +1,7 @@
 package com.tools.agent;
 
+import java.io.File;
+
 public class ApplicationConfig {
 
     public  static  final String DEPLOY_CONFIG_FILE_NAME = "deploy.properties";
@@ -25,6 +27,22 @@ public class ApplicationConfig {
     public static String getWindowsDownloadsPath(){
 
         return System.getProperty("user.home")+"/Downloads/";
+    }
+
+    public static String getWarPath(){
+
+        String userHome = System.getProperty("user.home");
+        String path = "";
+        String os = System.getProperty("os.name");
+
+        if (os.toLowerCase().contains("windows")) {
+            path = userHome+ File.separator+"Downloads"+ File.separator;
+        }
+        if (os.toLowerCase().contains("linux")) {
+            path = System.getProperty("user.dir")+ File.separator+"downloads"+ File.separator;
+        }
+
+        return path;
     }
 
     /**

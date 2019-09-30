@@ -54,7 +54,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
             //单tomcat处理
             case DEPLOY_UPLOAD2CM_1TOMCAT:
                 String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
-                commandModel = deployProcessorServiceImpl.deleteOldFiles(absolutePath + "\\" + projectName);
+                commandModel = deployProcessorServiceImpl.deleteOldFiles(absolutePath + "/" + projectName);
                 break;
             default:
                 commandModel = deployProcessorServiceImpl.deleteOldFiles(uploadTomcatExportPath);
@@ -211,7 +211,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
             //单tomcat处理
             case DEPLOY_UPLOAD2CM_1TOMCAT:
                 String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
-                commandModel = deployProcessorServiceImpl.exportWar(uploadWarPath, absolutePath+"\\"+projectName);
+                commandModel = deployProcessorServiceImpl.exportWar(uploadWarPath, absolutePath+"/"+projectName);
                 break;
             default:
                 commandModel = deployProcessorServiceImpl.exportWar(uploadWarPath, uploadTomcatExportPath);
@@ -241,19 +241,19 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
             //单tomcat处理
             case DEPLOY_UPLOAD2CM_1TOMCAT:
                 String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
-                uploadTomcatExportPath = absolutePath+"\\"+projectName;
+                uploadTomcatExportPath = absolutePath+File.separator+projectName;
                 break;
             default:
         }
         PropertyUtils propertyUtils;
-        propertyUtils = new PropertyUtils(new File(uploadTomcatExportPath + "\\WEB-INF\\classes\\stream-config.properties"));
+        propertyUtils = new PropertyUtils(new File(uploadTomcatExportPath + "/WEB-INF/classes/stream-config.properties"));
         String apacheServerIp = uploadDeployConfigMap.get("apacheServerIp");
         propertyUtils.getConfiguration2Properties();
         //这个配置 要设置apache的访问ip
         Map<String, String> cmDeployConfigMap = deployConfigModel.getCmDeployConfigMap();
         String cmResourcesPath = cmDeployConfigMap.get("cmResourcesPath");
         propertyUtils.setConfigurationProperty("STREAM_CROSS_SERVER", "http://" + apacheServerIp);
-        propertyUtils.setConfigurationProperty("local_base_path", cmResourcesPath.replace("\\", "/"));
+        propertyUtils.setConfigurationProperty("local_base_path", cmResourcesPath.replace("/", "/"));
 
         String cmDBAddress = cmDeployConfigMap.get("cmDBAddress");
         String cmDBName = cmDeployConfigMap.get("cmDBName");
@@ -266,7 +266,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
 
     private void dbConfig(String rootPath, String dbAddressStr, String dbNameStr, String dbUserNameStr, String dbPassWordStr) {
 
-        String dbConfigPath = rootPath + "\\WEB-INF\\classes\\config\\spring\\spring.properties";
+        String dbConfigPath = rootPath + "/WEB-INF/classes/config/spring/spring.properties";
         PropertyUtils propertyUtils = new PropertyUtils(new File(dbConfigPath));
         propertyUtils.getConfiguration2Properties();
 

@@ -6,6 +6,8 @@ import com.tools.commons.thread.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Properties;
+
 public class AgentMain {
     private static final Logger log = LoggerFactory.getLogger(AgentMain.class);
 
@@ -40,5 +42,14 @@ public class AgentMain {
         System.err.println("dir.base: "+System.getProperty("dir.base"));
 
         System.err.println("conf.path: "+System.getProperty("conf.path"));
+
+
+        Properties properties = System.getProperties();
+
+        for (String stringPropertyName : properties.stringPropertyNames()) {
+
+            System.out.println( stringPropertyName + ": "+System.getProperty(stringPropertyName));
+
+        }
     }
 }

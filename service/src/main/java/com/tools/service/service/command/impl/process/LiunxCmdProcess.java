@@ -264,8 +264,6 @@ public class LiunxCmdProcess {
                 //等于0  执行成功
                 if (waitFor == 0) {
                     commandModel.setProcessExcState(true);
-                    //cmdResult.subList(cmdResult.size()-6,cmdResult.size()) 解压成功后,截取最后一句输出
-                    commandModel.setProcessOutputInfo(cmdResult.subList(cmdResult.size() - 6, cmdResult.size()));
                 } else {
                     commandModel.setProcessExcState(false);
                     commandModel.setProcessOutputInfo(cmdResult);
@@ -320,12 +318,11 @@ public class LiunxCmdProcess {
             commandModel.setProcessOutputInfo(cmdResult);
             int waitFor = process.waitFor();
             commandModel.setProcessWaitFor(waitFor);
-            if (waitFor == 0 && contains(cmdResult, "成功: 已终止")) {
+            if (waitFor == 0) {
                 commandModel.setProcessExcState(true);
             } else {
                 commandModel.setProcessExcState(false);
             }
-
             LocalTime end = LocalTime.now();
             Duration between = Duration.between(now, end);
             long seconds = between.getSeconds();
@@ -372,36 +369,14 @@ public class LiunxCmdProcess {
 
                 switch (waitFor) {
                     case 0:
-                        if (cmdResult.size() >= 1 && cmdResult.get(0).contains("另一个程序正在使用此文件")) {
-                            commandModel.setProcessExcState(false);
-                        } else {
-                            commandModel.setProcessExcState(true);
-                        }
-                        break;
-                    case 2:
-                        if (cmdResult.contains("系统找不到指定的文件。")) {
-                            commandModel.setProcessExcState(true);
-                        }
-                        if (cmdResult.contains("系统找不到指定的路径")) {
-                            commandModel.setProcessExcState(true);
-                        }
-                        break;
-
-                    case 267:
                         commandModel.setProcessExcState(true);
                         break;
-                    case 145:
-                        //cmd 返回 目录不是空的异常处理
-                        commandModel.setProcessExcState(true);
-                        break;
-
                     default:
                         //其他状态的统一处理失败,进行状态捕获
                         commandModel.setProcessExcState(false);
                 }
 
                 process.destroy();
-
                 LocalTime end = LocalTime.now();
                 Duration between = Duration.between(now, end);
                 long seconds = between.getSeconds();
@@ -450,12 +425,15 @@ public class LiunxCmdProcess {
                 return commandModel;
             }
             commandModel.setProcessWaitFor(process.waitFor());
-            // Pattern pattern = Pattern.compile("LISTENING       (.+)");
-            //Pattern pattern = Pattern.compile("LISTENING\\s+(.\\d+)");
-            List<String> strings = matcherAll("LISTENING       (.+)", cmdResult.get(0));
+            //根据空白字符串截取
+            String[] split = cmdResult.get(0).split("\\s+");
 
-            if (strings.size() >= 2) {
-                commandModel.setProcessExcState(strings.get(1));
+            String pidProcess = split[split.length - 1];
+            //截取pid
+            String pidStr = pidProcess.split("/")[0];
+
+            if (cmdResult.size() >= 1) {
+                commandModel.setProcessExcState(pidStr);
             } else {
                 commandModel.setProcessExcState("");
             }

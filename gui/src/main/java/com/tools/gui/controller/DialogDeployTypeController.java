@@ -1,6 +1,7 @@
 package com.tools.gui.controller;
 
 import com.tools.commons.utils.PropertyUtils;
+import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.gui.main.Main;
 import com.tools.service.constant.DeployTypeEnum;
@@ -23,6 +24,10 @@ public class DialogDeployTypeController extends BaseController implements Initia
      * 单机-资源分离
      */
     public RadioButton mRBZYFL;
+    /**
+     * 单机-上传组件+CM(单tomcat)
+     */
+    public RadioButton mRBUpload2CM1Tomcat;
     /**
      * 单机-上传组件+CM
      */
@@ -54,13 +59,13 @@ public class DialogDeployTypeController extends BaseController implements Initia
         mRBUpload2IPM.setToggleGroup(toggleGroup);
         mRB2UploadCM.setToggleGroup(toggleGroup);
         mRB2Upload.setToggleGroup(toggleGroup);
-
+        mRBUpload2CM1Tomcat.setToggleGroup(toggleGroup);
       /*  if (!Config.isDebug){
             mRB2UploadCM.setDisable(true);
             mRB2Upload.setDisable(true);
         }
 */
-        propertyUtils = new PropertyUtils(Config.CRConfigFileName);
+        propertyUtils = new PropertyUtils(ApplicationConfig.getDeployConfigFilePath());
         propertyUtils.getConfiguration2Properties();
 
 
@@ -76,6 +81,9 @@ public class DialogDeployTypeController extends BaseController implements Initia
 
             case DEPLOY_ZYFL:
                 mRBZYFL.setSelected(true);
+                break;
+            case DEPLOY_UPLOAD2CM_1TOMCAT:
+                mRBUpload2CM1Tomcat.setSelected(true);
                 break;
 
             case DEPLOY_UPLOAD2CM:
@@ -109,6 +117,12 @@ public class DialogDeployTypeController extends BaseController implements Initia
                 mainController.setDeployType(new String[]{mRBZYFL.getText(), DeployTypeEnum.DEPLOY_ZYFL.name()});
                 propertyUtils.setConfigurationProperty("deploy.type", DeployTypeEnum.DEPLOY_ZYFL.name());
             }
+
+            if (mRBUpload2CM1Tomcat.isSelected()) {
+                mainController.setDeployType(new String[]{mRBUpload2CM1Tomcat.getText(), DeployTypeEnum.DEPLOY_UPLOAD2CM_1TOMCAT.name()});
+                propertyUtils.setConfigurationProperty("deploy.type", DeployTypeEnum.DEPLOY_UPLOAD2CM_1TOMCAT.name());
+            }
+
             if (mRBUpload2CM.isSelected()) {
                 mainController.setDeployType(new String[]{mRBUpload2CM.getText(), DeployTypeEnum.DEPLOY_UPLOAD2CM.name()});
                 propertyUtils.setConfigurationProperty("deploy.type", DeployTypeEnum.DEPLOY_UPLOAD2CM.name());
