@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTextField;
 import com.tools.commons.utils.PropertyUtils;
+import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -172,7 +173,7 @@ public class ConfigItemController extends BaseController implements Initializabl
         //初始化配置文件
         //   if (propertyUtils == null) {
         File file = new File(filePath);
-        propertyUtils = new PropertyUtils(file.getName() + ".Changed.properties");
+        propertyUtils = new PropertyUtils(ApplicationConfig.getApplicationConfPath() +file.getName() + ".Changed.properties");
         propertyUtils.getOrderedProperties();
         //   }
         //configMaps = new HashMap<>();

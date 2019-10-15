@@ -3,6 +3,7 @@ package com.tools.service.service.deploy.impl;
 import com.google.gson.Gson;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.service.constant.ServiceStateEnum;
+import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.CommandModel;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.service.model.DeployStatusModel;
@@ -175,7 +176,7 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
 //旧版配置修改
         oldCustomPropertiesChanged();
         // TODO: 2019/9/30 部署时修改配置文件稍后修改
-        //propertiesChanged();
+        propertiesChanged();
     }
 
     private void oldCustomPropertiesChanged() {
@@ -301,7 +302,7 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
 
     private void propertiesChanged() {
         // TODO: 2019/9/12  需要添加配置文件列表
-        Properties properties = new PropertyUtils("").getOrderedProperties();
+        Properties properties = new PropertyUtils(ApplicationContext.getConfigListFilePath()).getOrderedProperties();
         //获取配置文件列表
         Set<String> propertyNames = properties.stringPropertyNames();
 
@@ -309,13 +310,13 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
             //获取每个配置文件的路径信息
             String filePath = properties.getProperty(propertyName);
             File file = new File(filePath);
-            File changedPropertiesFile = new File(System.getProperty("conf.path") + file.getName() + ".Changed.properties");
+            File changedPropertiesFile = new File(ApplicationContext.getApplicationConfPath() + file.getName() + ".Changed.properties");
             //运行时配置文件不存在则跳过
             if (!changedPropertiesFile.exists()) {
                 continue;
             }
             //获取每个配置文件要修改的内容
-            PropertyUtils propertyUtils = new PropertyUtils(changedPropertiesFile.getName());
+            PropertyUtils propertyUtils = new PropertyUtils(changedPropertiesFile);
             propertyUtils.getOrderedProperties();
             String changed = propertyUtils.getOrderedPropertyStringByKey("changed");
             Gson gson = new Gson();

@@ -12,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class SyncConfigProcess extends ProcessBase {
@@ -34,6 +35,9 @@ public class SyncConfigProcess extends ProcessBase {
             case SYNC_APACHE_CONFIG:
                 syncApacheConfig(command, ctx);
                 break;
+            case SYNC_RUNTIME_CHANGER_CONFIG:
+                syncRuntimeChanger(command, ctx);
+                break;
 
             case GET_CONFIG_FILE:
 
@@ -45,11 +49,34 @@ public class SyncConfigProcess extends ProcessBase {
                 saveConfigFile(command, ctx);
 
                 break;
-
         }
 
     }
 
+    /**
+     * 保存从gui回传的 部署时的配置修改
+     * @param command 命令
+     * @param ctx 通道
+     */
+    private void syncRuntimeChanger(Command command, ChannelHandlerContext ctx) {
+
+        List<FileUpload> changedPropertiesFiles = (List<FileUpload>) command.getContent();
+
+        for (FileUpload fileUpload : changedPropertiesFiles) {
+
+            FileUtils.saveFileForBytes(fileUpload.getBytes(),ApplicationConfig.getApplicationConfPath()+fileUpload.getFileName());
+        }
+
+        command.setContent("ok");
+        ctx.channel().writeAndFlush(command);
+
+    }
+
+    /**
+     * 回传单次修改的配置文件
+     * @param command
+     * @param ctx
+     */
     private void saveConfigFile(Command command, ChannelHandlerContext ctx) {
 
         FileUpload fileUpload = (FileUpload) command.getContent();

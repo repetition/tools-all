@@ -144,6 +144,36 @@ public class LinuxCommandImpl implements ICommand {
         return new LiunxCmdProcess().deleteFileProcess(processBuilder);
     }
 
+    /**
+     * linux安装软件
+     * @param rpmPath 软件路径
+     * @return
+     */
+    public CommandModel cmdInstallRpm(String rpmPath) {
+
+        ProcessBuilder processBuilder = newProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+        List<String> command = new ArrayList<>();
+        command.add("rpm");
+        command.add("-ivh");
+        command.add(rpmPath);
+        processBuilder.command(command);
+        return new LiunxCmdProcess().installRpmProcess(processBuilder);
+    }
+
+    /**
+     * linux检查软件是否安装
+     * @param command 命令
+     * @return
+     */
+    public CommandModel cmdCheckRpm(List<String> command) {
+
+        ProcessBuilder processBuilder = newProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+        processBuilder.command(command);
+        return new LiunxCmdProcess().installRpmProcess(processBuilder);
+    }
+
     @Override
     public CommandModel cmdQueryServiceStatus(String serviceName) {
 

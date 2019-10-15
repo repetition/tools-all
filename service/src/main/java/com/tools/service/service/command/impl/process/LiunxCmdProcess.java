@@ -496,12 +496,12 @@ public class LiunxCmdProcess {
         InputStreamReader reader = null;
         BufferedReader bufferedReader = null;
         try {
-            reader = new InputStreamReader(is, Charset.forName("gbk"));
+            reader = new InputStreamReader(is, Charset.forName("utf-8"));
             bufferedReader = new BufferedReader(reader);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 cmdSearchPorts.add(line);
-                //System.out.println(line);
+               // System.out.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -540,7 +540,7 @@ public class LiunxCmdProcess {
      */
     public String getCmdResultToString(InputStream is) {
         try {
-            InputStreamReader reader = new InputStreamReader(is, Charset.forName("gbk"));
+            InputStreamReader reader = new InputStreamReader(is, Charset.forName("utf-8"));
             BufferedReader bufferedReader = new BufferedReader(reader);
             String line;
             StringBuilder result = new StringBuilder();
@@ -575,5 +575,69 @@ public class LiunxCmdProcess {
             matchers.add(matcher.group(i));
         }
         return matchers;
+    }
+
+    public CommandModel installRpmProcess(ProcessBuilder processBuilder) {
+
+        ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
+        Future<CommandModel> future = poolManager.getExecutor().submit(() -> {
+
+            CommandModel commandModel = new CommandModel();
+            Process process = null;
+            LocalTime now = LocalTime.now();
+            try {
+                process = processBuilder.start();
+                List<String> cmdResult = getCmdResult(process.getInputStream());
+                int waitFor = process.waitFor();
+                commandModel.setProcessWaitFor(waitFor);
+                commandModel.setProcessOutputInfo(cmdResult);
+
+                switch (waitFor) {
+                    case 0:
+                        commandModel.setProcessExcState(true);
+                        break;
+                    default:
+                        //其他状态的统一处理失败,进行状态捕获
+                        commandModel.setProcessExcState(false);
+                }
+
+                process.destroy();
+                LocalTime end = LocalTime.now();
+                Duration between = Duration.between(now, end);
+                long seconds = between.getSeconds();
+                commandModel.setProcessEexcTime(seconds + "s");
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                commandModel.setProcessExcState(false);
+                process.destroy();
+
+            }
+            return commandModel;
+        });
+
+        CommandModel commandModel = null;
+        while (true) {
+            if (future.isDone()) {
+                try {
+                    commandModel = future.get();
+                    log.info(commandModel.toString());
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+        if (commandModel == null) {
+            commandModel = new CommandModel();
+            commandModel.setProcessExcState(false);
+        }
+        return commandModel;
+
+
     }
 }

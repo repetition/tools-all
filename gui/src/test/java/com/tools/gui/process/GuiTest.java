@@ -7,9 +7,10 @@ import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GuiTest {
 
@@ -75,11 +76,30 @@ public class GuiTest {
     @Test
     public void testPath() {
 
-      String path = "/usr/local/thinkwin/tomcat-cm/webapps";
+        CommandMethodEnum anEnum = CommandMethodEnum.getEnum(3002);
+        CommandMethodEnum anEnum1 = CommandMethodEnum.getEnum(3002);
+         LinkedList<CommandMethodEnum> commandMethodEnumList = new LinkedList<>();
+        commandMethodEnumList.add(anEnum);
+        commandMethodEnumList.add(anEnum1);
+        Set<CommandMethodEnum> set = new HashSet<>();
 
-        String substring = path.substring(0, path.lastIndexOf("/"));
+        set.add(anEnum);
+        set.add(anEnum1);
 
-        System.out.println(substring);
+        for (CommandMethodEnum commandMethodEnum : commandMethodEnumList) {
+
+            System.out.println(commandMethodEnum.hashCode());
+        }
+
+        LinkedHashSet<CommandMethodEnum> linkedHashSet = new LinkedHashSet<>();
+
+        linkedHashSet.add(anEnum);
+        linkedHashSet.add(anEnum1);
+
+
+        linkedHashSet.remove(anEnum1);
+
+        System.out.println(1);
 
     }
 

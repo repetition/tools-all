@@ -1,12 +1,16 @@
 package com.tools.gui.process;
 
-import com.tools.commons.utils.GsonUtils;
+import com.tools.gui.main.Main;
 import com.tools.service.model.DeployState;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import com.tools.socket.observer.ObserverManager;
 import com.tools.socket.observer.Process;
 import io.netty.channel.ChannelHandlerContext;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +69,18 @@ public abstract class ProcessBase implements Process {
 
     protected void error() {
         log.error("当前没有可用的tcp连接!");
+
+        Popup popup = new Popup();
+        popup.setWidth(100);
+        popup.setWidth(20);
+        HBox hBox = new HBox();
+        hBox.setPrefHeight(20);
+        hBox.setPrefWidth(50);
+        Label label = new Label("当前没有可用的tcp连接!");
+        label.setStyle("-fx-background-color: #0cccff;-fx-text-fill: #000000");
+        hBox.getChildren().add(label);
+        popup.getContent().add(hBox);
+        popup.show(Main.mainStage);
     }
 
     /**

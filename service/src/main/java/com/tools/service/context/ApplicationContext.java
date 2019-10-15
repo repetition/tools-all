@@ -3,7 +3,7 @@ package com.tools.service.context;
 import com.tools.service.model.DeployConfigModel;
 
 public class ApplicationContext {
-
+    public  static  final String CONFIG_LIST_FILE_NAME = "config_list.properties";
 
     private static DeployConfigModel deployConfigModel= null;
 
@@ -36,6 +36,14 @@ public class ApplicationContext {
     public static String getWindowsDownloadsPath(){
 
         return System.getProperty("user.home")+"/Downloads/";
+    }
+
+    /**
+     * config_list.properties路径
+     */
+    public static String getConfigListFilePath(){
+
+        return getApplicationConfPath() +CONFIG_LIST_FILE_NAME;
     }
 
 }

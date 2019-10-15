@@ -7,11 +7,12 @@ public enum CommandMethodEnum {
     //配置同步
     SYNC_CR_CONFIG("同步CM部署配置",3000),
     SYNC_APACHE_CONFIG("同步Apache部署配置",3001),
-    SET_CR_CONFIG("保存最新配置",3002),
+    SYNC_RUNTIME_CHANGER_CONFIG("同步运行时配置文件修改配置",3002),
 
+    SET_CR_CONFIG("保存最新配置",3003),
 
-    GET_CONFIG_FILE("获取指定配置文件",3003),
-    SAVE_CONFIG_FILE("给agent传送保存的配置文件",3004),
+    GET_CONFIG_FILE("获取指定配置文件",3004),
+    SAVE_CONFIG_FILE("给agent传送保存的配置文件",3005),
 
     //从服务器下载配置
     DOWNLOAD_DEPLOY_CONFIG("从服务器下载配置",4000),

@@ -2,7 +2,9 @@ package com.tools.gui.process;
 
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.IOUtils;
+import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.StringUtils;
+import com.tools.gui.config.ApplicationConfig;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.service.model.DeployState;
@@ -18,13 +20,14 @@ import java.io.*;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.tools.commons.utils.Utils.replaceAddress;
 
 public class DeployProcess extends ProcessBase {
     private static final Logger log = LoggerFactory.getLogger(DeployProcess.class);
     //保存正在传输的文件总数
-    private LinkedList<CommandMethodEnum> commandMethodEnumList = new LinkedList<>();
+    private LinkedHashSet<CommandMethodEnum> commandMethodEnumSet = new LinkedHashSet<>();
 
     @Override
     protected void processCommand(Command command, ChannelHandlerContext ctx) {
@@ -44,6 +47,10 @@ public class DeployProcess extends ProcessBase {
                 break;
             case SYNC_APACHE_CONFIG:
                 syncApacheConfig(command, ctx);
+                break;
+
+            case SYNC_RUNTIME_CHANGER_CONFIG:
+                syncRuntimeChanger(command, ctx);
                 break;
 
             case DEPLOY_START_PROGRESS:
@@ -72,14 +79,14 @@ public class DeployProcess extends ProcessBase {
             deployState.setInfo(fileUpload.getFileType() + "成功!");
             onDeployProcessorListener.onDeployProcessSuccess(deployState);
 
-            for (CommandMethodEnum commandMethodEnum : commandMethodEnumList) {
+            for (CommandMethodEnum commandMethodEnum : commandMethodEnumSet) {
 
                 log.info(commandMethodEnum + " remove:" + CommandMethodEnum.valueOf(fileUpload.getFileType()));
             }
 
-            commandMethodEnumList.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
-            log.info(commandMethodEnumList.size() + "");
-            if (commandMethodEnumList.size() == 0) {
+            commandMethodEnumSet.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
+            log.info(commandMethodEnumSet.size() + "");
+            if (commandMethodEnumSet.size() == 0) {
                 //文件传输成功,发送开始部署指令
                 Command command = new Command();
                 command.setCommandCode(CommandMethodEnum.DEPLOY_START.getCode());
@@ -89,22 +96,77 @@ public class DeployProcess extends ProcessBase {
         }
         if (fileUpload.getState() == FileUpload.FAIL) {
             //失败也将删除这个任务
-            commandMethodEnumList.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
+            commandMethodEnumSet.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
             DeployState deployState = new DeployState();
             deployState.setE(CommandMethodEnum.valueOf(fileUpload.getFileType()).getDesc() + "失败!" + "\r\n" + fileUpload.getDesc());
             onDeployProcessorListener.onDeployProcessFail(deployState);
         }
     }
 
-    private void syncApacheConfig(Command command, ChannelHandlerContext ctx) {
-        commandMethodEnumList.add(CommandMethodEnum.getEnum(command.getCommandCode()));
+    private void syncRuntimeChanger(Command command, ChannelHandlerContext ctx) {
+        commandMethodEnumSet.add(CommandMethodEnum.getEnum(command.getCommandCode()));
 
         if (command.getContent()!=null && command.getContent() instanceof String){
             String content = command.getContent().toString();
             if (content.equals("ok")) {
-                commandMethodEnumList.remove(CommandMethodEnum.getEnum(command.getCommandCode()));
+                commandMethodEnumSet.remove(CommandMethodEnum.getEnum(command.getCommandCode()));
             }
-            if (commandMethodEnumList.size() == 0) {
+            if (commandMethodEnumSet.size() == 0) {
+                //文件传输成功,发送开始部署指令
+                command.setCommandCode(CommandMethodEnum.DEPLOY_START.getCode());
+                command.setCommandMethod(CommandMethodEnum.DEPLOY_START.toString());
+                ctx.channel().writeAndFlush(command);
+            }
+            return;
+        }
+
+        Properties properties = new PropertyUtils(ApplicationConfig.getConfigListFilePath()).getOrderedProperties();
+
+        Set<String> propertyNames = properties.stringPropertyNames();
+        List<FileUpload> changedPropertiesFiles = new ArrayList<>();
+        for (String propertyName : propertyNames) {
+            //获取每个配置文件的路径信息
+            String filePath = properties.getProperty(propertyName);
+            File file = new File(filePath);
+            File changedPropertiesFile = new File(ApplicationConfig.getApplicationConfPath() + file.getName() + ".Changed.properties");
+            //运行时配置文件不存在则跳过
+            if (!changedPropertiesFile.exists()) {
+                continue;
+            }
+
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.setFileName(changedPropertiesFile.getName());
+            fileUpload.setBytes(FileUtils.readFileToByte(changedPropertiesFile.getAbsolutePath()));
+
+            changedPropertiesFiles.add(fileUpload);
+        }
+
+        //配置文件列表传送给agent
+        File configListFile = new File(ApplicationConfig.getConfigListFilePath());
+        if (configListFile.exists()) {
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.setFileName(configListFile.getName());
+            fileUpload.setBytes(FileUtils.readFileToByte(configListFile.getAbsolutePath()));
+            changedPropertiesFiles.add(fileUpload);
+        }
+
+        command.setCommandMethod(CommandMethodEnum.SYNC_RUNTIME_CHANGER_CONFIG.toString());
+        command.setCommandCode(CommandMethodEnum.SYNC_RUNTIME_CHANGER_CONFIG.getCode());
+        command.setContent(changedPropertiesFiles);
+        ctx.channel().writeAndFlush(command);
+
+    }
+
+    private void syncApacheConfig(Command command, ChannelHandlerContext ctx) {
+
+        commandMethodEnumSet.add(CommandMethodEnum.getEnum(command.getCommandCode()));
+
+        if (command.getContent()!=null && command.getContent() instanceof String){
+            String content = command.getContent().toString();
+            if (content.equals("ok")) {
+                commandMethodEnumSet.remove(CommandMethodEnum.getEnum(command.getCommandCode()));
+            }
+            if (commandMethodEnumSet.size() == 0) {
                 //文件传输成功,发送开始部署指令
                 command.setCommandCode(CommandMethodEnum.DEPLOY_START.getCode());
                 command.setCommandMethod(CommandMethodEnum.DEPLOY_START.toString());
@@ -196,7 +258,8 @@ public class DeployProcess extends ProcessBase {
             onDeployProcessorListener.onDeployProcessFail(deployState);
             return;
         }
-        commandMethodEnumList.add(CommandMethodEnum.getEnum(command.getCommandCode()));
+        commandMethodEnumSet.add(CommandMethodEnum.getEnum(command.getCommandCode()));
+
         FileUpload fileUpload = createFileUpload(warPath, warFlag, command);
 
         if (fileUpload == null) {

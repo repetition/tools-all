@@ -2,6 +2,7 @@ package com.tools.gui.controller;
 
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.commons.utils.Utils;
+import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.service.service.command.factory.CommandFactory;
 import javafx.application.Platform;
@@ -327,7 +328,7 @@ public class CRSettingController extends BaseController{
     public void initialize() {
         log.info("弹窗初始化！");
 
-        propertyUtils = new PropertyUtils(Config.CRConfigFileName);
+        propertyUtils = new PropertyUtils(ApplicationConfig.getDeployConfigFilePath());
         propertyUtils.getOrderedProperties();
         
         ToggleGroup toggleGroup = new ToggleGroup();
