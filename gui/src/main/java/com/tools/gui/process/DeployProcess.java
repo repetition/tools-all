@@ -265,8 +265,9 @@ public class DeployProcess extends ProcessBase {
         }
 
         File file = fileUpload.getFile();
+        RandomAccessFile randomAccessFile = null;
         try {
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+            randomAccessFile = new RandomAccessFile(file, "r");
             randomAccessFile.seek(fileUpload.getStarPos());
             byte[] bytes = new byte[1024 * 1024 * 10];//10mb
             int len;
@@ -279,6 +280,7 @@ public class DeployProcess extends ProcessBase {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            randomAccessFile.close();
             //写入
             ctx.channel().writeAndFlush(fileUpload);
         }
