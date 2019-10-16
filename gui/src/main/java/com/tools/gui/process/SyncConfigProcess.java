@@ -49,14 +49,14 @@ public class SyncConfigProcess extends ProcessBase {
                     onSyncConfigListener.onSyncComplete();
                 }
                 break;
-            case SYNC_CR_CONFIG:
+            case SYNC_DEPLOY_CONFIG:
                 //保存从部署服务器的配置
                 Map<String, String> map = (Map<String, String>) command.getContent();
 
                 for (Map.Entry<String, String> stringMapEntry : map.entrySet()) {
-                    FileUtils.saveFile(ApplicationConfig.getApplicationConfPath() + stringMapEntry.getKey(), stringMapEntry.getValue());
+                    FileUtils.saveFile( stringMapEntry.getValue(),ApplicationConfig.getApplicationConfPath() + stringMapEntry.getKey());
                 }
-
+                onSyncConfigListener.onSyncComplete();
                 break;
 
             case GET_CONFIG_FILE:

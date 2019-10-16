@@ -1185,8 +1185,22 @@ public class MainController extends BaseController{
                 });
 
                 mBTPullConfig.setOnAction(event -> {
+                    //同步时,将运行时修改的配置文件删除掉
+                    File file = new File(ApplicationConfig.getApplicationConfPath());
+                    File[] files = file.listFiles(pathname -> {
+                        String name = pathname.getName();
+                        if (name.contains(".Changed.properties")) {
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    for (File file1 : files) {
+                        file1.delete();
+                    }
+
                     Command command = new Command();
-                    command.setCommandCode(CommandMethodEnum.SYNC_CR_CONFIG.getCode());
+                    command.setCommandCode(CommandMethodEnum.SYNC_DEPLOY_CONFIG.getCode());
                     deployProcess.sendMessage(command);
                 });
                 SocketManager.getSocketClient().setOnConnectedListener(new SocketClient.OnConnectedListener() {
@@ -1358,6 +1372,8 @@ public class MainController extends BaseController{
                 fileUpload.setFileFlag(remotePath1);
                 command.setContent(fileUpload);
                 deployProcess.sendMessage(command);
+                //保存完毕删除本地文件
+                file.delete();
 
             });
             //创建的时候重新设置高度， 解决有时候 webview高度获取fxml的高度问题

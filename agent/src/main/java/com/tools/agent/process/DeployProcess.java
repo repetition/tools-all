@@ -111,7 +111,7 @@ public class DeployProcess extends ProcessBase {
             syncWarCommand.setCommandCode(CommandMethodEnum.SYNC_APACHE_CONFIG.getCode());
             ctx.channel().writeAndFlush(syncWarCommand);
         }
-
+        //部署时配置的同步
         Command syncRuntimeChangerCommand = new Command();
         syncRuntimeChangerCommand.setCommandMethod(CommandMethodEnum.SYNC_RUNTIME_CHANGER_CONFIG.toString());
         syncRuntimeChangerCommand.setCommandCode(CommandMethodEnum.SYNC_RUNTIME_CHANGER_CONFIG.getCode());

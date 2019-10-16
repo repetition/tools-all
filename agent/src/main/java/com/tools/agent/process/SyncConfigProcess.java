@@ -10,10 +10,7 @@ import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SyncConfigProcess extends ProcessBase {
 
@@ -24,7 +21,7 @@ public class SyncConfigProcess extends ProcessBase {
         CommandMethodEnum methodEnum = CommandMethodEnum.getEnum(code);
 
         switch (methodEnum) {
-            case SYNC_CR_CONFIG:
+            case SYNC_DEPLOY_CONFIG:
                 syncDeployConfig(command, ctx);
                 break;
 
@@ -141,7 +138,7 @@ public class SyncConfigProcess extends ProcessBase {
         Map<String, String> map = (Map<String, String>) command.getContent();
 
         for (Map.Entry<String, String> stringMapEntry : map.entrySet()) {
-            FileUtils.saveFile(ApplicationConfig.getApplicationConfPath() + stringMapEntry.getKey(), stringMapEntry.getValue());
+            FileUtils.saveFile( stringMapEntry.getValue(),ApplicationConfig.getApplicationConfPath() + stringMapEntry.getKey());
         }
         command.setContent("ok");
         ctx.channel().writeAndFlush(command);
@@ -172,6 +169,23 @@ public class SyncConfigProcess extends ProcessBase {
 
         String config_List_str = FileUtils.readFile(ApplicationConfig.getConfigListFilePath());
         fileListMap.put(ApplicationConfig.CONFIG_LIST_FILE_NAME, config_List_str);
+
+        //运行时修改的配置文件更改
+        Properties properties = new PropertyUtils(ApplicationConfig.getConfigListFilePath()).getOrderedProperties();
+
+        Set<String> propertyNames = properties.stringPropertyNames();
+        for (String propertyName : propertyNames) {
+            //获取每个配置文件的路径信息
+            String filePath = properties.getProperty(propertyName);
+            File file = new File(filePath);
+            File changedPropertiesFile = new File(ApplicationConfig.getApplicationConfPath() + file.getName() + ".Changed.properties");
+            //运行时配置文件不存在则跳过
+            if (!changedPropertiesFile.exists()) {
+                continue;
+            }
+            String changerStr = FileUtils.readFile(changedPropertiesFile.getAbsolutePath());
+            fileListMap.put(changedPropertiesFile.getName(),changerStr);
+        }
 
         command.setContent(fileListMap);
         ctx.channel().writeAndFlush(command);
