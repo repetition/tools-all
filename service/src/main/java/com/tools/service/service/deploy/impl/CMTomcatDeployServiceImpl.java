@@ -179,6 +179,25 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
         propertiesChanged();
     }
 
+    @Override
+    public DeployStatusModel deleteWarFile() {
+        log.info("正在删除Tomcat旧ROOT包...");
+        String cmTomcatWarPath = deployConfigModel.getCmDeployConfigMap().get("cmWarPath");
+        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(cmTomcatWarPath);
+
+        DeployStatusModel deployStatusModel = new DeployStatusModel();
+
+        Object excState = commandModel.getProcessExcState();
+
+        if (excState instanceof  Boolean) {
+            deployStatusModel.setDeployInfo(commandModel.getProcessOutputInfo());
+            deployStatusModel.setStatus((Boolean) excState);
+            deployStatusModel.setTime(deployStatusModel.getTime());
+        }
+
+        return deployStatusModel;
+    }
+
     private void oldCustomPropertiesChanged() {
 
         Map<String, String> cmDeployConfigMap = deployConfigModel.getCmDeployConfigMap();

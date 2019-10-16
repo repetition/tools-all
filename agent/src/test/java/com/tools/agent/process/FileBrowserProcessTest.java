@@ -55,6 +55,21 @@ public class FileBrowserProcessTest {
 
         System.out.println(list.size());
 
+
+
+        String str = "djisoanafjoasdjiaosd";
+
+        char[] chars = str.toCharArray();
+        String copy = "";
+        for (int i = chars.length - 1; i >= 0; i--) {
+            copy +=chars[i];
+
+        }
+
+        System.out.println(copy);
+        StringBuilder reverse = new StringBuilder(str).reverse();
+
+        System.out.println(reverse);
     }
 
 

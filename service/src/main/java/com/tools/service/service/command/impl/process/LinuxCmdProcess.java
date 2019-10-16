@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 /**
  * 命令输入流业务处理类
  */
-public class LiunxCmdProcess {
-    private static final Logger log = LoggerFactory.getLogger(LiunxCmdProcess.class);
+public class LinuxCmdProcess {
+    private static final Logger log = LoggerFactory.getLogger(LinuxCmdProcess.class);
 
     public CommandModel serviceProcess(ProcessBuilder builder) {
 
@@ -43,39 +43,8 @@ public class LiunxCmdProcess {
                     //执行任务成功 返回值为 0
                     if (process.waitFor() == 0) {
                         process.destroy();
-                        //服务启动
-                        if (contains(cmdResult, "服务已经启动成功")) {
-                            commandModel.setProcessExcState(ServiceStateEnum.STATED);
-                            return commandModel;
-                        }
-                        //服务停止成功
-                        if (contains(cmdResult, "服务已成功停止")) {
-                            commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
-                            return commandModel;
-                        }
-                        //服务无法停止，但是服务也是停止成功了
-                        if (contains(cmdResult, "服务无法停止")) {
-                            commandModel.setProcessExcState(ServiceStateEnum.ERROR);
-                            return commandModel;
-                        }
                     }
-                    //服务已经启动或者服务已经停止，服务名不存在返回值为2
                     if (process.waitFor() == 2) {
-                        //服务不存在
-                        if (contains(cmdResult, "服务名无效")) {
-                            commandModel.setProcessExcState(ServiceStateEnum.NOT_EXIST);
-                            return commandModel;
-                        }
-                        //服务没有启动
-                        if (contains(cmdResult, "没有启动")) {
-                            commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
-                            return commandModel;
-                        }
-                        //服务已经启动
-                        if (contains(cmdResult, "请求的服务已经启动")) {
-                            commandModel.setProcessExcState(ServiceStateEnum.STATED);
-                            return commandModel;
-                        }
                         process.destroy();
                     }
                 } catch (IOException e) {

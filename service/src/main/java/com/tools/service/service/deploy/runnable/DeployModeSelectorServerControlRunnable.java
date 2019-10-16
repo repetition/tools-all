@@ -24,16 +24,16 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
     private final UploadTomcatDeployServiceImpl uploadTomcatDeployServiceImpl;
     private Map<String, Boolean> deployModeSelectorMap;
 
-    public DeployModeSelectorServerControlRunnable() {
+    public DeployModeSelectorServerControlRunnable(Map<String, Boolean> map) {
         deployConfigModel = ApplicationContext.getDeployConfigModel();
         cmTomcatDeployServiceImpl = new CMTomcatDeployServiceImpl(deployConfigModel);
         uploadTomcatDeployServiceImpl = new UploadTomcatDeployServiceImpl(deployConfigModel);
+        deployModeSelectorMap = map;
     }
 
     @Override
     public void run() {
         ServerStartTypeEnum serverStartTypeEnum = deployConfigModel.getServerStartTypeEnum();
-        deployModeSelectorMap = deployConfigModel.getDeployModeSelectorMap();
         onServerControlListener.onServerStart();
         if (deployConfigModel.isServerStart()) {
             stopServer();
@@ -177,10 +177,21 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
         }
     }
 
-    private DeployServerControlRunnable.OnServerControlListener onServerControlListener;
+    private OnServerControlListener onServerControlListener;
 
-    public void setOnServerControlListener(DeployServerControlRunnable.OnServerControlListener onServerControlListener) {
+    public void setOnServerControlListener(OnServerControlListener onServerControlListener) {
         this.onServerControlListener = onServerControlListener;
     }
 
+    public interface OnServerControlListener {
+        void onServerStart();
+
+        void onServerStarted(DeployState deployState);
+
+        void onServerStoping();
+
+        void onServerStoped(DeployState deployState);
+
+        void onServerFail(DeployState deployState);
+    }
 }

@@ -210,4 +210,23 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
         }
         return deployStatusModel;
     }
+
+    @Override
+    public DeployStatusModel deleteWarFile() {
+        //log.info("正在删除zyfl War包...");
+        String zyflWarPath = deployConfigModel.getCmDeployConfigMap().get("zyflWarPath");
+        CommandModel commandModel = deployProcessorServiceIpml.deleteOldFiles(zyflWarPath);
+
+        DeployStatusModel deployStatusModel = new DeployStatusModel();
+
+        Object excState = commandModel.getProcessExcState();
+
+        if (excState instanceof  Boolean) {
+            deployStatusModel.setDeployInfo(commandModel.getProcessOutputInfo());
+            deployStatusModel.setStatus((Boolean) excState);
+            deployStatusModel.setTime(deployStatusModel.getTime());
+        }
+
+        return deployStatusModel;
+    }
 }

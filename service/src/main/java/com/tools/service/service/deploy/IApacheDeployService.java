@@ -17,5 +17,6 @@ public interface IApacheDeployService {
     DeployStatusModel exportWar();
 
     DeployStatusModel deleteFiles();
+    DeployStatusModel deleteWarFile();
 
 }

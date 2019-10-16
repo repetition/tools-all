@@ -263,6 +263,26 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
 
     }
 
+    @Override
+    public DeployStatusModel deleteWarFile() {
+
+        log.info("正在删除upload War包...");
+        String uploadWarPath = deployConfigModel.getCmDeployConfigMap().get("uploadWarPath");
+        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(uploadWarPath);
+
+        DeployStatusModel deployStatusModel = new DeployStatusModel();
+
+        Object excState = commandModel.getProcessExcState();
+
+        if (excState instanceof  Boolean) {
+            deployStatusModel.setDeployInfo(commandModel.getProcessOutputInfo());
+            deployStatusModel.setStatus((Boolean) excState);
+            deployStatusModel.setTime(deployStatusModel.getTime());
+        }
+
+        return deployStatusModel;
+    }
+
 
     private void dbConfig(String rootPath, String dbAddressStr, String dbNameStr, String dbUserNameStr, String dbPassWordStr) {
 

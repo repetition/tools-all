@@ -26,4 +26,6 @@ public interface ITomcatDeployService {
 
     void configModifying();
 
+    DeployStatusModel deleteWarFile();
+
 }

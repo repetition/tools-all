@@ -14,6 +14,8 @@ public enum CommandMethodEnum {
     GET_CONFIG_FILE("获取指定配置文件",3004),
     SAVE_CONFIG_FILE("给agent传送保存的配置文件",3005),
 
+    SERVICE_CONTROL("服务控制指令",6000),
+
     //从服务器下载配置
     DOWNLOAD_DEPLOY_CONFIG("从服务器下载配置",4000),
 

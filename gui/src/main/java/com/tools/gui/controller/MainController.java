@@ -475,8 +475,11 @@ public class MainController extends BaseController{
                             dialog.close();
                             // TODO: 2019/9/5 添加启动代码
                             ApplicationContext.getDeployConfigModel().setDeployModeSelectorMap(map);
-
-                            // ThreadPoolManager.getInstance().execute(deployModeSelectorServerControlRunnable);
+                            Command command = new Command();
+                            command.setCommandMethod(CommandMethodEnum.SERVICE_CONTROL.toString());
+                            command.setCommandCode(CommandMethodEnum.SERVICE_CONTROL.getCode());
+                            command.setContent(map);
+                            deployProcess.sendMessage(command);
                         }
                         if (param == ButtonType.CANCEL) {
                             //不执行任何操作

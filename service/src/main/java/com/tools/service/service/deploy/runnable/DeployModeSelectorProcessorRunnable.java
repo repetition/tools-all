@@ -77,7 +77,10 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
                 } else {
                     onDeployProcessorListener.onDeployProcessSuccess(deployState.setState(true).setInfo("Apache 解压文件成功!").setTaskEnum(TaskEnum.APACHE));
                 }
+
+                apacheDeployServiceImpl.deleteWarFile();
             }
+
         }
         if (isApache_config){
             deployStatusModel = apacheDeployServiceImpl.stopService();
@@ -131,6 +134,7 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
                 onDeployProcessorListener.onDeployProcessSuccess(deployState.setState(true).setInfo("CM_TOMCAT 解压成功!").setTaskEnum(TaskEnum.CM_TOMCAT));
             }
             cmTomcatDeployServiceImpl.configModifying();
+            cmTomcatDeployServiceImpl.deleteWarFile();
         }
 
         if (isUpload){
@@ -163,6 +167,7 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
                 onDeployProcessorListener.onDeployProcessSuccess(deployState.setState(true).setInfo("UPLOAD_TOMCAT 文件解压成功!").setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
             }
           //  uploadTomcatDeployServiceImpl.configModifying();
+            uploadTomcatDeployServiceImpl.deleteWarFile();
         }
         onDeployProcessorListener.onDeployProcessorEnd();
     }

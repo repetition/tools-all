@@ -2,7 +2,7 @@ package com.tools.service.service.command.impl;
 
 import com.tools.service.model.CommandModel;
 import com.tools.service.service.command.ICommand;
-import com.tools.service.service.command.impl.process.LiunxCmdProcess;
+import com.tools.service.service.command.impl.process.LinuxCmdProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class LinuxCommandImpl implements ICommand {
         processBuilder.command(cmd);
         System.out.println(cmd.toString());
 
-        return new LiunxCmdProcess().searchPidProcess(processBuilder);
+        return new LinuxCmdProcess().searchPidProcess(processBuilder);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class LinuxCommandImpl implements ICommand {
         log.info("bat:" + batPath);
         //  builder.command("cmd.exe", "/c", "start", "/b", batPath);
         builder.command(cmdStartBat);
-        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
+        LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
         return cmdProcess.batProcess(builder);
     }
 
@@ -68,13 +68,11 @@ public class LinuxCommandImpl implements ICommand {
         builder.redirectErrorStream(true);
         log.info("serviceName:" + serviceName);
         List<String> cmdNetStart = new ArrayList<>();
-        cmdNetStart.add("cmd.exe");
-        cmdNetStart.add("/c");
-        cmdNetStart.add("net");
+        cmdNetStart.add("systemctl");
         cmdNetStart.add("start");
         cmdNetStart.add(serviceName);
         builder.command(cmdNetStart);
-        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
+        LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
         CommandModel commandModel = cmdProcess.serviceProcess(builder);
 
         return commandModel;
@@ -87,14 +85,11 @@ public class LinuxCommandImpl implements ICommand {
         builder.redirectErrorStream(true);
         log.info("serviceName:" + serviceName);
         List<String> cmdNetStop = new ArrayList<>();
-        // cmdNetStop.add("cmd.exe");
-        // cmdNetStop.add("/c");
-        cmdNetStop.add("net");
+        cmdNetStop.add("systemctl");
         cmdNetStop.add("stop");
         cmdNetStop.add(serviceName);
         builder.command(cmdNetStop);
-        // Process process = builder.command("cmd.exe", "/c", "start", batPath).start();
-        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
+        LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
         CommandModel commandModel = cmdProcess.serviceProcess(builder);
         return commandModel;
     }
@@ -110,7 +105,7 @@ public class LinuxCommandImpl implements ICommand {
         ProcessBuilder processBuilder = newProcessBuilder();
         processBuilder.redirectErrorStream(true);
         processBuilder.command(cmdTaskKill);
-        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
+        LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
         return cmdProcess.pidKillProcess(processBuilder);
     }
 
@@ -127,7 +122,7 @@ public class LinuxCommandImpl implements ICommand {
 
         System.out.println(Arrays.asList(command));
         processBuilder.command(command);
-        LiunxCmdProcess cmdProcess = new LiunxCmdProcess();
+        LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
         return cmdProcess.exportZIPProcess(processBuilder);
     }
 
@@ -141,7 +136,7 @@ public class LinuxCommandImpl implements ICommand {
         command.add("-rf");
         command.add(filePath);
         processBuilder.command(command);
-        return new LiunxCmdProcess().deleteFileProcess(processBuilder);
+        return new LinuxCmdProcess().deleteFileProcess(processBuilder);
     }
 
     /**
@@ -158,7 +153,7 @@ public class LinuxCommandImpl implements ICommand {
         command.add("-ivh");
         command.add(rpmPath);
         processBuilder.command(command);
-        return new LiunxCmdProcess().installRpmProcess(processBuilder);
+        return new LinuxCmdProcess().installRpmProcess(processBuilder);
     }
 
     /**
@@ -171,7 +166,7 @@ public class LinuxCommandImpl implements ICommand {
         ProcessBuilder processBuilder = newProcessBuilder();
         processBuilder.redirectErrorStream(true);
         processBuilder.command(command);
-        return new LiunxCmdProcess().installRpmProcess(processBuilder);
+        return new LinuxCmdProcess().installRpmProcess(processBuilder);
     }
 
     @Override
