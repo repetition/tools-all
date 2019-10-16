@@ -1,6 +1,6 @@
 package com.tools.gui.debug;
 
-import com.tools.gui.process.CommandMethodEnum;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.process.FileBrowserProcess;
 import com.tools.gui.utils.view.ProgressUtils;
 import com.tools.socket.bean.Command;
@@ -8,7 +8,6 @@ import com.tools.socket.bean.FileItemInfo;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

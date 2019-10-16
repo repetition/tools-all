@@ -1,7 +1,7 @@
 package com.tools.gui.process.sync;
 
 import com.tools.commons.utils.FileUtils;
-import com.tools.gui.process.CommandMethodEnum;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.socket.bean.Command;
 import io.netty.channel.ChannelHandlerContext;
 

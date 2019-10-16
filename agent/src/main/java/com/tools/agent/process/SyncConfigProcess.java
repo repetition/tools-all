@@ -4,7 +4,7 @@ package com.tools.agent.process;
 import com.tools.agent.ApplicationConfig;
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
-import com.tools.service.context.ApplicationContext;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;

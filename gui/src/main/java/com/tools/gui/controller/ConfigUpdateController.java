@@ -1,14 +1,11 @@
 package com.tools.gui.controller;
 
-import com.tools.commons.utils.StringUtils;
-import com.tools.commons.utils.Utils;
-import com.tools.gui.process.CommandMethodEnum;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.process.sync.DownloadConfigProcess;
 import com.tools.gui.utils.view.AlertUtils;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.RestartUtils;
 import com.tools.socket.bean.Command;
-import com.tools.socket.client.ClientInstructionProcess;
 import com.tools.socket.client.SocketClient;
 import com.tools.socket.manager.SocketManager;
 import io.netty.channel.Channel;

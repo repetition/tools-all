@@ -1,7 +1,7 @@
 package com.tools.agent.process.listener;
 
 import com.tools.agent.ApplicationConfig;
-import com.tools.agent.process.CommandMethodEnum;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.agent.process.constant.PropertKeys;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.service.context.ApplicationContext;

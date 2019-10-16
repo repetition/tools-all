@@ -3,6 +3,7 @@ package com.tools.gui.process;
 
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.config.ApplicationConfig;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;

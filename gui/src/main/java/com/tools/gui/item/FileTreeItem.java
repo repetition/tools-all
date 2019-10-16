@@ -1,6 +1,6 @@
 package com.tools.gui.item;
 
-import com.tools.gui.process.CommandMethodEnum;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.process.FileBrowserProcess;
 import com.tools.gui.utils.view.JFXSnackbarUtils;
 import com.tools.gui.utils.view.ProgressUtils;

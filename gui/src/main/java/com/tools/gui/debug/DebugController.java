@@ -1,7 +1,7 @@
 package com.tools.gui.debug;
 
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.controller.BaseController;
-import com.tools.gui.process.CommandMethodEnum;
 import com.tools.gui.process.DeployProcess;
 import com.tools.gui.process.FileBrowserProcess;
 import com.tools.gui.process.ProcessManager;
@@ -11,17 +11,13 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -30,7 +26,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

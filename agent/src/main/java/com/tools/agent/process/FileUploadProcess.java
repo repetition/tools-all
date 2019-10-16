@@ -1,8 +1,7 @@
 package com.tools.agent.process;
 
 import com.tools.agent.ApplicationConfig;
-import com.tools.service.context.ApplicationContext;
-import com.tools.service.model.DeployConfigModel;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;

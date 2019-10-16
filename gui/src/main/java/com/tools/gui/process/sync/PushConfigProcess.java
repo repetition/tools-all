@@ -1,8 +1,8 @@
 package com.tools.gui.process.sync;
 
 import com.tools.commons.utils.FileUtils;
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.config.ApplicationConfig;
-import com.tools.gui.process.CommandMethodEnum;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.socket.bean.Command;

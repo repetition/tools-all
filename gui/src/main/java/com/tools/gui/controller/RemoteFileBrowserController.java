@@ -1,7 +1,7 @@
 package com.tools.gui.controller;
 
+import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.item.FileTreeItem;
-import com.tools.gui.process.CommandMethodEnum;
 import com.tools.gui.process.FileBrowserProcess;
 import com.tools.gui.process.ProcessManager;
 import com.tools.gui.utils.view.JFXSnackbarUtils;

@@ -1,5 +1,6 @@
 package com.tools.agent.process;
 
+import com.tools.constant.CommandMethodEnum;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileItemInfo;
 import io.netty.channel.ChannelHandlerContext;
