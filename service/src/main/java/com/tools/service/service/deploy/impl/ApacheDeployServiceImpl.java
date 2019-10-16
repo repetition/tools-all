@@ -3,6 +3,7 @@ package com.tools.service.service.deploy.impl;
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.service.constant.DeployTypeEnum;
+import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.CommandModel;
 import com.tools.service.model.DeployConfigModel;
 import com.tools.service.model.DeployStatusModel;
@@ -70,20 +71,22 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
 
         switch (deployTypeEnum){
             case DEPLOY_OLD:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdOldChangedPath());
+                httpdReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getHttpdOldChangedPath()).getName());
                 break;
             case DEPLOY_ZYFL:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdZYFLChangedPath());
+
+                httpdReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getHttpdZYFLChangedPath()).getName());
                 break;
             case DEPLOY_UPLOAD2IPM:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdIPMChangedPath());
+
+                httpdReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getHttpdIPMChangedPath()).getName());
                 break;
             case DEPLOY_UPLOAD2CM_1TOMCAT:
                 //单tomcat处理
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUpload1TomcatChangedPath());
+                httpdReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getHttpdUpload1TomcatChangedPath()).getName());
                 break;
             default:
-                httpdReplace = FileUtils.readFile(deployConfigModel.getHttpdUploadChangedPath());
+                httpdReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getHttpdUploadChangedPath()).getName());
         }
         String httpdStr = FileUtils.readFile(apacheServiceHttpdPath);
 
@@ -125,14 +128,15 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
 
         switch (deployTypeEnum){
             case DEPLOY_OLD:
-                workersReplace = FileUtils.readFile(deployConfigModel.getWorkersOldChangedPath());
+
+                workersReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getWorkersOldChangedPath()).getName());
                 break;
             case DEPLOY_ZYFL:
-                workersReplace = FileUtils.readFile(deployConfigModel.getWorkersOldChangedPath());
+                workersReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getWorkersOldChangedPath()).getName());
                 break;
             default:
                 //其他模式统一是资源分离
-                workersReplace = FileUtils.readFile(deployConfigModel.getWordkersUploadChangedPath());
+                workersReplace = FileUtils.readFile(ApplicationContext.getApplicationConfPath() +new File(deployConfigModel.getWordkersUploadChangedPath()).getName());
 
         }
         FileUtils.saveFile(workersReplace, apacheServiceWorkersPath);
@@ -214,7 +218,7 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
     @Override
     public DeployStatusModel deleteWarFile() {
         //log.info("正在删除zyfl War包...");
-        String zyflWarPath = deployConfigModel.getCmDeployConfigMap().get("zyflWarPath");
+        String zyflWarPath = deployConfigModel.getZyflDeployConfigMap().get("zyflWarPath");
         CommandModel commandModel = deployProcessorServiceIpml.deleteOldFiles(zyflWarPath);
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();

@@ -80,10 +80,7 @@ public class DeployProcess extends ProcessBase {
             deployState.setInfo(fileUpload.getFileType() + "成功!");
             onDeployProcessorListener.onDeployProcessSuccess(deployState);
 
-            for (CommandMethodEnum commandMethodEnum : commandMethodEnumSet) {
-
-                log.info(commandMethodEnum + " remove:" + CommandMethodEnum.valueOf(fileUpload.getFileType()));
-            }
+            log.info(fileUpload.getFileType() + " remove:" + CommandMethodEnum.valueOf(fileUpload.getFileType()));
 
             commandMethodEnumSet.remove(CommandMethodEnum.valueOf(fileUpload.getFileType()));
             log.info(commandMethodEnumSet.size() + "");

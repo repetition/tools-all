@@ -42,6 +42,7 @@ public class LinuxCmdProcess {
                     commandModel.setProcessOutputInfo(cmdResult);
                     //执行任务成功 返回值为 0
                     if (process.waitFor() == 0) {
+                        commandModel.setProcessExcState(ServiceStateEnum.STATED);
                         process.destroy();
                     }
                     if (process.waitFor() == 2) {
@@ -78,35 +79,22 @@ public class LinuxCmdProcess {
             String resultStr = getCmdResultToString(process.getInputStream());
             //STATE              :(.+?)\s(.+?)\s   \s匹配空格  (.+?) 两次匹配
             /**
-             * SERVICE_NAME: ThinkWinCRRed5
-             *         TYPE               : 10  WIN32_OWN_PROCESS
-             *         STATE              : 4  RUNNING
-             *                                 (STOPPABLE, NOT_PAUSABLE, ACCEPTS_SHUTDOWN)
-             *         WIN32_EXIT_CODE    : 0  (0x0)
-             *         SERVICE_EXIT_CODE  : 0  (0x0)
-             *         CHECKPOINT         : 0x0
-             *         WAIT_HINT          : 0x0
+             * Active: active (running)  运行
+             * Active: inactive (dead) 没有运行
              */
-            List<String> matchers = matcherAll("STATE              :(.+?)\\s+(.+?)\\s", resultStr);
-
-            commandModel.setProcessOutputInfo(Arrays.asList(resultStr));
             commandModel.setProcessWaitFor(process.waitFor());
-            //==null 服务不存在
-            if (matchers == null) {
+            commandModel.setProcessOutputInfo(Arrays.asList(resultStr));
+            if (resultStr.contains("Active: active (running)")) {
+                commandModel.setProcessExcState(ServiceStateEnum.STATED);
+            }
+            if (resultStr.contains("Active: inactive (dead)")) {
+                commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
+            }
+            if (resultStr.contains("could not be found")) {
                 commandModel.setProcessExcState(ServiceStateEnum.NOT_EXIST);
-            } else {
-                String status = matchers.get(2);
-                switch (status) {
-                    case "RUNNING":
-                        commandModel.setProcessExcState(ServiceStateEnum.STATED);
-                        break;
-                    case "STOP_PENDING":
-                        commandModel.setProcessExcState(ServiceStateEnum.STOP_PENDING);
-                        break;
-                    case "STOPPED":
-                        commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
-                        break;
-                }
+            }
+            if (resultStr.contains("Active: active (exited)")) {
+                commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
             }
         } catch (IOException e) {
             e.printStackTrace();

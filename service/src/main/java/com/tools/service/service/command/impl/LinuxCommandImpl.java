@@ -3,6 +3,7 @@ package com.tools.service.service.command.impl;
 import com.tools.service.model.CommandModel;
 import com.tools.service.service.command.ICommand;
 import com.tools.service.service.command.impl.process.LinuxCmdProcess;
+import com.tools.service.service.command.impl.process.WindowsCmdProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,8 +173,18 @@ public class LinuxCommandImpl implements ICommand {
     @Override
     public CommandModel cmdQueryServiceStatus(String serviceName) {
 
+        ProcessBuilder builder = newProcessBuilder();
+        builder.redirectErrorStream(true);
 
-        return null;
+        List<String> cmdServiceState = new ArrayList<>();
+        cmdServiceState.add("systemctl");
+        cmdServiceState.add("status");
+        cmdServiceState.add(serviceName);
+        builder.command(cmdServiceState);
+
+        LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
+
+        return cmdProcess.serviceStatusProcess(builder);
     }
 
     @Override
