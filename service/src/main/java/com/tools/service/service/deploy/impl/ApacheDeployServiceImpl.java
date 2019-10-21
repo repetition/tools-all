@@ -176,7 +176,7 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
         String apacheHtdocsFilter = deployConfigModel.getZyflDeployConfigMap().get("apacheHtdocsFilter");
 
         String[] filters = apacheHtdocsFilter.split(",");
-
+        System.out.println("日志");
         List<String> filterList = Arrays.asList(filters);
         File file = new File(apacheHtdocsPath);
         //过滤一部分文件
