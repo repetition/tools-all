@@ -7,10 +7,17 @@ import com.tools.socket.bean.FileUpload;
 import com.tools.socket.observer.ObserverManager;
 import com.tools.socket.observer.Process;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
-import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +25,7 @@ import org.slf4j.LoggerFactory;
 public abstract class ProcessBase implements Process {
     private static final Logger log = LoggerFactory.getLogger(ProcessBase.class);
     private ChannelHandlerContext ctx;
+    private AttributeKey<Object> attributeKey;
 
     ProcessBase() {
         log.info(this.getClass().getName() + " init!");
@@ -58,6 +66,14 @@ public abstract class ProcessBase implements Process {
         }
     }
 
+    public Attribute<Object> getChannelKey(){
+        if (ctx != null) {
+            attributeKey = AttributeKey.valueOf("platform");
+            Attribute<Object> attr = ctx.channel().attr(attributeKey);
+            return attr;
+        }
+        return null;
+    }
     private void send(Object obj) {
         if (obj instanceof Command) {
             ctx.channel().writeAndFlush((Command)obj);
@@ -74,13 +90,31 @@ public abstract class ProcessBase implements Process {
         popup.setWidth(100);
         popup.setWidth(20);
         HBox hBox = new HBox();
-        hBox.setPrefHeight(20);
-        hBox.setPrefWidth(50);
+        hBox.setPrefHeight(100);
+        hBox.setPrefWidth(200);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setStyle("-fx-background-color: linen;-fx-background-radius: 8;-fx-border-radius: 8");
         Label label = new Label("当前没有可用的tcp连接!");
-        label.setStyle("-fx-background-color: #0cccff;-fx-text-fill: #000000");
+        label.setStyle("-fx-text-fill: #000000 ;-fx-font-size: 15 ; -fx-font-family: 'Microsoft YaHei UI'");
         hBox.getChildren().add(label);
         popup.getContent().add(hBox);
         popup.show(Main.mainStage);
+
+
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(1);
+        timeline.setAutoReverse(true);
+        ReadOnlyIntegerWrapper readOnlyIntegerWrapper = new ReadOnlyIntegerWrapper(100);
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(3), new KeyValue(readOnlyIntegerWrapper, 0));
+
+        timeline.getKeyFrames().add(keyFrame);
+
+        timeline.setOnFinished(event -> {
+            popup.hide();
+            log.info("end");
+        });
+        log.info("play");
+        timeline.play();
     }
 
     /**

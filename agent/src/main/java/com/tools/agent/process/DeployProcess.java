@@ -4,6 +4,7 @@ import com.tools.agent.ApplicationConfig;
 import com.tools.agent.process.listener.OnDeployProcessorListener;
 import com.tools.commons.thread.ThreadPoolManager;
 import com.tools.constant.CommandMethodEnum;
+import com.tools.service.constant.ServerStartTypeEnum;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.CommandModel;
 import com.tools.service.model.DeployConfigModel;
@@ -27,6 +28,16 @@ public class DeployProcess extends ProcessBase {
 
         CommandMethodEnum commandMethodEnum = CommandMethodEnum.getEnum(command.getCommandCode());
         switch (commandMethodEnum) {
+            case GET_PLATFORM:
+
+                String osName = System.getProperty("os.name").toLowerCase();
+                Command syncWarCommand = new Command();
+                syncWarCommand.setCommandMethod(CommandMethodEnum.GET_PLATFORM.toString());
+                syncWarCommand.setCommandCode(CommandMethodEnum.GET_PLATFORM.getCode());
+                syncWarCommand.setContent(osName);
+                ctx.channel().writeAndFlush(syncWarCommand);
+
+                break;
             case DEPLOY_INIT:
                 deploy(command,ctx);
                 break;
@@ -74,9 +85,12 @@ public class DeployProcess extends ProcessBase {
 
     private void deploy(Command command, ChannelHandlerContext ctx) {
 
-        checkIsInstall();
 
-
+        String osName = System.getProperty("os.name").toLowerCase();
+        //linux  只支持服务启动
+        if (osName.contains("linux")) {
+            checkIsInstall();
+        }
 
         //保存设置
         ApplicationContext.setDeployConfigModel((DeployConfigModel) command.getContent());

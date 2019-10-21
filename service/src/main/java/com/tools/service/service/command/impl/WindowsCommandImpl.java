@@ -157,6 +157,21 @@ public class WindowsCommandImpl implements ICommand {
     }
 
     @Override
+    public CommandModel cmdDeleteFile(String filePath) {
+
+        ProcessBuilder processBuilder = newProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+        List<String> command = new ArrayList<>();
+        command.add("cmd.exe");
+        command.add("/c");
+        command.add("del");
+        command.add("/f");
+        command.add(filePath);
+        processBuilder.command(command);
+        return new WindowsCmdProcess().deleteFileProcess(processBuilder);
+    }
+
+    @Override
     public CommandModel cmdQueryServiceStatus(String serviceName) {
 
         ProcessBuilder builder = newProcessBuilder();

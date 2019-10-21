@@ -18,6 +18,15 @@ public class DeployProcessorServiceImpl extends ServiceBase implements IDeployPr
         return commandModel;
 
     }
+
+    @Override
+    public CommandModel deleteOldFile(String filePath) {
+        CommandModel commandModel = command.cmdDeleteFile(filePath);
+
+
+        return commandModel;
+    }
+
     @Override
     public CommandModel exportWar(String warPath, String exportPath) {
         CommandModel commandModel = null;

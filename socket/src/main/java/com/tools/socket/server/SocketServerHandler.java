@@ -8,6 +8,8 @@ import com.tools.socket.observer.SocketServerObserverable;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,10 @@ public class SocketServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         log.info("channelActive: " + ctx.channel().remoteAddress());
+
+        AttributeKey<Object> attributeKey = AttributeKey.valueOf("platform");
+        Attribute<Object> attr = ctx.channel().attr(attributeKey);
+        attr.set("linux");
     }
 
     @Override

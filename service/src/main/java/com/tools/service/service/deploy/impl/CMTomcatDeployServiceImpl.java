@@ -183,7 +183,7 @@ public class CMTomcatDeployServiceImpl implements ITomcatDeployService {
     public DeployStatusModel deleteWarFile() {
         log.info("正在删除Tomcat旧ROOT包...");
         String cmTomcatWarPath = deployConfigModel.getCmDeployConfigMap().get("cmWarPath");
-        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(cmTomcatWarPath);
+        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFile(cmTomcatWarPath);
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();
 

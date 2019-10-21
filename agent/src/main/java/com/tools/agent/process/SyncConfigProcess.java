@@ -88,12 +88,16 @@ public class SyncConfigProcess extends ProcessBase {
         Map<String, String> content = (Map<String, String>) command.getContent();
 
         String filePath = content.get("filePath");
-
-        byte[] bytes = FileUtils.readFileToByte(filePath);
-
-        File file = new File(filePath);
         FileUpload fileUpload = new FileUpload();
-
+        File file = new File(filePath);
+        if (!file.exists()) {
+            fileUpload.setState(FileUpload.FAIL);
+            fileUpload.setDesc("文件不存在!");
+            command.setContent(fileUpload);
+            ctx.channel().writeAndFlush(command);
+            return;
+        }
+        byte[] bytes = FileUtils.readFileToByte(filePath);
         fileUpload.setFile(file);
         fileUpload.setFileName(file.getName());
         fileUpload.setBytes(bytes);

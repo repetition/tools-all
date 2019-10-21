@@ -54,7 +54,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
             //单tomcat处理
             case DEPLOY_UPLOAD2CM_1TOMCAT:
                 String absolutePath = new File(cmTomcatExportPath).getParentFile().getAbsolutePath();
-                commandModel = deployProcessorServiceImpl.deleteOldFiles(absolutePath + "/" + projectName);
+                commandModel = deployProcessorServiceImpl.deleteOldFiles(absolutePath + File.separator + projectName);
                 break;
             default:
                 commandModel = deployProcessorServiceImpl.deleteOldFiles(uploadTomcatExportPath);
@@ -126,7 +126,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
 
     @Override
     public DeployStatusModel startTomcatForService() {
-        log.info("正在以服务启动Tomcat...");
+        log.info("正在以服务启动upload_Tomcat...");
 
         String uploadTomcatServiceName = deployConfigModel.getUploadDeployConfigMap().get("uploadTomcatServiceName");
         CommandModel commandModel = serverControlServiceImpl.startServerForService(uploadTomcatServiceName);
@@ -147,7 +147,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
 
     @Override
     public DeployStatusModel stopTomcatForConsole() {
-        log.info("停止tomcat服务...");
+        log.info("停止upload_tomcat服务...");
         String uploadTomcatPort;
         DeployTypeEnum deployTypeEnum = deployConfigModel.getDeployTypeEnum();
 
@@ -268,7 +268,7 @@ public class UploadTomcatDeployServiceImpl   implements ITomcatDeployService {
 
         log.info("正在删除upload War包...");
         String uploadWarPath = deployConfigModel.getUploadDeployConfigMap().get("uploadWarPath");
-        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFiles(uploadWarPath);
+        CommandModel commandModel = deployProcessorServiceImpl.deleteOldFile(uploadWarPath);
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();
 

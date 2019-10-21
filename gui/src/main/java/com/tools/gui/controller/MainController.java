@@ -9,7 +9,6 @@ import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.config.ApplicationConfig;
 import com.tools.gui.config.Config;
 import com.tools.gui.debug.DebugController;
-import com.tools.gui.item.FileTreeItem;
 import com.tools.gui.utils.view.*;
 import com.tools.socket.bean.FileItemInfo;
 import com.tools.gui.jenkins.ProjectBuild;
@@ -27,6 +26,8 @@ import com.tools.socket.bean.FileUpload;
 import com.tools.socket.client.SocketClient;
 import com.tools.socket.manager.SocketManager;
 import io.netty.channel.Channel;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -66,9 +67,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.tools.gui.utils.view.AlertUtils.showAlert;
-import static com.tools.gui.utils.view.FileChooserUtils.showSelectDirectoryChooser;
 import static com.tools.gui.utils.view.FileChooserUtils.showSelectFileChooser;
 import static com.tools.service.constant.DeployTypeEnum.DEPLOY_2UPLOAD;
 import static com.tools.service.constant.DeployTypeEnum.DEPLOY_UPLOAD2CM;
@@ -319,7 +320,19 @@ public class MainController extends BaseController{
 
         //选择资源路径
         if (actionEvent.getSource() == mBTSelectResource) {
-            String selectDirPath = "";
+
+
+            RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
+
+            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter,fileItemInfo -> {
+                String filePath = fileItemInfo.getAbsolutePath();
+                mTFResourcePath.setText(filePath);
+                appendText("ResourcePath:" + filePath);
+            });
+
+
+
+/*            String selectDirPath = "";
             if (defaultResourcePath.equals("")) {
                 selectDirPath = showSelectDirectoryChooser(null, "D:/", stage);
             } else {
@@ -328,9 +341,9 @@ public class MainController extends BaseController{
             if (selectDirPath.trim().equals("")) {
                 return;
             }
-            defaultResourcePath = selectDirPath;
-            mTFResourcePath.setText(selectDirPath);
-            appendText("ResourcePath:" + selectDirPath);
+            defaultResourcePath = selectDirPath;*/
+           // mTFResourcePath.setText(selectDirPath);
+           // appendText("ResourcePath:" + selectDirPath);
         }
         //选择一键部署
         if (actionEvent.getSource() == mBTDeployStart) {
@@ -766,9 +779,9 @@ public class MainController extends BaseController{
                         }
 
                         @Override
-                        public void onFail() {
+                        public void onFail(String s) {
                             Platform.runLater(() -> {
-                                JFXSnackbarUtils.show("没有tcp连接",2000,mVBox);
+                                JFXSnackbarUtils.show(s,2000,mVBox);
                                 progress.close();
                             });
                         }
@@ -880,7 +893,6 @@ public class MainController extends BaseController{
                 // mDBPopupChoiceBox.show();
             }
         });
-        setConfig();
 
         if (Config.isConfigSync) {
             PushConfigProcess pushConfigProcess = new PushConfigProcess();
@@ -904,6 +916,7 @@ public class MainController extends BaseController{
 
         deployProcess.setOnDeployProcessorListener(new DeployListener());
         serviceControlProcess.setOnServerControlListener(new ServerControlListener());
+        setConfig();
     }
 
     /**
@@ -1218,7 +1231,16 @@ public class MainController extends BaseController{
                 SocketManager.getSocketClient().setOnConnectedListener(new SocketClient.OnConnectedListener() {
                     @Override
                     public void onSuccess(Channel channel) {
-                        System.out.println(Thread.currentThread().getName());
+                       log.info(Thread.currentThread().getName());
+         /*               AttributeKey attributeKey = AttributeKey.valueOf("platform");
+                        Attribute<Object> attr = channel.attr(attributeKey);
+                        attr.set("111");*/
+
+                        Command command = new Command();
+                        command.setCommandMethod(CommandMethodEnum.GET_PLATFORM.toString());
+                        command.setCommandCode(CommandMethodEnum.GET_PLATFORM.getCode());
+                        channel.writeAndFlush(command);
+
                         mBTPullConfig.setDisable(false);
                         JFXSnackbarUtils.show("连接成功" + channel.remoteAddress(), 2000L, vBox);
                     }
@@ -1696,6 +1718,21 @@ public class MainController extends BaseController{
     }
 
     private void setConfig() {
+        String separator = "";
+        if (deployProcess.getChannelKey() != null) {
+            String platform = (String) deployProcess.getChannelKey().get();
+
+            if (platform != null) {
+
+                //linux  只支持服务启动
+                if (platform.contains("linux")) {
+                    separator = "/";
+                }else {
+                    separator = "\\";
+                }
+            }
+        }
+
         String appConfigPath = System.getProperty("conf.path");
         DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
         deployConfigModel.setHttpdOldChangedPath(appConfigPath + "/httpd_replace.txt");
@@ -1713,21 +1750,20 @@ public class MainController extends BaseController{
             deployConfigModel.setDeployTypeEnum(DeployTypeEnum.valueOf(deployType));
         }
         //  String cmInstallPath = propertyUtils.getConfigurationPropertyStringByKey("cm.install.path");
-
         Map<String, String> cmDeployConfigMap = new HashMap<>();
         String warUnPath = mTFWarUnPath.getText();
         if (!warUnPath.trim().isEmpty()) {
             String tomcatPath = Utils.getParentPath(warUnPath);
-            cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + "/work");
-            cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + "/ROOT");
-            cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + "/bin/startup.bat");
+            cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + separator+"work");
+            cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + separator+"ROOT");
+            cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + separator+"bin"+separator+"startup.bat");
         }
         String cmTomcatServiceName = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.service.name");
         cmDeployConfigMap.put("cmTomcatServiceName", cmTomcatServiceName);
         cmDeployConfigMap.put("cmTomcatPort", mTFTomcatPort.getText());
         cmDeployConfigMap.put("cmWarPath", mTFWarPath.getText());
         cmDeployConfigMap.put("cmWarFlag", Utils.getUUID32());
-        cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + "/ROOT");
+        cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + separator+"ROOT");
 
         cmDeployConfigMap.put("localIp", propertyUtils.getConfigurationPropertyStringByKey("local.ip"));
 
@@ -1749,9 +1785,9 @@ public class MainController extends BaseController{
         if (!zyflWarUnPath.isEmpty()) {
             //截取apache根目录
             String apachePath = Utils.getParentPath(zyflWarUnPath);
-            zyflDeployConfigMap.put("apacheHttpdPath", apachePath + "/conf/httpd.conf");
-            zyflDeployConfigMap.put("apacheWorkersPath", apachePath + "/conf/workers.properties");
-            zyflDeployConfigMap.put("apacheHtdocsPath", apachePath + "/htdocs");
+            zyflDeployConfigMap.put("apacheHttpdPath", apachePath + separator+"conf"+separator+"httpd.conf");
+            zyflDeployConfigMap.put("apacheWorkersPath", apachePath + separator+"conf"+separator+"workers.properties");
+            zyflDeployConfigMap.put("apacheHtdocsPath", apachePath + separator+"htdocs");
         }
         zyflDeployConfigMap.put("zyflWarPath", mTFStaticWarPath.getText());
         zyflDeployConfigMap.put("zyflWarFlag", Utils.getUUID32());
@@ -1766,13 +1802,13 @@ public class MainController extends BaseController{
         if (!uploadExportPath.trim().isEmpty()) {
             String uploadTomcatPath = Utils.getParentPath(uploadExportPath);
 
-            uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + "/bin/startup.bat");
+            uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator+"bin/startup.bat");
             uploadDeployConfigMap.put("uploadTomcatPort", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
             uploadDeployConfigMap.put("uploadWarPath", propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
             uploadDeployConfigMap.put("uploadWarFlag", Utils.getUUID32());
-            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + "/"+uploadProjectName);
+            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + separator+""+uploadProjectName);
             uploadDeployConfigMap.put("uploadTomcatServiceName", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.serviceName"));
-            uploadDeployConfigMap.put("uploadTomcatCachePath",  uploadTomcatPath + "/work");
+            uploadDeployConfigMap.put("uploadTomcatCachePath",  uploadTomcatPath + separator+"work");
             uploadDeployConfigMap.put("uploadTomcatProjectName",  uploadProjectName);
 
         }

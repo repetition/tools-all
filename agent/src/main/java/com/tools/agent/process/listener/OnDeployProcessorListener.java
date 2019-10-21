@@ -31,7 +31,16 @@ public class OnDeployProcessorListener implements DeployModeSelectorProcessorRun
         propertyUtils.getConfiguration2Properties();
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_WAR_PATH,cmDeployConfigMap.get("cmWarPathWin"));
         String cmTomcatExportPath = cmDeployConfigMap.get("cmTomcatExportPath");
-        cmTomcatExportPath= cmTomcatExportPath.substring(0, cmTomcatExportPath.lastIndexOf("/"));
+        String separator = "";
+        String osName = System.getProperty("os.name").toLowerCase();
+        //linux  只支持服务启动
+        if (osName.contains("linux")) {
+            separator = "/";
+        }else {
+            separator = "\\";
+        }
+
+        cmTomcatExportPath= cmTomcatExportPath.substring(0, cmTomcatExportPath.lastIndexOf(separator));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_EXPORTWAR_PATH,cmTomcatExportPath);
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_PORT,cmDeployConfigMap.get("cmTomcatPort"));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_CONFIG_DB_ADDRESS,cmDeployConfigMap.get("cmDBAddress"));
@@ -46,7 +55,7 @@ public class OnDeployProcessorListener implements DeployModeSelectorProcessorRun
         Map<String, String> uploadDeployConfigMap = deployConfigModel.getUploadDeployConfigMap();
         propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_WAR_PATH,uploadDeployConfigMap.get("uploadWarPathWin"));
         String uploadTomcatExportPath = uploadDeployConfigMap.get("uploadTomcatExportPath");
-        uploadTomcatExportPath= uploadTomcatExportPath.substring(0, uploadTomcatExportPath.lastIndexOf("/"));
+        uploadTomcatExportPath= uploadTomcatExportPath.substring(0, uploadTomcatExportPath.lastIndexOf(separator));
 
         propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_EXPORTWAR_PATH,uploadTomcatExportPath);
         propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_TOMCAT_PORT,uploadDeployConfigMap.get("uploadTomcatPort"));

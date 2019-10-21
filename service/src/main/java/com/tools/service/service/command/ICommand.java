@@ -24,4 +24,6 @@ public interface ICommand {
     CommandModel cmdCancelBootStartBySchtasks();
 
     CommandModel cmdSetBootStartBySchtasks();
+
+    CommandModel cmdDeleteFile(String filePath);
 }

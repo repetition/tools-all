@@ -21,6 +21,7 @@ public enum CommandMethodEnum {
     SERVICE_CONTROL_STARTING("服务正在启动",6004),
     SERVICE_CONTROL_STOPING("服务正在停止",6005),
 
+    GET_PLATFORM("获取平台信息",7000),
 
     //从服务器下载配置
     DOWNLOAD_DEPLOY_CONFIG("从服务器下载配置",4000),

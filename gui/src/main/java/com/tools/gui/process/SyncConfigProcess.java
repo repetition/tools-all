@@ -2,7 +2,6 @@ package com.tools.gui.process;
 
 
 import com.tools.commons.utils.FileUtils;
-import com.tools.commons.utils.PropertyUtils;
 import com.tools.constant.CommandMethodEnum;
 import com.tools.gui.config.ApplicationConfig;
 import com.tools.service.context.ApplicationContext;
@@ -10,12 +9,9 @@ import com.tools.service.model.DeployConfigModel;
 import com.tools.socket.bean.Command;
 import com.tools.socket.bean.FileUpload;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.collections.map.HashedMap;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import static com.tools.commons.utils.Utils.replaceAddress;
@@ -75,7 +71,10 @@ public class SyncConfigProcess extends ProcessBase {
                     FileUtils.saveFileForBytes(bytes, ApplicationConfig.getApplicationConfPath() + fileName);
                     onFileGetListener.onFile(ApplicationConfig.getApplicationConfPath() + fileName);
                 }
-                break;
+                if (fileUpload.getState() == FileUpload.FAIL) {
+                    onFileGetListener.onFail(fileUpload.getDesc());
+                }
+                    break;
         }
 
     }
@@ -134,7 +133,7 @@ public class SyncConfigProcess extends ProcessBase {
     @Override
     protected void error() {
         super.error();
-        onFileGetListener.onFail();
+        onFileGetListener.onFail("没有tcp连接!");
     }
 
     private OnSyncConfigListener onSyncConfigListener;
@@ -157,7 +156,7 @@ public class SyncConfigProcess extends ProcessBase {
 
     public interface OnFileGetListener {
         void onFile(String filePath);
-        void onFail();
+        void onFail(String e);
     }
 
 }

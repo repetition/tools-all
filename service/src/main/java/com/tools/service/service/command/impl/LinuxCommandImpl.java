@@ -208,6 +208,18 @@ public class LinuxCommandImpl implements ICommand {
         return null;
     }
 
+    @Override
+    public CommandModel cmdDeleteFile(String filePath) {
+        ProcessBuilder processBuilder = newProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+        List<String> command = new ArrayList<>();
+        command.add("rm");
+        command.add("-rf");
+        command.add(filePath);
+        processBuilder.command(command);
+        return new LinuxCmdProcess().deleteFileProcess(processBuilder);
+    }
+
     /**
      * 截取字符串
      *

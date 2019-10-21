@@ -53,6 +53,12 @@ public class DeployProcess extends ProcessBase {
             case SYNC_RUNTIME_CHANGER_CONFIG:
                 syncRuntimeChanger(command, ctx);
                 break;
+            case GET_PLATFORM:
+
+                String platform = command.getContent().toString();
+                super.getChannelKey().set(platform);
+
+                break;
 
             case DEPLOY_START_PROGRESS:
                 if (command.getContent() instanceof DeployState) {
