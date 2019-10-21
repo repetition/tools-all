@@ -137,7 +137,7 @@ public abstract class ProcessBase implements Process {
 
     }
 
-    private OnServerControlListener onServerControlListener;
+    public OnServerControlListener onServerControlListener;
 
     public void setOnServerControlListener(OnServerControlListener onServerControlListener) {
         this.onServerControlListener = onServerControlListener;

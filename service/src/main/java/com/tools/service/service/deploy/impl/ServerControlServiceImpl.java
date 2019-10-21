@@ -26,10 +26,10 @@ public class ServerControlServiceImpl extends ServiceBase implements IServerCont
         switch ((ServiceStateEnum) processExcState) {
             case STATED:
                 commandModel.setProcessExcState(true);
+                commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
                 break;
             case ERROR:
                 commandModel.setProcessExcState(false);
-
             case NOT_EXIST:
                 commandModel.setProcessExcState(false);
         }

@@ -32,7 +32,7 @@ public class LinuxCommandImpl implements ICommand {
         List<String> cmd = new ArrayList<>();
         cmd.add("sh");
         cmd.add("-c");
-        cmd.add("netstat -tunlp | grep " +port);
+        cmd.add("netstat -tunlpa | grep " +port);
         processBuilder.command(cmd);
         System.out.println(cmd.toString());
 
@@ -69,12 +69,18 @@ public class LinuxCommandImpl implements ICommand {
         builder.redirectErrorStream(true);
         log.info("serviceName:" + serviceName);
         List<String> cmdNetStart = new ArrayList<>();
-        cmdNetStart.add("systemctl");
+        //systemctl停止和启动服务不是很好使(不知道原因) 所以换成service
+
+     /*   cmdNetStart.add("systemctl");
         cmdNetStart.add("start");
+        cmdNetStart.add(serviceName);*/
+
+        cmdNetStart.add("service");
         cmdNetStart.add(serviceName);
+        cmdNetStart.add("start");
         builder.command(cmdNetStart);
         LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
-        CommandModel commandModel = cmdProcess.serviceProcess(builder);
+        CommandModel commandModel = cmdProcess.serviceStartProcess(builder);
 
         return commandModel;
     }
@@ -86,12 +92,17 @@ public class LinuxCommandImpl implements ICommand {
         builder.redirectErrorStream(true);
         log.info("serviceName:" + serviceName);
         List<String> cmdNetStop = new ArrayList<>();
-        cmdNetStop.add("systemctl");
+        //systemctl停止和启动服务不是很好使(不知道原因) 所以换成service
+/*        cmdNetStop.add("systemctl");
         cmdNetStop.add("stop");
+        cmdNetStop.add(serviceName);*/
+        //暂使用service方式停止服务
+        cmdNetStop.add("service");
         cmdNetStop.add(serviceName);
+        cmdNetStop.add("stop");
         builder.command(cmdNetStop);
         LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
-        CommandModel commandModel = cmdProcess.serviceProcess(builder);
+        CommandModel commandModel = cmdProcess.serviceStopProcess(builder);
         return commandModel;
     }
 

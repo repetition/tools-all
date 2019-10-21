@@ -24,30 +24,36 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
     private final UploadTomcatDeployServiceImpl uploadTomcatDeployServiceImpl;
     private Map<String, Boolean> deployModeSelectorMap;
 
-    public DeployModeSelectorServerControlRunnable(Map<String, Boolean> map) {
+    public DeployModeSelectorServerControlRunnable() {
         deployConfigModel = ApplicationContext.getDeployConfigModel();
         cmTomcatDeployServiceImpl = new CMTomcatDeployServiceImpl(deployConfigModel);
         uploadTomcatDeployServiceImpl = new UploadTomcatDeployServiceImpl(deployConfigModel);
-        deployModeSelectorMap = map;
+        deployModeSelectorMap = deployConfigModel.getDeployModeSelectorMap();
     }
 
     @Override
     public void run() {
         ServerStartTypeEnum serverStartTypeEnum = deployConfigModel.getServerStartTypeEnum();
-        onServerControlListener.onServerStart();
-        if (deployConfigModel.isServerStart()) {
-            stopServer();
-        } else {
-            // stopServer();
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        //linux  只支持服务启动
+        if (osName.contains("linux")) {
+            serverStartTypeEnum = ServerStartTypeEnum.SERVICE;
+        }
+        //获取当前是启动还是关闭服务的标记
+        Boolean isStart = deployModeSelectorMap.get("start");
+
+        if (isStart){
+            onServerControlListener.onServerStart();
             DeployStatusModel deployStatusModel = null;
             DeployStatusModel uploadDeployStatusModel = null;
             Boolean isCM = deployModeSelectorMap.get("cm");
             Boolean isUpload = deployModeSelectorMap.get("upload");
+            //先停止服务
             if (isCM) {
                 deployStatusModel = cmTomcatDeployServiceImpl.stopTomcatForConsole();
             }
             if (isUpload) {
-
                 uploadDeployStatusModel = uploadTomcatDeployServiceImpl.stopTomcatForConsole();
             }
 
@@ -65,6 +71,7 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                     onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT).setE(String.join("\n", deployStatusModel.getDeployInfo())));
                 }
             }
+            //停止后再启动服务
 
             switch (serverStartTypeEnum) {
                 case CONSOLE:
@@ -76,6 +83,9 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 default:
                     log.warn("错误的条件:" + serverStartTypeEnum.toString());
             }
+
+        }else {
+            stopServer();
         }
     }
 

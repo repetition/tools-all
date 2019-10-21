@@ -70,6 +70,30 @@ public class FileBrowserProcessTest {
         StringBuilder reverse = new StringBuilder(str).reverse();
 
         System.out.println(reverse);
+
+
+        List<String> list1 = new ArrayList<>();
+
+        list1.add("LISTEN1");
+        list1.add("LISTEN2");
+        list1.add("LISTEN3");
+        list1.add("LISTEN4");
+        list1.add("LISTEN5");
+        list1.add("LISTEN");
+
+        list1.removeIf(s -> {
+
+            if (s.equals("LISTEN")) {
+                return false;
+            }
+            return true;
+        });
+
+
+        System.out.println(list1.size());
+
+
+
     }
 
 

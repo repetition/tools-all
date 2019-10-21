@@ -15,6 +15,12 @@ public enum CommandMethodEnum {
     SAVE_CONFIG_FILE("给agent传送保存的配置文件",3005),
 
     SERVICE_CONTROL("服务控制指令",6000),
+    SERVICE_CONTROL_STARTED("服务启动成功",6001),
+    SERVICE_CONTROL_STOPED("服务停止成功",6002),
+    SERVICE_CONTROL_ERROR("服务停止成功",6003),
+    SERVICE_CONTROL_STARTING("服务正在启动",6004),
+    SERVICE_CONTROL_STOPING("服务正在停止",6005),
+
 
     //从服务器下载配置
     DOWNLOAD_DEPLOY_CONFIG("从服务器下载配置",4000),

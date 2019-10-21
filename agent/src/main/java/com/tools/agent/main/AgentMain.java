@@ -27,7 +27,7 @@ public class AgentMain {
         FileUploadProcess fileUploadProcess = new FileUploadProcess();
         SyncConfigProcess cmProcess = new SyncConfigProcess();
         FileBrowserProcess fileBrowserProcess = new FileBrowserProcess();
-
+        ServiceControlProcess serviceControlProcess = new ServiceControlProcess();
         String rootPath = System.getProperty("user.dir");
 
         System.setProperty("dir.base", rootPath);

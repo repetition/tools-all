@@ -203,6 +203,7 @@ public class MainController extends BaseController{
     private String type;
     private DeployProcess deployProcess;
     private SyncConfigProcess syncConfigProcess;
+    private ServiceControlProcess serviceControlProcess;
 
     /**
      * button点击事件
@@ -439,6 +440,7 @@ public class MainController extends BaseController{
 
 
         if (actionEvent.getSource() == mBTStart) {
+            Map<String, Boolean> map = new HashMap<>();
 
             DeployConfigModel deployConfigModel = ApplicationContext.getDeployConfigModel();
             if (mRBConsole.isSelected()) {
@@ -449,7 +451,6 @@ public class MainController extends BaseController{
             }
             if (Config.isModeSelector) {
 
-                Map<String, Boolean> map = new HashMap<>();
                 Dialog<String> dialog = new Dialog<>();
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/deploy_mode_dialog.fxml"));
@@ -471,6 +472,15 @@ public class MainController extends BaseController{
 
                     dialog.setResultConverter(param -> {
                         if (param == ButtonType.OK) {
+
+                            String text = mBTStart.getText();
+                            if (text.contains("停止")) {
+                                map.put("start", false);
+                            }
+                            if (text.contains("启动")) {
+                                map.put("start", true);
+                            }
+
                             map.put("cm", cm_CheckBox.isSelected());
                             map.put("upload", upload_CheckBox.isSelected());
                             dialog.close();
@@ -479,7 +489,7 @@ public class MainController extends BaseController{
                             Command command = new Command();
                             command.setCommandMethod(CommandMethodEnum.SERVICE_CONTROL.toString());
                             command.setCommandCode(CommandMethodEnum.SERVICE_CONTROL.getCode());
-                            command.setContent(map);
+                            command.setContent(ApplicationContext.getDeployConfigModel());
                             deployProcess.sendMessage(command);
                         }
                         if (param == ButtonType.CANCEL) {
@@ -890,8 +900,10 @@ public class MainController extends BaseController{
         FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
         syncConfigProcess = ProcessManager.getSyncConfigProcess();
         deployProcess = ProcessManager.getDeployProcess();
+        serviceControlProcess = ProcessManager.getServiceControlProcess();
 
         deployProcess.setOnDeployProcessorListener(new DeployListener());
+        serviceControlProcess.setOnServerControlListener(new ServerControlListener());
     }
 
     /**

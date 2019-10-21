@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
 public class LinuxCmdProcess {
     private static final Logger log = LoggerFactory.getLogger(LinuxCmdProcess.class);
 
-    public CommandModel serviceProcess(ProcessBuilder builder) {
+    public CommandModel serviceStartProcess(ProcessBuilder builder) {
 
         ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
         Future<CommandModel> future = poolManager.getExecutor().submit(new Callable<CommandModel>() {
@@ -44,13 +45,56 @@ public class LinuxCmdProcess {
                     if (process.waitFor() == 0) {
                         commandModel.setProcessExcState(ServiceStateEnum.STATED);
                         process.destroy();
-                    }
-                    if (process.waitFor() == 2) {
-                        process.destroy();
+                    }else {
+                        commandModel.setProcessExcState(ServiceStateEnum.ERROR);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
+                    commandModel.setProcessExcState(ServiceStateEnum.ERROR);
+                }
+                return commandModel;
+            }
+        });
+
+        while (true) {
+            if (future.isDone()) {
+                CommandModel commandModel = null;
+                try {
+                    commandModel = future.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                return commandModel;
+            }
+        }
+    }
+
+    public CommandModel serviceStopProcess(ProcessBuilder builder) {
+
+        ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
+        Future<CommandModel> future = poolManager.getExecutor().submit(new Callable<CommandModel>() {
+            Process process = null;
+
+            @Override
+            public CommandModel call() throws Exception {
+                CommandModel commandModel = new CommandModel();
+                try {
+                    process = builder.start();
+                    List<String> cmdResult = getCmdResult(process.getInputStream());
+                    commandModel.setProcessWaitFor(process.waitFor());
+                    commandModel.setProcessOutputInfo(cmdResult);
+                    //执行任务成功 返回值为 0
+                    if (process.waitFor() == 0) {
+                        commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
+                        process.destroy();
+                    }else {
+                        commandModel.setProcessExcState(ServiceStateEnum.ERROR);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    commandModel.setProcessExcState(ServiceStateEnum.ERROR);
                 }
                 return commandModel;
             }
@@ -72,6 +116,7 @@ public class LinuxCmdProcess {
     }
 
 
+
     public CommandModel serviceStatusProcess(ProcessBuilder builder) {
         CommandModel commandModel = new CommandModel();
         try {
@@ -86,14 +131,16 @@ public class LinuxCmdProcess {
             commandModel.setProcessOutputInfo(Arrays.asList(resultStr));
             if (resultStr.contains("Active: active (running)")) {
                 commandModel.setProcessExcState(ServiceStateEnum.STATED);
-            }
+            }else
             if (resultStr.contains("Active: inactive (dead)")) {
                 commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
-            }
+            }else
             if (resultStr.contains("could not be found")) {
                 commandModel.setProcessExcState(ServiceStateEnum.NOT_EXIST);
-            }
+            }else
             if (resultStr.contains("Active: active (exited)")) {
+                commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
+            }else {
                 commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
             }
         } catch (IOException e) {
@@ -382,6 +429,9 @@ public class LinuxCmdProcess {
                 return commandModel;
             }
             commandModel.setProcessWaitFor(process.waitFor());
+
+            getPidStr(cmdResult);
+
             //根据空白字符串截取
             String[] split = cmdResult.get(0).split("\\s+");
 
@@ -412,6 +462,29 @@ public class LinuxCmdProcess {
             }
         }
         return commandModel;
+    }
+
+    private void getPidStr(List<String> cmdResult) {
+
+        cmdResult.removeIf(s -> {
+            String[] split = s.split("\\s+");
+
+            String state = split[split.length - 2];
+
+            if (state.equals("LISTEN")) {
+                return false;
+            }
+            return true;
+        });
+
+
+        //根据空白字符串截取
+        String[] split = cmdResult.get(0).split("\\s+");
+
+        String pidProcess = split[split.length - 1];
+        //截取pid
+        String pidStr = pidProcess.split("/")[0];
+
     }
 
     public void cmdOutput(InputStream is) {

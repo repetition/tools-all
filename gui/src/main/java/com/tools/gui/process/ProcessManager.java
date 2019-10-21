@@ -28,6 +28,15 @@ public class ProcessManager {
         return syncConfigProcess;
     }
 
+    private static ServiceControlProcess serviceControlProcess = null;
+
+    public static ServiceControlProcess getServiceControlProcess(){
+        if (serviceControlProcess == null) {
+            serviceControlProcess = new ServiceControlProcess();
+        }
+        return serviceControlProcess;
+    }
+
     private static DeployProcess deployProcess = null;
 
     public static DeployProcess getDeployProcess(){

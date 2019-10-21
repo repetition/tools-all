@@ -107,7 +107,9 @@ public class DeployProcess extends ProcessBase {
         if (command.getContent()!=null && command.getContent() instanceof String){
             String content = command.getContent().toString();
             if (content.equals("ok")) {
+                log.info(command.getCommandMethod() + " remove:" + CommandMethodEnum.getEnum(command.getCommandCode()));
                 commandMethodEnumSet.remove(CommandMethodEnum.getEnum(command.getCommandCode()));
+                log.info(commandMethodEnumSet.size() + "");
             }
             if (commandMethodEnumSet.size() == 0) {
                 //文件传输成功,发送开始部署指令
@@ -162,7 +164,9 @@ public class DeployProcess extends ProcessBase {
         if (command.getContent()!=null && command.getContent() instanceof String){
             String content = command.getContent().toString();
             if (content.equals("ok")) {
+                log.info(command.getCommandMethod() + " remove:" + CommandMethodEnum.getEnum(command.getCommandCode()));
                 commandMethodEnumSet.remove(CommandMethodEnum.getEnum(command.getCommandCode()));
+                log.info(commandMethodEnumSet.size() + "");
             }
             if (commandMethodEnumSet.size() == 0) {
                 //文件传输成功,发送开始部署指令
@@ -277,10 +281,10 @@ public class DeployProcess extends ProcessBase {
 
                 // fileUpload.setBytes(null);
             }
+            randomAccessFile.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            randomAccessFile.close();
             //写入
             ctx.channel().writeAndFlush(fileUpload);
         }
