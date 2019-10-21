@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -324,6 +323,7 @@ public class LinuxCmdProcess {
             commandModel.setProcessWaitFor(waitFor);
             if (waitFor == 0) {
                 commandModel.setProcessExcState(true);
+                commandModel.setProcessOutputInfo(Arrays.asList("服务停止成功!"));
             } else {
                 commandModel.setProcessExcState(false);
             }
@@ -414,7 +414,7 @@ public class LinuxCmdProcess {
         return commandModel;
     }
 
-    public CommandModel searchPidProcess(ProcessBuilder builder) {
+    public CommandModel searchPidProcess(ProcessBuilder builder,String targetPort) {
         ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
         Future<CommandModel> future = poolManager.getExecutor().submit(() -> {
 
@@ -429,21 +429,21 @@ public class LinuxCmdProcess {
                 return commandModel;
             }
             commandModel.setProcessWaitFor(process.waitFor());
+            //过滤端口
+            filter(cmdResult,targetPort);
 
-            getPidStr(cmdResult);
-
-            //根据空白字符串截取
-            String[] split = cmdResult.get(0).split("\\s+");
-
-            String pidProcess = split[split.length - 1];
-            //截取pid
-            String pidStr = pidProcess.split("/")[0];
-
-            if (cmdResult.size() >= 1) {
-                commandModel.setProcessExcState(pidStr);
-            } else {
+            if (cmdResult.size() == 0) {
                 commandModel.setProcessExcState("");
+            } else {
+                //根据空白字符串截取
+                String[] split = cmdResult.get(0).split("\\s+");
+
+                String pidProcess = split[split.length - 1];
+                //截取pid
+                String pidStr = pidProcess.split("/")[0];
+                commandModel.setProcessExcState(pidStr);
             }
+
             return commandModel;
         });
         CommandModel commandModel;
@@ -464,8 +464,8 @@ public class LinuxCmdProcess {
         return commandModel;
     }
 
-    private void getPidStr(List<String> cmdResult) {
-
+    private void filter(List<String> cmdResult, String targetPort) {
+        //一次过滤
         cmdResult.removeIf(s -> {
             String[] split = s.split("\\s+");
 
@@ -476,15 +476,20 @@ public class LinuxCmdProcess {
             }
             return true;
         });
+        //二次过滤
+        cmdResult.removeIf(s -> {
 
+            String[] split = s.split("\\s+");
 
-        //根据空白字符串截取
-        String[] split = cmdResult.get(0).split("\\s+");
+            String address = split[split.length - 4];
 
-        String pidProcess = split[split.length - 1];
-        //截取pid
-        String pidStr = pidProcess.split("/")[0];
+            String port = address.substring(address.lastIndexOf(":")+1,address.length());
 
+            if (port.equals(targetPort)) {
+                return false;
+            }
+            return true;
+        });
     }
 
     public void cmdOutput(InputStream is) {

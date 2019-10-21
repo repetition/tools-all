@@ -36,7 +36,7 @@ public class LinuxCommandImpl implements ICommand {
         processBuilder.command(cmd);
         System.out.println(cmd.toString());
 
-        return new LinuxCmdProcess().searchPidProcess(processBuilder);
+        return new LinuxCmdProcess().searchPidProcess(processBuilder,port);
     }
 
     @Override
