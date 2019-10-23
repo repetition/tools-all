@@ -432,6 +432,7 @@ public class MainController extends BaseController{
                             Command command = new Command();
                             command.setContent(ApplicationContext.getDeployConfigModel());
                             command.setCommandCode(CommandMethodEnum.DEPLOY_INIT.getCode());
+                            command.setCommandMethod(CommandMethodEnum.DEPLOY_INIT.toString());
                             deployProcess.sendMessage(command);
                         }
                         if (param == ButtonType.CANCEL) {
@@ -1226,6 +1227,7 @@ public class MainController extends BaseController{
 
                     Command command = new Command();
                     command.setCommandCode(CommandMethodEnum.SYNC_DEPLOY_CONFIG.getCode());
+                    command.setCommandMethod(CommandMethodEnum.SYNC_DEPLOY_CONFIG.toString());
                     deployProcess.sendMessage(command);
                 });
                 SocketManager.getSocketClient().setOnConnectedListener(new SocketClient.OnConnectedListener() {
