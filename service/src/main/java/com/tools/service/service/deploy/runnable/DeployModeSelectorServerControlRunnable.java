@@ -38,7 +38,7 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
         String osName = System.getProperty("os.name").toLowerCase();
         //linux  只支持服务启动
         if (osName.contains("linux")) {
-            serverStartTypeEnum = ServerStartTypeEnum.SERVICE;
+            serverStartTypeEnum = ServerStartTypeEnum.CONSOLE;
         }
         //获取当前是启动还是关闭服务的标记
         Boolean isStart = deployModeSelectorMap.get("start");

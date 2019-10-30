@@ -172,6 +172,16 @@ public class WindowsCommandImpl implements ICommand {
     }
 
     @Override
+    public CommandModel cmdStopServerForCommand(String path) {
+        return null;
+    }
+
+    @Override
+    public CommandModel cmdStartServerForCommand(String path) {
+        return null;
+    }
+
+    @Override
     public CommandModel cmdQueryServiceStatus(String serviceName) {
 
         ProcessBuilder builder = newProcessBuilder();

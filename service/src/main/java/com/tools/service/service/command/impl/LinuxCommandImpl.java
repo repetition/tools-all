@@ -43,8 +43,8 @@ public class LinuxCommandImpl implements ICommand {
     public CommandModel cmdStartBat(String batPath) {
         log.info("exec bat:"+batPath);
         List<String> cmdStartBat = new ArrayList<>();
-        cmdStartBat.add("cmd.exe");
-        cmdStartBat.add("/c");
+        cmdStartBat.add("sh");
+        cmdStartBat.add("-c");
         //start 会堵塞线程
         // cmdStartBat.add("start");
         cmdStartBat.add(batPath);
@@ -127,6 +127,8 @@ public class LinuxCommandImpl implements ICommand {
         processBuilder.redirectErrorStream(true);
         List<String> command = new ArrayList<>();
         command.add("unzip");
+        command.add("-O");
+        command.add("UTF-8");//增加解压时编码
         command.add("-o");//不提示的情况下覆盖文件
         command.add(rootWarPath);
         command.add("-d");//解压到指定目录
@@ -218,6 +220,31 @@ public class LinuxCommandImpl implements ICommand {
         command.add(filePath);
         processBuilder.command(command);
         return new LinuxCmdProcess().deleteFileProcess(processBuilder);
+    }
+
+    @Override
+    public CommandModel cmdStopServerForCommand(String path) {
+
+        ProcessBuilder processBuilder = newProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+        List<String> command = new ArrayList<>();
+        command.add(path);
+        command.add("stop");
+        processBuilder.command(command);
+
+        return new LinuxCmdProcess().stopServerProcess(processBuilder);
+    }
+    @Override
+    public CommandModel cmdStartServerForCommand(String path) {
+
+        ProcessBuilder processBuilder = newProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+        List<String> command = new ArrayList<>();
+        command.add(path);
+        command.add("start");
+        processBuilder.command(command);
+
+        return new LinuxCmdProcess().startServerProcess(processBuilder);
     }
 
     /**

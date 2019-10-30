@@ -675,4 +675,94 @@ public class LinuxCmdProcess {
 
 
     }
+
+    public CommandModel stopServerProcess(ProcessBuilder processBuilder) {
+        ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
+
+        Future<CommandModel> future = poolManager.getExecutor().submit(() -> {
+            CommandModel commandModel = new CommandModel();
+            Process process = null;
+            try {
+                process = processBuilder.start();
+                List<String> cmdResult = getCmdResult(process.getInputStream());
+                commandModel.setProcessWaitFor(process.waitFor());
+                commandModel.setProcessOutputInfo(cmdResult);
+                if (process.waitFor() == 0) {
+                    commandModel.setProcessExcState(true);
+                    commandModel.setProcessOutputInfo(Arrays.asList("服务停止成功!"));
+                }else
+                {
+                    commandModel.setProcessExcState(false);
+                    commandModel.setProcessOutputInfo(Arrays.asList("服务停止失败!"));
+                }
+                process.destroy();
+            } catch (IOException e) {
+                e.printStackTrace();
+                commandModel.setProcessExcState(false);
+                commandModel.setProcessOutputInfo(Arrays.asList(e.getMessage()));
+            }
+            return commandModel;
+        });
+
+        CommandModel commandModel;
+        while (true) {
+            if (future.isDone()) {
+                try {
+                    commandModel = future.get();
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return commandModel;
+    }
+
+    public CommandModel startServerProcess(ProcessBuilder processBuilder) {
+        ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
+
+        Future<CommandModel> future = poolManager.getExecutor().submit(() -> {
+            CommandModel commandModel = new CommandModel();
+            Process process = null;
+            try {
+                process = processBuilder.start();
+                List<String> cmdResult = getCmdResult(process.getInputStream());
+                commandModel.setProcessWaitFor(process.waitFor());
+                commandModel.setProcessOutputInfo(cmdResult);
+                if (process.waitFor() == 0) {
+                    commandModel.setProcessExcState(true);
+                    commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
+                }else
+                {
+                    commandModel.setProcessExcState(false);
+                    commandModel.setProcessOutputInfo(Arrays.asList("服务启动失败!"));
+                }
+                process.destroy();
+            } catch (IOException e) {
+                e.printStackTrace();
+                commandModel.setProcessExcState(false);
+                commandModel.setProcessOutputInfo(Arrays.asList(e.getMessage()));
+            }
+            return commandModel;
+        });
+
+        CommandModel commandModel;
+        while (true) {
+            if (future.isDone()) {
+                try {
+                    commandModel = future.get();
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return commandModel;
+    }
 }

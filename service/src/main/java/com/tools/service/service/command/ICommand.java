@@ -26,4 +26,8 @@ public interface ICommand {
     CommandModel cmdSetBootStartBySchtasks();
 
     CommandModel cmdDeleteFile(String filePath);
+
+    CommandModel cmdStopServerForCommand(String path);
+
+    CommandModel cmdStartServerForCommand(String path);
 }

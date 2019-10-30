@@ -37,4 +37,7 @@ public interface IServerControlService {
      */
     CommandModel findServiceStatus(String path);
 
+    CommandModel stopServerForLinux(String path);
+
+    CommandModel startServerForLinux(String path);
 }

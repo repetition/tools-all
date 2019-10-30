@@ -1,5 +1,6 @@
 package com.tools.gui.controller;
 
+import com.sun.javafx.PlatformUtil;
 import com.tools.commons.thread.ThreadPoolManager;
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.MySqlHelper;
@@ -75,7 +76,7 @@ import static com.tools.service.constant.DeployTypeEnum.DEPLOY_2UPLOAD;
 import static com.tools.service.constant.DeployTypeEnum.DEPLOY_UPLOAD2CM;
 
 
-public class MainController extends BaseController{
+public class MainController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
     private static Boolean isStart = false;
@@ -238,7 +239,7 @@ public class MainController extends BaseController{
         //选择解压路径
         if (actionEvent.getSource() == mBTSelectUnZIP) {
             RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
-            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter, fileItemInfo -> {
+            FileChooserUtils.showRemoteFileBrowserWindow(stage, fileFilter, fileItemInfo -> {
                 String filePath = fileItemInfo.getAbsolutePath();
 
                 mTFWarUnPath.setText(filePath);
@@ -292,7 +293,7 @@ public class MainController extends BaseController{
 
             RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
 
-            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter,fileItemInfo -> {
+            FileChooserUtils.showRemoteFileBrowserWindow(stage, fileFilter, fileItemInfo -> {
                 String filePath = fileItemInfo.getAbsolutePath();
                 mTFStaticWarUnPath.setText(filePath);
                 log.info("StaticUnPath:" + filePath);
@@ -324,7 +325,7 @@ public class MainController extends BaseController{
 
             RemoteFileBrowserController.FileFilter fileFilter = new RemoteFileBrowserController.FileFilter(FileItemInfo.FILTER_DIRECTORY_ONLY);
 
-            FileChooserUtils.showRemoteFileBrowserWindow(stage,fileFilter,fileItemInfo -> {
+            FileChooserUtils.showRemoteFileBrowserWindow(stage, fileFilter, fileItemInfo -> {
                 String filePath = fileItemInfo.getAbsolutePath();
                 mTFResourcePath.setText(filePath);
                 appendText("ResourcePath:" + filePath);
@@ -342,8 +343,8 @@ public class MainController extends BaseController{
                 return;
             }
             defaultResourcePath = selectDirPath;*/
-           // mTFResourcePath.setText(selectDirPath);
-           // appendText("ResourcePath:" + selectDirPath);
+            // mTFResourcePath.setText(selectDirPath);
+            // appendText("ResourcePath:" + selectDirPath);
         }
         //选择一键部署
         if (actionEvent.getSource() == mBTDeployStart) {
@@ -774,7 +775,7 @@ public class MainController extends BaseController{
                             File file = new File(filePath);
                             //打开编辑窗口
                             Platform.runLater(() -> {
-                                showEditWindowV2(file.getAbsolutePath(),path, file.getName());
+                                showEditWindowV2(file.getAbsolutePath(), path, file.getName());
                                 progress.close();
                             });
                         }
@@ -782,7 +783,7 @@ public class MainController extends BaseController{
                         @Override
                         public void onFail(String s) {
                             Platform.runLater(() -> {
-                                JFXSnackbarUtils.show(s,2000,mVBox);
+                                JFXSnackbarUtils.show(s, 2000, mVBox);
                                 progress.close();
                             });
                         }
@@ -792,7 +793,7 @@ public class MainController extends BaseController{
                     command.setCommandMethod(CommandMethodEnum.GET_CONFIG_FILE.toString());
                     command.setCommandCode(CommandMethodEnum.GET_CONFIG_FILE.getCode());
                     Map<String, String> content = new HashMap<>();
-                    content.put("filePath",path);
+                    content.put("filePath", path);
                     command.setContent(content);
                     syncConfigProcess.sendMessage(command);
                 }
@@ -909,7 +910,7 @@ public class MainController extends BaseController{
         /**
          * 初始化处理器
          */
-        FileUploadProcess fileUploadProcess =ProcessManager.getFileUploadProcess();
+        FileUploadProcess fileUploadProcess = ProcessManager.getFileUploadProcess();
         FileBrowserProcess fileBrowserProcess = ProcessManager.getFileBrowserProcess();
         syncConfigProcess = ProcessManager.getSyncConfigProcess();
         deployProcess = ProcessManager.getDeployProcess();
@@ -1192,7 +1193,7 @@ public class MainController extends BaseController{
                 VBox vBox = fxmlLoader.load();
 
                 Stage stage = new Stage();
-                Scene scene = new Scene(vBox,300,200);
+                Scene scene = new Scene(vBox, 300, 200);
                 stage.setScene(scene);
                 stage.initOwner(this.stage);
 
@@ -1233,7 +1234,7 @@ public class MainController extends BaseController{
                 SocketManager.getSocketClient().setOnConnectedListener(new SocketClient.OnConnectedListener() {
                     @Override
                     public void onSuccess(Channel channel) {
-                       log.info(Thread.currentThread().getName());
+                        log.info(Thread.currentThread().getName());
          /*               AttributeKey attributeKey = AttributeKey.valueOf("platform");
                         Attribute<Object> attr = channel.attr(attributeKey);
                         attr.set("111");*/
@@ -1258,7 +1259,7 @@ public class MainController extends BaseController{
                     @Override
                     public void onSyncComplete() {
                         JFXSnackbarUtils.show("同步成功", 2000L, vBox);
-                        AlertUtils.showCallBackAlert("重启应用","更新配置完成,重启后生效,是否重启应用?","更新配置完成,重启后生效,是否重启应用?", param -> {
+                        AlertUtils.showCallBackAlert("重启应用", "更新配置完成,重启后生效,是否重启应用?", "更新配置完成,重启后生效,是否重启应用?", param -> {
                             if (param == ButtonType.OK) {
                                 RestartUtils.restart();
                             }
@@ -1332,22 +1333,22 @@ public class MainController extends BaseController{
         if (event.getSource() == mBTCmCfg) {
             //  showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/cm.cfg.xml", "cm.cfg.xml");
             // showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/cm.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/cm.cfg.xml", "","cm.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/cm.cfg.xml", "", "cm.cfg.xml");
         }
         if (event.getSource() == mBTIntegrationCfg) {
             //  showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/integration.cfg.xml", "integration.cfg.xml");
             //  showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/integration.cfg.xml", "","integration.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/integration.cfg.xml", "", "integration.cfg.xml");
         }
         if (event.getSource() == mBTSpring) {
             // showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/spring/spring.properties", "spring.properties");
             //  showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/spring/spring.properties", "","spring.properties");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/spring/spring.properties", "", "spring.properties");
         }
         if (event.getSource() == mBTPublishCfg) {
             //  showEditWindow(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/publish.cfg.xml", "publish.cfg.xml");
             //  showEditWindow("F:/JavaWeb/ThinkWin-Code/thinkwin-cr/target/classes/config/integration.cfg.xml");
-            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/publish.cfg.xml", "","publish.cfg.xml");
+            showEditWindowV2(mTFWarUnPath.getText() + "/ROOT/WEB-INF/classes/config/publish.cfg.xml", "", "publish.cfg.xml");
         }
 
     }
@@ -1356,10 +1357,10 @@ public class MainController extends BaseController{
      * 显示编辑窗口, 代码高亮 和 搜索采用codemirror  基于 javafx webView实现。
      *
      * @param localPath  本地路径
-     * @param remotePath  远程路径
-     * @param title  标题
+     * @param remotePath 远程路径
+     * @param title      标题
      */
-    private void showEditWindowV2(String localPath,String remotePath, String title) {
+    private void showEditWindowV2(String localPath, String remotePath, String title) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("/fxml/WebViewEditor.fxml"));
 
@@ -1619,8 +1620,6 @@ public class MainController extends BaseController{
     public void onDebugAction(ActionEvent event) {
 
 
-
-
         try {
             String dbAddress = mTFDBAddress.getText();
             String userName = mTFDBUserName.getText();
@@ -1708,8 +1707,6 @@ public class MainController extends BaseController{
     }
 
 
-
-
     private void requestFocus() {
         Platform.runLater(() -> {
             //重新获取焦点
@@ -1721,15 +1718,15 @@ public class MainController extends BaseController{
 
     private void setConfig() {
         String separator = "";
+        String platform = null;
         if (deployProcess.getChannelKey() != null) {
-            String platform = (String) deployProcess.getChannelKey().get();
+            platform = (String) deployProcess.getChannelKey().get();
 
             if (platform != null) {
-
                 //linux  只支持服务启动
                 if (platform.contains("linux")) {
                     separator = "/";
-                }else {
+                } else {
                     separator = "\\";
                 }
             }
@@ -1756,16 +1753,25 @@ public class MainController extends BaseController{
         String warUnPath = mTFWarUnPath.getText();
         if (!warUnPath.trim().isEmpty()) {
             String tomcatPath = Utils.getParentPath(warUnPath);
-            cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + separator+"work");
-            cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + separator+"ROOT");
-            cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + separator+"bin"+separator+"startup.bat");
+            cmDeployConfigMap.put("cmTomcatCachePath", tomcatPath + separator + "work");
+            cmDeployConfigMap.put("cmTomcatRootPath", warUnPath + separator + "ROOT");
+
+            if (platform != null) {
+                if (platform.contains("linux")) {
+                    cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + separator + "bin" + separator + "startup.sh");
+                } else {
+                    cmDeployConfigMap.put("cmTomcatStartUpPath", tomcatPath + separator + "bin" + separator + "startup.bat");
+
+                }
+            }
+
         }
         String cmTomcatServiceName = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.service.name");
         cmDeployConfigMap.put("cmTomcatServiceName", cmTomcatServiceName);
         cmDeployConfigMap.put("cmTomcatPort", mTFTomcatPort.getText());
         cmDeployConfigMap.put("cmWarPath", mTFWarPath.getText());
         cmDeployConfigMap.put("cmWarFlag", Utils.getUUID32());
-        cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + separator+"ROOT");
+        cmDeployConfigMap.put("cmTomcatExportPath", warUnPath + separator + "ROOT");
 
         cmDeployConfigMap.put("localIp", propertyUtils.getConfigurationPropertyStringByKey("local.ip"));
 
@@ -1787,9 +1793,10 @@ public class MainController extends BaseController{
         if (!zyflWarUnPath.isEmpty()) {
             //截取apache根目录
             String apachePath = Utils.getParentPath(zyflWarUnPath);
-            zyflDeployConfigMap.put("apacheHttpdPath", apachePath + separator+"conf"+separator+"httpd.conf");
-            zyflDeployConfigMap.put("apacheWorkersPath", apachePath + separator+"conf"+separator+"workers.properties");
-            zyflDeployConfigMap.put("apacheHtdocsPath", apachePath + separator+"htdocs");
+            zyflDeployConfigMap.put("apachePath", apachePath);
+            zyflDeployConfigMap.put("apacheHttpdPath", apachePath + separator + "conf" + separator + "httpd.conf");
+            zyflDeployConfigMap.put("apacheWorkersPath", apachePath + separator + "conf" + separator + "workers.properties");
+            zyflDeployConfigMap.put("apacheHtdocsPath", apachePath + separator + "htdocs");
         }
         zyflDeployConfigMap.put("zyflWarPath", mTFStaticWarPath.getText());
         zyflDeployConfigMap.put("zyflWarFlag", Utils.getUUID32());
@@ -1803,15 +1810,21 @@ public class MainController extends BaseController{
 
         if (!uploadExportPath.trim().isEmpty()) {
             String uploadTomcatPath = Utils.getParentPath(uploadExportPath);
-
-            uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator+"bin/startup.bat");
+            if (platform != null) {
+                if (platform.contains("linux")) {
+                    uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator + "bin/startup.sh");
+                } else {
+                    uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator + "bin/startup.bat");
+                }
+            }
+            uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator + "bin/startup.bat");
             uploadDeployConfigMap.put("uploadTomcatPort", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
             uploadDeployConfigMap.put("uploadWarPath", propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
             uploadDeployConfigMap.put("uploadWarFlag", Utils.getUUID32());
-            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + separator+""+uploadProjectName);
+            uploadDeployConfigMap.put("uploadTomcatExportPath", uploadExportPath + separator + "" + uploadProjectName);
             uploadDeployConfigMap.put("uploadTomcatServiceName", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.serviceName"));
-            uploadDeployConfigMap.put("uploadTomcatCachePath",  uploadTomcatPath + separator+"work");
-            uploadDeployConfigMap.put("uploadTomcatProjectName",  uploadProjectName);
+            uploadDeployConfigMap.put("uploadTomcatCachePath", uploadTomcatPath + separator + "work");
+            uploadDeployConfigMap.put("uploadTomcatProjectName", uploadProjectName);
 
         }
         uploadDeployConfigMap.put("apacheServerIp", propertyUtils.getConfigurationPropertyStringByKey("apache.server.ip"));

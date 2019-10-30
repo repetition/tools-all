@@ -1,5 +1,6 @@
 package com.tools.service.service.deploy.impl;
 
+import com.sun.javafx.PlatformUtil;
 import com.tools.commons.utils.FileUtils;
 import com.tools.commons.utils.PropertyUtils;
 import com.tools.service.constant.DeployTypeEnum;
@@ -33,8 +34,16 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
     @Override
     public DeployStatusModel stopService() {
         String apacheServiceName = deployConfigModel.getZyflDeployConfigMap().get("apacheServiceName");
+        String apachePath = deployConfigModel.getZyflDeployConfigMap().get("apachePath");
+        CommandModel commandModel = null;
+        if (PlatformUtil.isLinux()) {
+            commandModel = serverControlServiceImpl.stopServerForLinux(apachePath+File.separator+"bin"+File.separator+"apachectl");
+        }
 
-        CommandModel commandModel = serverControlServiceImpl.stopServerForService(apacheServiceName);
+        if (PlatformUtil.isWindows()) {
+            commandModel = serverControlServiceImpl.stopServerForService(apacheServiceName);
+        }
+
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();
 
@@ -48,8 +57,14 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
     public DeployStatusModel startService() {
 
         String apacheServiceName = deployConfigModel.getZyflDeployConfigMap().get("apacheServiceName");
-
-        CommandModel commandModel = serverControlServiceImpl.startServerForService(apacheServiceName);
+        String apachePath = deployConfigModel.getZyflDeployConfigMap().get("apachePath");
+        CommandModel commandModel = null;
+        if (PlatformUtil.isLinux()) {
+            serverControlServiceImpl.startServerForLinux(apachePath+File.separator+"bin"+File.separator+"apachectl");
+        }
+        if (PlatformUtil.isWindows()) {
+            commandModel = serverControlServiceImpl.startServerForService(apacheServiceName);
+        }
 
         DeployStatusModel deployStatusModel = new DeployStatusModel();
 

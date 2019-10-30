@@ -129,4 +129,15 @@ public class ServerControlServiceImpl extends ServiceBase implements IServerCont
         CommandModel commandModel = command.cmdQueryServiceStatus(serviceName);
         return commandModel;
     }
+
+    @Override
+    public CommandModel stopServerForLinux(String path) {
+        CommandModel commandModel = command.cmdStopServerForCommand(path);
+        return commandModel;
+    }
+    @Override
+    public CommandModel startServerForLinux(String path) {
+        CommandModel commandModel = command.cmdStartServerForCommand(path);
+        return commandModel;
+    }
 }
