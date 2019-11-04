@@ -20,11 +20,12 @@ public class PropertKeys {
     public static final  String  CM_CONFIG_RESOURCESPATH = "cm.config.resourcesPath";
     //upload
     public static final  String  UPLOAD_WAR_PATH = "upload.war.path";
-    public static final  String  UPLOAD_EXPORTWAR_PATH = "upload.exportwar.path";
+    public static final  String  UPLOAD_EXPORTWAR_PATH = "upload.exportWar.path";
     public static final  String  UPLOAD_TOMCAT_PORT = "upload.tomcat.port";
     public static final  String  CM_SERVER_IP = "cm.server.ip";
     public static final  String  APACHE_SERVER_IP = "apache.server.ip";
     public static final  String  UPLOAD_TOMCAT_SERVICENAME = "upload.tomcat.serviceName";
+    public static final  String UPLOAD_TOMCAT_PROJECT_NAME = "upload.tomcat.project.name";
 
 
 }

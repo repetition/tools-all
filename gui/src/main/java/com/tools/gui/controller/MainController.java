@@ -495,7 +495,7 @@ public class MainController extends BaseController {
                             if (text.contains("启动")) {
                                 map.put("start", true);
                             }
-
+                            setConfig();
                             map.put("cm", cm_CheckBox.isSelected());
                             map.put("upload", upload_CheckBox.isSelected());
                             dialog.close();
@@ -1186,7 +1186,7 @@ public class MainController extends BaseController {
             }
         }
 
-        //切换到windows菜单
+        //切换服务
         if (actionEvent.getSource() == mMenuItemWindows) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/deploy_platform_dialog.fxml"));
@@ -1279,13 +1279,6 @@ public class MainController extends BaseController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-        }
-
-
-        //切换到linux模式
-        if (actionEvent.getSource() == mMenuItemLinux) {
-            JFXSnackbarUtils.show("切换到linux", 2000L, anchorPaneRoot);
 
         }
     }
@@ -1716,6 +1709,9 @@ public class MainController extends BaseController {
         });
     }
 
+    /**
+     * 装配配置
+     */
     private void setConfig() {
         String separator = "";
         String platform = null;

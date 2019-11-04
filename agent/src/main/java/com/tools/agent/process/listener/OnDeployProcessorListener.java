@@ -48,6 +48,7 @@ public class OnDeployProcessorListener implements DeployModeSelectorProcessorRun
         propertyUtils.setConfigurationProperty(PropertKeys.CM_CONFIG_DB_USERNAME,cmDeployConfigMap.get("cmDBUserName"));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_CONFIG_DB_USERPASS,cmDeployConfigMap.get("cmDBUserPass"));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_CONFIG_RESOURCESPATH,cmDeployConfigMap.get("cmResourcesPath"));
+        propertyUtils.setConfigurationProperty(PropertKeys.CM_SERVER_IP,cmDeployConfigMap.get("cmServerIp"));
 
         propertyUtils.setConfigurationProperty(PropertKeys.CM_ZYFLWAR_PATH,zyflDeployConfigMap.get("zyflWarPathWin"));
         propertyUtils.setConfigurationProperty(PropertKeys.CM_ZYFL_EXPORTWAR_PATH,zyflDeployConfigMap.get("apacheHtdocsPath"));
@@ -60,7 +61,7 @@ public class OnDeployProcessorListener implements DeployModeSelectorProcessorRun
         propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_EXPORTWAR_PATH,uploadTomcatExportPath);
         propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_TOMCAT_PORT,uploadDeployConfigMap.get("uploadTomcatPort"));
         propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_TOMCAT_SERVICENAME,uploadDeployConfigMap.get("uploadTomcatServiceName"));
-        propertyUtils.setConfigurationProperty(PropertKeys.CM_SERVER_IP,uploadDeployConfigMap.get("cmServerIp"));
+        propertyUtils.setConfigurationProperty(PropertKeys.UPLOAD_TOMCAT_PROJECT_NAME,uploadDeployConfigMap.get("uploadTomcatProjectName"));
         propertyUtils.setConfigurationProperty(PropertKeys.APACHE_SERVER_IP,uploadDeployConfigMap.get("apacheServerIp"));
 
     }

@@ -4,7 +4,6 @@ import com.tools.agent.ApplicationConfig;
 import com.tools.agent.process.listener.OnDeployProcessorListener;
 import com.tools.commons.thread.ThreadPoolManager;
 import com.tools.constant.CommandMethodEnum;
-import com.tools.service.constant.ServerStartTypeEnum;
 import com.tools.service.context.ApplicationContext;
 import com.tools.service.model.CommandModel;
 import com.tools.service.model.DeployConfigModel;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 public class DeployProcess extends ProcessBase {
     private static final Logger log = LoggerFactory.getLogger(DeployProcess.class);
-    private boolean isFrist =true;
+    private boolean isFirst =true;
     @Override
     protected void processCommand(Command command, ChannelHandlerContext ctx) {
 
@@ -60,14 +59,14 @@ public class DeployProcess extends ProcessBase {
         if (fileUpload.getAgentFile() == null) {
             return;
         }
-        if (isFrist) {
+        if (isFirst) {
             String cmWarPath = deployConfigModel.getCmDeployConfigMap().get("cmWarPath");
             String zyflWarPath = deployConfigModel.getZyflDeployConfigMap().get("zyflWarPath");
             String uploadWarPath = deployConfigModel.getUploadDeployConfigMap().get("uploadWarPath");
             deployConfigModel.getCmDeployConfigMap().put("cmWarPathWin",cmWarPath);
             deployConfigModel.getZyflDeployConfigMap().put("zyflWarPathWin",zyflWarPath);
             deployConfigModel.getUploadDeployConfigMap().put("uploadWarPathWin",uploadWarPath);
-            isFrist = false;
+            isFirst = false;
         }
         //重新设置war包的路径
         switch (commandMethodEnum){

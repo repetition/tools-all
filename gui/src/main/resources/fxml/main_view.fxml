@@ -44,9 +44,6 @@
                     <items>
                         <MenuItem fx:id="mMenuItemWindows" mnemonicParsing="false" onAction="#onMenuAction" text="切换服务" />
                     </items>
-                    <items>
-                        <MenuItem fx:id="mMenuItemLinux" mnemonicParsing="false" onAction="#onMenuAction" text="切换到Linux" />
-                    </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="配置">
                     <items>

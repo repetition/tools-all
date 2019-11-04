@@ -195,26 +195,44 @@ public class DeployProcess extends ProcessBase {
         Map<String,String> httpdConfigInfoMap = new HashedMap();
 
         String httpdOld = FileUtils.readFile(httpdOldChangedPath);
+        String httpdZYFL = FileUtils.readFile(httpdZYFLChangedPath);
+        String httpdUpload1Tomcat = FileUtils.readFile(httpdUpload1TomcatChangedPath);
+        String httpdUpload = FileUtils.readFile(httpdUploadChangedPath);
+        String httpdIPM = FileUtils.readFile(httpdIPMChangedPath);
+
         //替换ip
         httpdOld = replaceAddress(httpdOld,address);
-        httpdConfigInfoMap.put(new File(httpdOldChangedPath).getName(),httpdOld);
 
-        String httpdZYFL = FileUtils.readFile(httpdZYFLChangedPath);
+        String platform = null;
+        if (super.getChannelKey() != null) {
+            platform = (String) super.getChannelKey().get();
+        }
+        Map<String, String> zyflDeployConfigMap = deployConfigModel.getZyflDeployConfigMap();
+        String apachePath = zyflDeployConfigMap.get("apachePath");
+        if (platform != null) {
+            if (platform.contains("linux")) {
+                String rotatelogs = apachePath + "/"+"bin/rotatelogs";
+                //将rotatelogs.exe 替换成linux的日志执行文件
+                httpdOld = httpdOld.replace("bin/rotatelogs.exe",rotatelogs);
+                httpdZYFL = httpdZYFL.replace("bin/rotatelogs.exe",rotatelogs);
+                httpdUpload1Tomcat = httpdUpload1Tomcat.replace("bin/rotatelogs.exe",rotatelogs);
+                httpdUpload = httpdUpload.replace("bin/rotatelogs.exe",rotatelogs);
+                httpdIPM = httpdIPM.replace("bin/rotatelogs.exe",rotatelogs);
+            }
+        }
+        httpdConfigInfoMap.put(new File(httpdOldChangedPath).getName(),httpdOld);
         //替换ip
         httpdZYFL = replaceAddress(httpdZYFL, address);
         httpdConfigInfoMap.put(new File(httpdZYFLChangedPath).getName(),httpdZYFL);
         //单tomcat替换ip
-        String httpdUpload1Tomcat = FileUtils.readFile(httpdUpload1TomcatChangedPath);
-        //替换ip
         httpdUpload1Tomcat = replaceAddress(httpdUpload1Tomcat, address);
+        //替换ip
         httpdConfigInfoMap.put(new File(httpdUpload1TomcatChangedPath).getName(),httpdUpload1Tomcat);
 
-        String httpdUpload = FileUtils.readFile(httpdUploadChangedPath);
         //替换ip
         httpdUpload = replaceAddress(httpdUpload, address);
         httpdConfigInfoMap.put(new File(httpdUploadChangedPath).getName(),httpdUpload);
 
-        String httpdIPM = FileUtils.readFile(httpdIPMChangedPath);
         //替换ip
         httpdIPM = replaceAddress(httpdIPM, address);
         httpdConfigInfoMap.put(new File(httpdIPMChangedPath).getName(),httpdIPM);
