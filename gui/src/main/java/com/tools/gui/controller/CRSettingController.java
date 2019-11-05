@@ -134,40 +134,20 @@ public class CRSettingController extends BaseController{
 
             String warPath = mTFWarPath.getText();
             String warUnPath = mTFWarUnPath.getText();
-            if (warPath.equals("") || warUnPath.equals("")) {
-                showAlert("错误", "路径没有选择正确", "没有选择War路径和解压路径");
-                return;
-            }
+
             String dbAddressStr = mTFDBAddress.getText();
             String dbNameStr = mTFDBName.getText();
             String dbUserNameStr = mTFDBUserName.getText();
             String dbPassWordStr = mTFDBPassword.getText();
-            //判断数据库配置输入
-            if (dbAddressStr.equals("") && dbNameStr.equals("") && dbUserNameStr.equals("") && dbPassWordStr.equals("")) {
-                showAlert("错误", "数据库配置不完整", "数据库地址、名字、用户名没有输入");
-                return;
-            }
+
             String resourcePathStr = mTFResourcePath.getText();
 
 
-            if (resourcePathStr.trim().equals("")) {
-                showAlert("错误", "资源路径为空", "资源路径没有输入");
-                return;
-            }
             //查找进程
             String tomcatPort = mTFTomcatPort.getText();
-            if (tomcatPort.equals("")) {
-                showAlert("错误", "tomcat端口为空", "没有输入tomcat端口！");
-                return;
-            }
+
 
             String serverNameStr = mTFServerName.getText();
-            if (mRBService.isSelected()) {
-                if (null == serverNameStr || serverNameStr.equals("")) {
-                    showAlert("错误", "服务名不能为空", "服务名不能为空");
-                    return;
-                }
-            }
             String redisAddressStr = mTFRedisAddress.getText();
             String redisPassStr = mTFRedisPass.getText();
             //如果Redis地址为空，则不存Redis配置

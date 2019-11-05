@@ -689,15 +689,11 @@ public class MainController extends BaseController {
         // mTFWarPath.setText("F:/QQdownload/ROOT.war");
         //  mTFWarUnPath.setText("E:/ThinkWin/ThinkWinCRV3.5.0/tomcat/webapps");
 
-        if (Config.isHome) {
-            defaultWarPath = "D:/Downloads";
-        } else {
             defaultWarPath = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.war.path");
             defaultUnZIPWarPath = propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.exportWar.path");
 
             defaultStaticWarPath = propertyUtils.getConfigurationPropertyStringByKey("cm.zyflWar.path");
             defaultStaticUnZIPWarPath = propertyUtils.getConfigurationPropertyStringByKey("cm.zyfl.exportWar.path");
-        }
 
         //初始化读取配置信息
         mTFWarPath.setText(propertyUtils.getConfigurationPropertyStringByKey("cm.tomcat.war.path"));

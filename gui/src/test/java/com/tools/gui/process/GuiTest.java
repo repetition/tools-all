@@ -104,6 +104,48 @@ public class GuiTest {
 
     }
 
+    @Test
+    public void  testRep(){
+
+        String str = " ServerAdmin webmaster@dummy-host.example.com\n" +
+                "    JkMount /tk upload\n" +
+                "    JkMount /upload upload\n" +
+                "    JkMount /getuploadprogress upload\n" +
+                "    JkMount /download upload\n" +
+                "    JkMount /preview upload\n" +
+                "    JkMount /deleteFile upload\n" +
+                "    JkMount /deleteFiles upload\n" +
+                "    JkMount /httpClientPost upload\n" +
+                "    JkMount /api/uploadByBase64 upload\n" +
+                "    JkMount /upload2 upload\n" +
+                "\n" +
+                "    JkMount /* cm\n" +
+                "\n" +
+                "    SetEnvIf REQUEST_URI \"${RESPATH}|\\.(dtd|rar|zip|json|js|css|xml|gif|png|jpeg|jpg|bmp|ico|pdf|swf|mp4|mp3|flv|avi|html|ttf|woff|woff2|eot|txt|svg)$\" no-jk\n" +
+                "\n" +
+                "    ServerName dummy-host.example.com\n" +
+                "    ErrorLog \"logs/thinkwin-error.log\"\n" +
+                "    ErrorDocument 404 http://10.10.11.127:82/jump404?baseSessionUserId=sys04\n" +
+                "    CustomLog \"|bin/rotatelogs.exe ./logs/thinkwin-access_log-%Y_%m_%d.txt 86400 480\" common";
+
+        Pattern pattern = Pattern.compile("\\|(.+?)rotatelogs.exe");
+
+        Matcher matcher = pattern.matcher(str);
+
+        if (matcher.find()) {
+
+            System.out.println(matcher.group(0));
+
+
+            str = str.replace(matcher.group(1)+"rotatelogs.exe","thinkwincr/bin/rotatelogs");
+
+            System.out.println(str);
+
+        }
+
+
+    }
+
 
 
 }

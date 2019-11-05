@@ -4,10 +4,13 @@ package com.tools.agent.process.constant;
  * 配置文件所有的keys
  */
 public class PropertKeys {
+    //部署类型
+    public static final  String  DEPLOY_TYPE = "deploy.type";
 
     //cm配置
     public static final  String  CM_TOMCAT_PORT = "cm.tomcat.port";
     public static final  String  CM_TOMCAT_WAR_PATH = "cm.tomcat.war.path";
+    public static final  String  CM_TOMCAT_SERVICE_NAME = "cm.tomcat.service.name";
     public static final  String  CM_TOMCAT_EXPORTWAR_PATH = "cm.tomcat.exportWar.path";
     //数据库配置
     public static final  String  CM_CONFIG_DB_ADDRESS = "cm.config.db.address";
@@ -18,6 +21,7 @@ public class PropertKeys {
     public static final  String  CM_ZYFLWAR_PATH = "cm.zyflWar.path";
     public static final  String  CM_ZYFL_EXPORTWAR_PATH = "cm.zyfl.exportWar.path";
     public static final  String  CM_CONFIG_RESOURCESPATH = "cm.config.resourcesPath";
+    public static final  String  CM_APACHE_SERVICE_NAME = "apache.service.name";
     //upload
     public static final  String  UPLOAD_WAR_PATH = "upload.war.path";
     public static final  String  UPLOAD_EXPORTWAR_PATH = "upload.exportWar.path";

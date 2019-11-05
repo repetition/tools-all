@@ -208,7 +208,9 @@ public class LinuxCmdProcess {
             Process process = null;
             try {
                 process = builder.start();
+                List<String> cmdResult = getCmdResult(process.getInputStream());
                 commandModel.setProcessWaitFor(process.waitFor());
+                log.info(cmdResult.toString());
                 if (process.waitFor() == 0) {
                     commandModel.setProcessExcState(true);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
@@ -216,6 +218,10 @@ public class LinuxCmdProcess {
                 if (process.waitFor() == 2) {
                     commandModel.setProcessExcState(true);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
+                }else {
+
+                    commandModel.setProcessExcState(false);
+                    commandModel.setProcessOutputInfo(Arrays.asList("服务启动失败!"));
                 }
                 process.destroy();
             } catch (IOException e) {

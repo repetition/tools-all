@@ -3,7 +3,6 @@ package com.tools.gui.config;
 public class Config {
 
     public static final boolean isDebug = true;
-    public static final boolean isHome = false;
     public static final boolean isModeSelector = true;
     public static final boolean isConfigSync = true;
 
@@ -34,13 +33,7 @@ public class Config {
 
 
     static {
-        if (isHome) {
-            debugConfigPath = "E:\\Idea WorkSpace\\JAVAFX\\out\\artifacts\\JAVAFX_jar\\Tools";
-            downloadFilePath="D:\\ROOT.war";
-        } else {
-          //  debugConfigPath = "F:\\idea\\IdeaProjects\\JAVAFX\\out\\artifacts\\JAVAFX_jar\\Tools";
             debugConfigPath = "F:\\ToolsDeveloper\\Tools";
             downloadFilePath="D:\\ROOT.war";
-        }
     }
 }

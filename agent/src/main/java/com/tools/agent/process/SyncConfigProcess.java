@@ -157,6 +157,7 @@ public class SyncConfigProcess extends ProcessBase {
     private void syncDeployConfig(Command command, ChannelHandlerContext ctx) {
         Map<String, String> fileListMap = new HashMap<>();
 //deploy.properties
+/*
         PropertyUtils propertyUtils = new PropertyUtils(new File(ApplicationConfig.getDeployConfigFilePath()));
         propertyUtils.getConfiguration2Properties();
         Iterator<String> keys = propertyUtils.getConfigurationPropertyKeys();
@@ -190,6 +191,15 @@ public class SyncConfigProcess extends ProcessBase {
             String changerStr = FileUtils.readFile(changedPropertiesFile.getAbsolutePath());
             fileListMap.put(changedPropertiesFile.getName(),changerStr);
         }
+*/
+
+        String applicationConfPath = ApplicationConfig.getApplicationConfPath();
+        File file = new File(applicationConfPath);
+        for (File listFile : file.listFiles()) {
+            String readFile = FileUtils.readFile(listFile.getAbsolutePath());
+            fileListMap.put(listFile.getName(),readFile);
+        }
+
 
         command.setContent(fileListMap);
         ctx.channel().writeAndFlush(command);

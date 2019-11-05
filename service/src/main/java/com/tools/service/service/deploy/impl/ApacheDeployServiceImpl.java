@@ -60,7 +60,7 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
         String apachePath = deployConfigModel.getZyflDeployConfigMap().get("apachePath");
         CommandModel commandModel = null;
         if (PlatformUtil.isLinux()) {
-            serverControlServiceImpl.startServerForLinux(apachePath+File.separator+"bin"+File.separator+"apachectl");
+            commandModel = serverControlServiceImpl.startServerForLinux(apachePath+File.separator+"bin"+File.separator+"apachectl");
         }
         if (PlatformUtil.isWindows()) {
             commandModel = serverControlServiceImpl.startServerForService(apacheServiceName);
@@ -112,6 +112,34 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
         httpdStr = httpdStr.replace("#LoadModule proxy_connect_module modules/mod_proxy_connect.so", "LoadModule proxy_connect_module modules/mod_proxy_connect.so");
         httpdStr = httpdStr.replace("#LoadModule proxy_http_module modules/mod_proxy_http.so", "LoadModule proxy_http_module modules/mod_proxy_http.so");
 
+        String apachePath = deployConfigModel.getZyflDeployConfigMap().get("apachePath");
+        String osName = System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("windows")) {
+            Pattern pattern = Pattern.compile("\\|(.+?)rotatelogs.exe");
+            Matcher matcher = pattern.matcher(httpdReplace);
+            if (!matcher.find()) {
+                Pattern pattern_Linux = Pattern.compile("\\|(.+?)rotatelogs");
+                Matcher matcher_Linux = pattern_Linux.matcher(httpdReplace);
+                if (matcher_Linux.find()) {
+                    String group = matcher_Linux.group(1);
+                    httpdReplace = httpdReplace.replace(group+"rotatelogs","bin/rotatelogs.exe");
+                }
+            }
+        }
+        if (osName.contains("linux")) {
+            Pattern pattern_Linux = Pattern.compile("\\|(.+?)rotatelogs");
+            Matcher matcher_Linux = pattern_Linux.matcher(httpdReplace);
+            if (!matcher_Linux.find()) {
+                String rotatelogs =apachePath + "/"+"bin/rotatelogs";
+                Pattern pattern = Pattern.compile("\\|(.+?)rotatelogs.exe");
+                Matcher matcher = pattern.matcher(httpdReplace);
+                if (matcher.find()) {
+                    String group = matcher.group(1);
+                    httpdReplace = httpdReplace.replace(group+"rotatelogs.exe",rotatelogs);
+                }
+            }
+        }
         httpdStr = httpdConfReplace(httpdStr, httpdReplace, apacheServiceHttpdPath);
         FileUtils.saveFile(httpdStr, apacheServiceHttpdPath);
     }
