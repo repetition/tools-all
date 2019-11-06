@@ -169,6 +169,7 @@ public class DeployModeSelectorProcessorRunnable implements Runnable {
             uploadTomcatDeployServiceImpl.configModifying();
             uploadTomcatDeployServiceImpl.deleteWarFile();
         }
+        cmTomcatDeployServiceImpl.configModifying();
         onDeployProcessorListener.onDeployProcessorEnd();
     }
 
