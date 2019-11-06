@@ -114,7 +114,7 @@ public class ApacheDeployServiceImpl implements IApacheDeployService {
 
         String apachePath = deployConfigModel.getZyflDeployConfigMap().get("apachePath");
         String osName = System.getProperty("os.name").toLowerCase();
-
+        //由于windows和linux apache使用的rotatelogs 不一样,所以部署的时候实时根据平台判断替换
         if (osName.contains("windows")) {
             Pattern pattern = Pattern.compile("\\|(.+?)rotatelogs.exe");
             Matcher matcher = pattern.matcher(httpdReplace);
