@@ -428,6 +428,9 @@ public class MainController extends BaseController {
                             dialog.close();
                             // TODO: 2019/9/5 添加部署代码
                             setConfig();
+                            String deploy = propertyUtils.getConfigurationPropertyStringByKey("deploy.type");
+                            DeployTypeEnum deployTypeEnum = DeployTypeEnum.valueOf(deploy);
+                            ApplicationContext.getDeployConfigModel().setDeployTypeEnum(deployTypeEnum);
                             //执行部署
                             ApplicationContext.getDeployConfigModel().setDeployModeSelectorMap(map);
                             Command command = new Command();

@@ -42,7 +42,7 @@ public class OnDeployProcessorListener implements DeployModeSelectorProcessorRun
 
         cmTomcatExportPath= cmTomcatExportPath.substring(0, cmTomcatExportPath.lastIndexOf(separator));
 
-        propertyUtils.setConfigurationProperty(PropertKeys.DEPLOY_TYPE,deployConfigModel.getServerStartTypeEnum().toString());
+        propertyUtils.setConfigurationProperty(PropertKeys.DEPLOY_TYPE,deployConfigModel.getDeployTypeEnum().toString());
 
 
         propertyUtils.setConfigurationProperty(PropertKeys.CM_TOMCAT_EXPORTWAR_PATH,cmTomcatExportPath);
