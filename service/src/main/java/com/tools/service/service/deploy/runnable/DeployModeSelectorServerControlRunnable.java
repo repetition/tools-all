@@ -61,14 +61,22 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 if (uploadDeployStatusModel.status()) {
                     deployConfigModel.setServerStart(false);
                 } else {
-                    onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT).setE(String.join("\n", uploadDeployStatusModel.getDeployInfo())));
+                    DeployState deployState = new DeployState();
+                    if (uploadDeployStatusModel.getDeployInfo() != null) {
+                        deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                    }
+                    onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
                 }
             }
             if (null != deployStatusModel) {
                 if (deployStatusModel.status()) {
                     deployConfigModel.setServerStart(false);
                 } else {
-                    onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT).setE(String.join("\n", deployStatusModel.getDeployInfo())));
+                    DeployState deployState = new DeployState();
+                    if (uploadDeployStatusModel.getDeployInfo() != null) {
+                        deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                    }
+                    onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.CM_TOMCAT));
                 }
             }
             //停止后再启动服务
@@ -108,7 +116,11 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 onServerControlListener.onServerStoped(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT).setInfo(String.join("\n", uploadDeployStatusModel.getDeployInfo())));
                 deployConfigModel.setServerStart(false);
             } else {
-                onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT).setE(String.join("\n", deployStatusModel.getDeployInfo())));
+                DeployState deployState = new DeployState();
+                if (uploadDeployStatusModel.getDeployInfo() != null) {
+                    deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                }
+                onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
             }
         }
         if (null != deployStatusModel) {
@@ -116,7 +128,11 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 onServerControlListener.onServerStoped(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT).setInfo(String.join("\n", deployStatusModel.getDeployInfo())));
                 deployConfigModel.setServerStart(false);
             } else {
-                onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT).setE(String.join("\n", deployStatusModel.getDeployInfo())));
+                DeployState deployState = new DeployState();
+                if (uploadDeployStatusModel.getDeployInfo() != null) {
+                    deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                }
+                onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.CM_TOMCAT));
             }
         }
     }
@@ -142,7 +158,11 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 onServerControlListener.onServerStarted(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT).setInfo(String.join(",", deployStatusModel.getDeployInfo())));
                 deployConfigModel.setServerStart(true);
             } else {
-                onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT));
+                DeployState deployState = new DeployState();
+                if (uploadDeployStatusModel.getDeployInfo() != null) {
+                    deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                }
+                onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.CM_TOMCAT));
             }
         }
         if (null != uploadDeployStatusModel) {
@@ -150,7 +170,11 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 onServerControlListener.onServerStarted(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT).setInfo(String.join(",", uploadDeployStatusModel.getDeployInfo())));
                 deployConfigModel.setServerStart(true);
             } else {
-                onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
+                DeployState deployState = new DeployState();
+                if (uploadDeployStatusModel.getDeployInfo() != null) {
+                    deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                }
+                onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
             }
         }
     }
@@ -174,7 +198,11 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 onServerControlListener.onServerStarted(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT).setInfo(String.join(",", uploadDeployStatusModel.getDeployInfo())));
                 deployConfigModel.setServerStart(true);
             } else {
-                onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
+                DeployState deployState = new DeployState();
+                if (uploadDeployStatusModel.getDeployInfo() != null) {
+                    deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                }
+                onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.UPLOAD_TOMCAT));
             }
         }
         if (null != deployStatusModel) {
@@ -182,7 +210,11 @@ public class DeployModeSelectorServerControlRunnable implements Runnable {
                 onServerControlListener.onServerStarted(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT).setInfo(String.join(",", deployStatusModel.getDeployInfo())));
                 deployConfigModel.setServerStart(true);
             } else {
-                onServerControlListener.onServerFail(new DeployState().setTaskEnum(TaskEnum.CM_TOMCAT));
+                DeployState deployState = new DeployState();
+                if (uploadDeployStatusModel.getDeployInfo() != null) {
+                    deployState.setE(String.join("\n", uploadDeployStatusModel.getDeployInfo()));
+                }
+                onServerControlListener.onServerFail(deployState.setTaskEnum(TaskEnum.CM_TOMCAT));
             }
         }
     }

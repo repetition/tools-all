@@ -1367,7 +1367,7 @@ public class MainController extends BaseController {
             Scene scene = new Scene(root, 1270, height * 0.9);
             Stage htmlEditorStage = new Stage();
             htmlEditorStage.setScene(scene);
-            htmlEditorStage.setTitle(title);
+            htmlEditorStage.setTitle(title + " - " + remotePath);
             htmlEditorStage.setWidth(1270);
             htmlEditorStage.setHeight(height * 0.9);
             htmlEditorStage.setFullScreen(false);
@@ -1809,7 +1809,6 @@ public class MainController extends BaseController {
                     uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator + "bin/startup.bat");
                 }
             }
-            uploadDeployConfigMap.put("uploadTomcatStartUpPath", uploadTomcatPath + separator + "bin/startup.bat");
             uploadDeployConfigMap.put("uploadTomcatPort", propertyUtils.getConfigurationPropertyStringByKey("upload.tomcat.port"));
             uploadDeployConfigMap.put("uploadWarPath", propertyUtils.getConfigurationPropertyStringByKey("upload.war.path"));
             uploadDeployConfigMap.put("uploadWarFlag", Utils.getUUID32());

@@ -36,6 +36,7 @@ public class DeployProcess extends ProcessBase {
         CommandMethodEnum commandMethodEnum = CommandMethodEnum.getEnum(command.getCommandCode());
         switch (commandMethodEnum) {
             case DEPLOY_INIT:
+                onDeployProcessorListener.onDeployProcessorStart();
                 break;
             case SYNC_CM_WAR:
                 syncCMWar(command, ctx);

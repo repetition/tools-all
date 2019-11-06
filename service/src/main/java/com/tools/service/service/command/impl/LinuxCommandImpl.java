@@ -45,8 +45,6 @@ public class LinuxCommandImpl implements ICommand {
         List<String> cmdStartBat = new ArrayList<>();
         cmdStartBat.add("sh");
         cmdStartBat.add("-c");
-        //start 会堵塞线程
-        // cmdStartBat.add("start");
         cmdStartBat.add(batPath);
 
         ProcessBuilder builder = newProcessBuilder();
@@ -57,6 +55,8 @@ public class LinuxCommandImpl implements ICommand {
         log.info("bat:" + batPath);
         //  builder.command("cmd.exe", "/c", "start", "/b", batPath);
         builder.command(cmdStartBat);
+        log.info(cmdStartBat.toString());
+
         LinuxCmdProcess cmdProcess = new LinuxCmdProcess();
         return cmdProcess.batProcess(builder);
     }

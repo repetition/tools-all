@@ -38,6 +38,8 @@ public class DeployProcess extends ProcessBase {
 
                 break;
             case DEPLOY_INIT:
+                ctx.channel().writeAndFlush(command);
+                //执行同步
                 deploy(command,ctx);
                 break;
             case DEPLOY_START:

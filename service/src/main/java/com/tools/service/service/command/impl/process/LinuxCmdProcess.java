@@ -44,7 +44,7 @@ public class LinuxCmdProcess {
                     if (process.waitFor() == 0) {
                         commandModel.setProcessExcState(ServiceStateEnum.STATED);
                         process.destroy();
-                    }else {
+                    } else {
                         commandModel.setProcessExcState(ServiceStateEnum.ERROR);
                     }
                 } catch (IOException e) {
@@ -88,7 +88,7 @@ public class LinuxCmdProcess {
                     if (process.waitFor() == 0) {
                         commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
                         process.destroy();
-                    }else {
+                    } else {
                         commandModel.setProcessExcState(ServiceStateEnum.ERROR);
                     }
                 } catch (IOException e) {
@@ -115,7 +115,6 @@ public class LinuxCmdProcess {
     }
 
 
-
     public CommandModel serviceStatusProcess(ProcessBuilder builder) {
         CommandModel commandModel = new CommandModel();
         try {
@@ -130,16 +129,13 @@ public class LinuxCmdProcess {
             commandModel.setProcessOutputInfo(Arrays.asList(resultStr));
             if (resultStr.contains("Active: active (running)")) {
                 commandModel.setProcessExcState(ServiceStateEnum.STATED);
-            }else
-            if (resultStr.contains("Active: inactive (dead)")) {
+            } else if (resultStr.contains("Active: inactive (dead)")) {
                 commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
-            }else
-            if (resultStr.contains("could not be found")) {
+            } else if (resultStr.contains("could not be found")) {
                 commandModel.setProcessExcState(ServiceStateEnum.NOT_EXIST);
-            }else
-            if (resultStr.contains("Active: active (exited)")) {
+            } else if (resultStr.contains("Active: active (exited)")) {
                 commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
-            }else {
+            } else {
                 commandModel.setProcessExcState(ServiceStateEnum.STOPPED);
             }
         } catch (IOException e) {
@@ -214,14 +210,12 @@ public class LinuxCmdProcess {
                 if (process.waitFor() == 0) {
                     commandModel.setProcessExcState(true);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
-                }
-                if (process.waitFor() == 2) {
+                } else if (process.waitFor() == 2) {
                     commandModel.setProcessExcState(true);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
-                }else {
-
+                } else {
                     commandModel.setProcessExcState(false);
-                    commandModel.setProcessOutputInfo(Arrays.asList("服务启动失败!"));
+                    commandModel.setProcessOutputInfo(cmdResult);
                 }
                 process.destroy();
             } catch (IOException e) {
@@ -420,7 +414,7 @@ public class LinuxCmdProcess {
         return commandModel;
     }
 
-    public CommandModel searchPidProcess(ProcessBuilder builder,String targetPort) {
+    public CommandModel searchPidProcess(ProcessBuilder builder, String targetPort) {
         ThreadPoolManager poolManager = ThreadPoolManager.getInstance();
         Future<CommandModel> future = poolManager.getExecutor().submit(() -> {
 
@@ -436,7 +430,7 @@ public class LinuxCmdProcess {
             }
             commandModel.setProcessWaitFor(process.waitFor());
             //过滤端口
-            filter(cmdResult,targetPort);
+            filter(cmdResult, targetPort);
 
             if (cmdResult.size() == 0) {
                 commandModel.setProcessExcState("");
@@ -489,7 +483,7 @@ public class LinuxCmdProcess {
 
             String address = split[split.length - 4];
 
-            String port = address.substring(address.lastIndexOf(":")+1,address.length());
+            String port = address.substring(address.lastIndexOf(":") + 1, address.length());
 
             if (port.equals(targetPort)) {
                 return false;
@@ -542,7 +536,7 @@ public class LinuxCmdProcess {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 cmdSearchPorts.add(line);
-               // System.out.println(line);
+                // System.out.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -696,8 +690,7 @@ public class LinuxCmdProcess {
                 if (process.waitFor() == 0) {
                     commandModel.setProcessExcState(true);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务停止成功!"));
-                }else
-                {
+                } else {
                     commandModel.setProcessExcState(false);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务停止失败!"));
                 }
@@ -741,8 +734,7 @@ public class LinuxCmdProcess {
                 if (process.waitFor() == 0) {
                     commandModel.setProcessExcState(true);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务启动成功!"));
-                }else
-                {
+                } else {
                     commandModel.setProcessExcState(false);
                     commandModel.setProcessOutputInfo(Arrays.asList("服务启动失败!"));
                 }
